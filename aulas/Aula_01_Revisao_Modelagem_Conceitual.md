@@ -110,6 +110,8 @@ A **participação total** (obrigatória) indica que toda instância da entidade
 
 A **participação parcial** (opcional) indica que a entidade *pode* participar do relacionamento, mas não é obrigada. Exemplo: um **Cliente** pode ter feito zero pedidos (é um cliente cadastrado que ainda não comprou nada).
 
+![Material completo sobre Cardinalidade](Cardinalidade_MER_Completo.md)
+
 ---
 
 ## 5. Notações do MER
