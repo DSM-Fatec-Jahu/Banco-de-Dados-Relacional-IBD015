@@ -1,0 +1,748 @@
+---
+title: "Sistema Completo de Locadora de Veículos - Brasil 2026"
+---
+
+erDiagram
+
+    %% ============================================================
+    %% GENERALIZAÇÃO/ESPECIALIZAÇÃO: PESSOA -> CLIENTE / FUNCIONARIO
+    %% (Conceito MER - Especialização top-down)
+    %% ============================================================
+
+    PESSOA {
+        int pessoa_id PK "Identificador único"
+        varchar nome_completo "NOT NULL"
+        varchar cpf UK "11 dígitos, único, NOT NULL"
+        varchar rg "Registro Geral"
+        varchar orgao_emissor_rg "Ex: SSP-SP"
+        date data_nascimento "NOT NULL"
+        varchar sexo "M/F/Outro"
+        varchar email UK "Único, NOT NULL"
+        varchar telefone_principal "NOT NULL, com DDD"
+        varchar telefone_secundario "Opcional"
+        varchar nacionalidade "Default: Brasileira"
+        varchar estado_civil "Solteiro/Casado/etc"
+        varchar tipo_pessoa "CLIENTE ou FUNCIONARIO (discriminador)"
+        timestamp created_at "Data de criação"
+        timestamp updated_at "Última atualização"
+        boolean ativo "Soft delete"
+    }
+
+    ENDERECO {
+        int endereco_id PK "Identificador único"
+        int pessoa_id FK "Referência a PESSOA"
+        varchar cep "8 dígitos, NOT NULL"
+        varchar logradouro "NOT NULL"
+        varchar numero "NOT NULL"
+        varchar complemento "Apto, Bloco, etc"
+        varchar bairro "NOT NULL"
+        varchar cidade "NOT NULL"
+        varchar uf "2 caracteres, NOT NULL"
+        varchar pais "Default: Brasil"
+        varchar tipo_endereco "RESIDENCIAL/COMERCIAL/COBRANCA"
+        boolean endereco_principal "Default: true"
+    }
+
+    %% ============================================================
+    %% ESPECIALIZAÇÃO: CLIENTE (herda de PESSOA)
+    %% ============================================================
+
+    CLIENTE {
+        int cliente_id PK "Identificador único"
+        int pessoa_id FK "Herança de PESSOA"
+        varchar tipo_cliente "PF ou PJ"
+        varchar cnpj UK "Apenas se PJ, 14 dígitos"
+        varchar razao_social "Apenas se PJ"
+        varchar inscricao_estadual "Apenas se PJ"
+        varchar profissao "Para PF"
+        decimal renda_mensal "Para análise de crédito"
+        varchar segmento "STANDARD/PREMIUM/VIP/CORPORATIVO"
+        int pontos_fidelidade "Programa de fidelidade"
+        date data_cadastro "NOT NULL"
+        date data_ultima_locacao "Atualizado automaticamente"
+        varchar status "ATIVO/INATIVO/BLOQUEADO/SUSPENSO"
+        varchar observacoes "Notas internas"
+        varchar origem_cadastro "SITE/APP/LOJA/PARCEIRO"
+    }
+
+    %% ============================================================
+    %% ESPECIALIZAÇÃO: FUNCIONÁRIO (herda de PESSOA)
+    %% ============================================================
+
+    FUNCIONARIO {
+        int funcionario_id PK "Identificador único"
+        int pessoa_id FK "Herança de PESSOA"
+        int filial_id FK "Filial de lotação"
+        int cargo_id FK "Cargo atual"
+        varchar matricula UK "Matrícula interna, única"
+        varchar ctps "Carteira de trabalho"
+        varchar pis_pasep "PIS/PASEP"
+        date data_admissao "NOT NULL"
+        date data_demissao "Null se ativo"
+        decimal salario_base "NOT NULL"
+        varchar turno "MANHA/TARDE/NOITE/INTEGRAL"
+        varchar tipo_contrato "CLT/PJ/ESTAGIO/TEMPORARIO"
+        varchar nivel_acesso "OPERADOR/SUPERVISOR/GERENTE/ADMIN"
+        varchar status "ATIVO/FERIAS/AFASTADO/DESLIGADO"
+    }
+
+    CARGO {
+        int cargo_id PK "Identificador único"
+        varchar nome_cargo "NOT NULL"
+        varchar departamento "ATENDIMENTO/OPERACOES/FINANCEIRO/TI/RH"
+        varchar descricao "Descrição das funções"
+        decimal piso_salarial "Valor mínimo"
+        decimal teto_salarial "Valor máximo"
+    }
+
+    %% ============================================================
+    %% CNH - Documento obrigatório para locação
+    %% ============================================================
+
+    CNH {
+        int cnh_id PK "Identificador único"
+        int pessoa_id FK "Referência a PESSOA"
+        varchar numero_registro UK "Número do registro CNH"
+        varchar categoria "A/B/AB/C/D/E"
+        date data_emissao "NOT NULL"
+        date data_validade "NOT NULL"
+        varchar orgao_emissor "DETRAN + UF"
+        varchar numero_espelho "Nº do espelho da CNH"
+        boolean exerc_atividade_remunerada "EAR"
+        varchar observacoes_cnh "Restrições médicas, etc"
+        varchar imagem_frente_url "Digitalização frente"
+        varchar imagem_verso_url "Digitalização verso"
+        varchar status "VALIDA/VENCIDA/SUSPENSA/CASSADA"
+    }
+
+    %% ============================================================
+    %% ESTRUTURA DE FILIAIS / AGÊNCIAS
+    %% ============================================================
+
+    FILIAL {
+        int filial_id PK "Identificador único"
+        varchar cnpj UK "CNPJ da filial"
+        varchar razao_social "NOT NULL"
+        varchar nome_fantasia "NOT NULL"
+        varchar inscricao_estadual "IE"
+        varchar tipo_filial "LOJA/AEROPORTO/DELIVERY_ONLY/QUIOSQUE"
+        varchar telefone "NOT NULL"
+        varchar email "NOT NULL"
+        varchar cep "NOT NULL"
+        varchar logradouro "NOT NULL"
+        varchar numero "NOT NULL"
+        varchar complemento "Opcional"
+        varchar bairro "NOT NULL"
+        varchar cidade "NOT NULL"
+        varchar uf "NOT NULL"
+        decimal latitude "Para geolocalização"
+        decimal longitude "Para geolocalização"
+        varchar horario_funcionamento "Ex: Seg-Sex 07-22h"
+        boolean opera_24h "Aeroportos geralmente sim"
+        int capacidade_veiculos "Qtd máx de veículos"
+        int gerente_id FK "Funcionário gerente"
+        varchar status "ATIVA/INATIVA/EM_REFORMA"
+    }
+
+    %% ============================================================
+    %% VEÍCULOS E FROTA
+    %% ============================================================
+
+    CATEGORIA_VEICULO {
+        int categoria_id PK "Identificador único"
+        varchar nome "COMPACTO/HATCH/SEDAN/SUV/PICKUP/LUXO/VAN/UTILITARIO"
+        varchar descricao "Descrição da categoria"
+        decimal diaria_base "Valor base da diária"
+        decimal km_livre_incluso "Km livre por dia"
+        decimal valor_km_excedente "R$ por km excedente"
+        int numero_passageiros "Capacidade"
+        int numero_malas "Capacidade de bagagem"
+        varchar ar_condicionado "SIM/NAO"
+        varchar cambio "MANUAL/AUTOMATICO/AMBOS"
+        varchar imagem_url "Foto representativa"
+        boolean ativo "Se categoria está ativa"
+    }
+
+    MARCA {
+        int marca_id PK "Identificador único"
+        varchar nome "Ex: Volkswagen, Fiat, Toyota"
+        varchar pais_origem "País de origem"
+        varchar logo_url "Logo da marca"
+        boolean ativo "Se marca está ativa"
+    }
+
+    MODELO {
+        int modelo_id PK "Identificador único"
+        int marca_id FK "Referência à MARCA"
+        int categoria_id FK "Referência à CATEGORIA"
+        varchar nome "Ex: Polo, Argo, Corolla"
+        varchar versao "Ex: Comfortline 1.0 TSI"
+        int ano_modelo_inicio "Ano modelo início"
+        int ano_modelo_fim "Ano modelo fim ou null"
+        varchar combustivel "FLEX/GASOLINA/DIESEL/ELETRICO/HIBRIDO"
+        varchar cambio "MANUAL/AUTOMATICO/CVT"
+        int portas "2 ou 4"
+        int passageiros "Capacidade"
+        decimal potencia_cv "Potência em CV"
+        decimal capacidade_tanque "Litros"
+        varchar tipo_direcao "HIDRAULICA/ELETRICA/MECANICA"
+        boolean ar_condicionado "Possui ar"
+        boolean airbag "Possui airbag"
+        boolean abs_freios "Possui ABS"
+        boolean camera_re "Possui câmera de ré"
+        boolean sensor_estacionamento "Possui sensor"
+        boolean multimidia "Possui central multimídia"
+        boolean bluetooth "Possui bluetooth"
+        varchar imagem_url "Foto do modelo"
+    }
+
+    VEICULO {
+        int veiculo_id PK "Identificador único"
+        int modelo_id FK "Referência ao MODELO"
+        int filial_atual_id FK "Filial onde está"
+        varchar placa UK "Formato Mercosul ABC1D23"
+        varchar renavam UK "11 dígitos, único"
+        varchar chassi UK "17 caracteres, único"
+        int ano_fabricacao "NOT NULL"
+        int ano_modelo "NOT NULL"
+        varchar cor "NOT NULL"
+        decimal km_atual "Quilometragem atual"
+        varchar numero_motor "Número do motor"
+        varchar codigo_fipe "Código tabela FIPE"
+        decimal valor_fipe "Valor FIPE atual"
+        decimal valor_compra "Preço de aquisição"
+        date data_aquisicao "Data da compra"
+        varchar forma_aquisicao "COMPRA/LEASING/CONSORCIO"
+        date data_ultima_revisao "Última revisão feita"
+        date data_proxima_revisao "Próxima revisão prevista"
+        decimal km_proxima_revisao "Km da próxima revisão"
+        date data_vencimento_ipva "Vencimento IPVA"
+        date data_vencimento_licenciamento "Venc. licenciamento"
+        date data_vencimento_seguro "Venc. seguro frota"
+        boolean possui_rastreador "GPS tracker"
+        varchar id_rastreador "ID do dispositivo GPS"
+        varchar status "DISPONIVEL/LOCADO/MANUTENCAO/RESERVADO/SINISTRADO/VENDIDO/BAIXADO"
+        varchar condicao "EXCELENTE/BOM/REGULAR/NECESSITA_REPARO"
+        timestamp updated_at "Última atualização"
+    }
+
+    ACESSORIO_VEICULO {
+        int acessorio_veiculo_id PK "Identificador único"
+        int veiculo_id FK "Referência ao VEÍCULO"
+        int acessorio_id FK "Referência ao ACESSÓRIO"
+        date data_instalacao "Data da instalação"
+        varchar observacao "Notas"
+    }
+
+    ACESSORIO {
+        int acessorio_id PK "Identificador único"
+        varchar nome "Cadeirinha, GPS, Wi-Fi, etc"
+        varchar descricao "Descrição detalhada"
+        decimal valor_diaria "Custo por dia"
+        varchar tipo "SEGURANCA/CONFORTO/ENTRETENIMENTO/TRANSPORTE"
+        boolean ativo "Se acessório disponível"
+    }
+
+    %% ============================================================
+    %% RESERVA
+    %% ============================================================
+
+    RESERVA {
+        int reserva_id PK "Identificador único"
+        int cliente_id FK "Cliente que reservou"
+        int categoria_id FK "Categoria desejada"
+        int filial_retirada_id FK "Filial de retirada"
+        int filial_devolucao_id FK "Filial de devolução"
+        varchar codigo_reserva UK "Código único legível"
+        datetime data_hora_retirada_prevista "Previsão retirada"
+        datetime data_hora_devolucao_prevista "Previsão devolução"
+        int dias_previstos "Calculado automaticamente"
+        varchar canal_reserva "SITE/APP/TELEFONE/BALCAO/PARCEIRO"
+        varchar cupom_desconto "Código de cupom se houver"
+        decimal valor_estimado "Valor estimado total"
+        varchar observacoes "Pedidos especiais"
+        varchar status "PENDENTE/CONFIRMADA/CANCELADA/NO_SHOW/CONVERTIDA"
+        datetime data_cancelamento "Se cancelada"
+        varchar motivo_cancelamento "Motivo do cancelamento"
+        timestamp created_at "Data de criação"
+    }
+
+    %% ============================================================
+    %% CONTRATO DE LOCAÇÃO (entidade central)
+    %% ============================================================
+
+    CONTRATO {
+        int contrato_id PK "Identificador único"
+        int cliente_id FK "Cliente locatário"
+        int veiculo_id FK "Veículo locado"
+        int reserva_id FK "Reserva de origem (opcional)"
+        int filial_retirada_id FK "Filial de retirada"
+        int filial_devolucao_prevista_id FK "Filial devol. prevista"
+        int filial_devolucao_real_id FK "Filial devol. real"
+        int funcionario_abertura_id FK "Quem abriu contrato"
+        int funcionario_fechamento_id FK "Quem fechou contrato"
+        int condutor_adicional_id FK "Condutor adicional (se houver)"
+        varchar numero_contrato UK "Número único do contrato"
+        varchar tipo_contrato "DIARIA/MENSAL/ANUAL/CORPORATIVO"
+        datetime data_hora_retirada "NOT NULL"
+        datetime data_hora_devolucao_prevista "NOT NULL"
+        datetime data_hora_devolucao_real "Preenchido na devolução"
+        int dias_contratados "NOT NULL"
+        int dias_utilizados "Calculado na devolução"
+        decimal km_saida "NOT NULL"
+        decimal km_devolucao "Preenchido na devolução"
+        decimal km_rodados "Derivado: devol - saida"
+        decimal km_livre_contratado "Km livre do período"
+        decimal km_excedente "Derivado"
+        varchar nivel_combustivel_saida "CHEIO/3_4/METADE/1_4/RESERVA"
+        varchar nivel_combustivel_devolucao "CHEIO/3_4/METADE/1_4/RESERVA"
+        decimal valor_diaria "Valor efetivo da diária"
+        decimal valor_diarias_total "diária x dias"
+        decimal valor_km_excedente_total "km exc x valor km"
+        decimal valor_combustivel_diferenca "Diferença de combustível"
+        decimal valor_acessorios "Soma acessórios extras"
+        decimal valor_protecoes "Soma proteções contratadas"
+        decimal valor_taxa_devolucao_outra_filial "Se devolveu noutro lugar"
+        decimal valor_multas "Multas de trânsito"
+        decimal valor_danos "Danos ao veículo"
+        decimal valor_desconto "Descontos aplicados"
+        decimal valor_subtotal "Soma antes impostos"
+        decimal valor_impostos "ISS e outros"
+        decimal valor_total "NOT NULL, total final"
+        varchar condicao_veiculo_saida "EXCELENTE/BOM/REGULAR"
+        varchar condicao_veiculo_devolucao "EXCELENTE/BOM/REGULAR/DANIFICADO"
+        text observacoes_saida "Avarias pré-existentes etc"
+        text observacoes_devolucao "Estado na devolução"
+        varchar status "ABERTO/ATIVO/FECHADO/CANCELADO/INADIMPLENTE"
+        timestamp created_at "Data de criação"
+        timestamp updated_at "Última atualização"
+    }
+
+    CONDUTOR_ADICIONAL {
+        int condutor_adicional_id PK "Identificador único"
+        int contrato_id FK "Contrato associado"
+        int pessoa_id FK "Pessoa que é condutor"
+        varchar parentesco "Cônjuge, Filho, Colega, etc"
+        decimal valor_cobrado "Taxa do condutor adicional"
+    }
+
+    %% ============================================================
+    %% ACESSÓRIOS CONTRATADOS NO CONTRATO
+    %% ============================================================
+
+    CONTRATO_ACESSORIO {
+        int contrato_acessorio_id PK "Identificador único"
+        int contrato_id FK "Contrato associado"
+        int acessorio_id FK "Acessório contratado"
+        int quantidade "Qtd (ex: 2 cadeirinhas)"
+        decimal valor_unitario_diaria "Valor unitário/dia"
+        decimal valor_total "Calculado"
+    }
+
+    %% ============================================================
+    %% PROTEÇÕES E SEGUROS
+    %% ============================================================
+
+    PROTECAO {
+        int protecao_id PK "Identificador único"
+        varchar nome "LDW/CDW/ALI/PAI/SUPER_PROTECAO/etc"
+        varchar descricao "Cobertura detalhada"
+        varchar tipo "BASICA/INTERMEDIARIA/PREMIUM/COMPLETA"
+        decimal valor_diaria "Custo por dia"
+        decimal franquia "Valor da franquia"
+        decimal cobertura_maxima "Valor máx de cobertura"
+        boolean cobre_terceiros "Cobertura a terceiros"
+        boolean cobre_vidros "Vidros/faróis/retrovisores"
+        boolean cobre_pneus "Pneus e rodas"
+        boolean cobre_roubo_furto "Roubo e furto"
+        boolean cobre_danos_naturais "Granizo, enchente, etc"
+        boolean ativo "Se proteção está ativa"
+    }
+
+    CONTRATO_PROTECAO {
+        int contrato_protecao_id PK "Identificador único"
+        int contrato_id FK "Contrato associado"
+        int protecao_id FK "Proteção contratada"
+        decimal valor_diaria "Valor efetivo cobrado"
+        decimal valor_total "Calculado pelo período"
+    }
+
+    %% ============================================================
+    %% VISTORIA DO VEÍCULO (checklist de entrada e saída)
+    %% ============================================================
+
+    VISTORIA {
+        int vistoria_id PK "Identificador único"
+        int contrato_id FK "Contrato associado"
+        int veiculo_id FK "Veículo inspecionado"
+        int funcionario_id FK "Funcionário responsável"
+        varchar tipo_vistoria "RETIRADA/DEVOLUCAO"
+        datetime data_hora "NOT NULL"
+        decimal km_registrado "Quilometragem no momento"
+        varchar nivel_combustivel "CHEIO/3_4/METADE/1_4/RESERVA"
+        boolean pneu_dianteiro_esq_ok "Check pneu"
+        boolean pneu_dianteiro_dir_ok "Check pneu"
+        boolean pneu_traseiro_esq_ok "Check pneu"
+        boolean pneu_traseiro_dir_ok "Check pneu"
+        boolean estepe_ok "Check estepe"
+        boolean macaco_ok "Check macaco"
+        boolean triangulo_ok "Check triângulo"
+        boolean chave_roda_ok "Check chave de roda"
+        boolean extintor_ok "Check extintor"
+        boolean documentos_ok "CRV/CRLV presentes"
+        boolean ar_condicionado_ok "Funcionamento AC"
+        boolean luzes_ok "Faróis, lanternas, setas"
+        boolean limpadores_ok "Limpadores de para-brisa"
+        boolean vidros_ok "Estado dos vidros"
+        boolean retrovisores_ok "Retrovisores"
+        boolean pintura_ok "Estado da pintura"
+        boolean estofamento_ok "Estado interno"
+        text observacoes "Detalhes adicionais"
+        varchar resultado "APROVADO/REPROVADO/COM_RESSALVAS"
+    }
+
+    AVARIA {
+        int avaria_id PK "Identificador único"
+        int vistoria_id FK "Vistoria onde detectada"
+        varchar localizacao "CAPO/PORTA_DE/PORTA_DD/TETO/etc"
+        varchar tipo_avaria "RISCO/AMASSADO/TRINCA/FURO/QUEBRA"
+        varchar gravidade "LEVE/MEDIA/GRAVE"
+        varchar descricao "Descrição detalhada"
+        varchar foto_url "Foto da avaria"
+        boolean preexistente "Já existia antes da locação"
+        decimal valor_reparo_estimado "Estimativa de reparo"
+    }
+
+    %% ============================================================
+    %% PAGAMENTOS E FINANCEIRO
+    %% ============================================================
+
+    PAGAMENTO {
+        int pagamento_id PK "Identificador único"
+        int contrato_id FK "Contrato associado"
+        int cliente_id FK "Cliente pagador"
+        varchar tipo_pagamento "CAUÇÃO/PARCIAL/FINAL/MULTA/REEMBOLSO"
+        varchar forma_pagamento "CREDITO/DEBITO/PIX/BOLETO/DINHEIRO/TRANSFERENCIA"
+        varchar bandeira_cartao "VISA/MASTERCARD/ELO/AMEX (se cartão)"
+        varchar ultimos_digitos_cartao "Últimos 4 dígitos"
+        int parcelas "Número de parcelas"
+        decimal valor "NOT NULL"
+        decimal valor_caucao "Pré-autorização no cartão"
+        varchar moeda "BRL"
+        varchar nsu "Número sequencial único (maquininha)"
+        varchar codigo_autorizacao "Código de autorização"
+        varchar id_transacao_pix "Chave/ID do PIX"
+        datetime data_hora_pagamento "NOT NULL"
+        varchar status "PENDENTE/APROVADO/RECUSADO/ESTORNADO/CANCELADO"
+        varchar gateway_pagamento "CIELO/STONE/PAGSEGURO/etc"
+        varchar comprovante_url "URL do comprovante"
+        text observacoes "Notas sobre o pagamento"
+    }
+
+    NOTA_FISCAL {
+        int nf_id PK "Identificador único"
+        int contrato_id FK "Contrato associado"
+        int filial_id FK "Filial emissora"
+        varchar numero_nf UK "Número da NF"
+        varchar serie "Série da NF"
+        varchar chave_acesso UK "Chave de acesso 44 dígitos"
+        varchar tipo_nf "NFS-e (serviço)"
+        datetime data_emissao "NOT NULL"
+        decimal valor_servicos "Valor dos serviços"
+        decimal base_calculo_iss "Base ISS"
+        decimal aliquota_iss "Alíquota ISS %"
+        decimal valor_iss "Valor ISS"
+        decimal valor_total "Total da NF"
+        varchar cnpj_prestador "CNPJ da locadora"
+        varchar cpf_cnpj_tomador "CPF/CNPJ do cliente"
+        varchar status "EMITIDA/CANCELADA/SUBSTITUIDA"
+        varchar xml_url "URL do XML da NF"
+        varchar pdf_url "URL do DANFSE"
+    }
+
+    %% ============================================================
+    %% MULTAS DE TRÂNSITO
+    %% ============================================================
+
+    MULTA {
+        int multa_id PK "Identificador único"
+        int contrato_id FK "Contrato no período"
+        int veiculo_id FK "Veículo multado"
+        int cliente_id FK "Cliente responsável"
+        varchar auto_infracao "Número do auto"
+        datetime data_hora_infracao "NOT NULL"
+        varchar local_infracao "Local da infração"
+        varchar descricao_infracao "Tipo da infração"
+        varchar gravidade "LEVE/MEDIA/GRAVE/GRAVISSIMA"
+        int pontos "Pontos na CNH"
+        decimal valor_original "Valor original"
+        decimal valor_com_desconto "Valor c/ desconto (pagto antecipado)"
+        date data_vencimento "Vencimento do pagamento"
+        varchar orgao_emissor "PRF/DETRAN/Prefeitura"
+        varchar status "PENDENTE/NOTIFICADO_CLIENTE/PAGO_CLIENTE/PAGO_EMPRESA/RECURSO/CANCELADA"
+        date data_notificacao_cliente "Quando cliente foi avisado"
+        varchar comprovante_url "Comprovante de pagamento"
+    }
+
+    %% ============================================================
+    %% MANUTENÇÃO E REVISÕES
+    %% ============================================================
+
+    MANUTENCAO {
+        int manutencao_id PK "Identificador único"
+        int veiculo_id FK "Veículo em manutenção"
+        int filial_id FK "Filial responsável"
+        int funcionario_solicitante_id FK "Quem solicitou"
+        int fornecedor_id FK "Oficina/fornecedor"
+        varchar tipo "PREVENTIVA/CORRETIVA/RECALL/SINISTRO/HIGIENIZACAO"
+        varchar descricao "Descrição do serviço"
+        date data_entrada "NOT NULL"
+        date data_saida_prevista "Previsão"
+        date data_saida_real "Conclusão efetiva"
+        decimal km_entrada "Km na entrada"
+        decimal custo_pecas "Custo de peças"
+        decimal custo_mao_obra "Custo de mão de obra"
+        decimal custo_total "Total"
+        varchar numero_os "Número da ordem de serviço"
+        varchar nf_fornecedor "NF do fornecedor"
+        varchar status "AGENDADA/EM_ANDAMENTO/CONCLUIDA/CANCELADA"
+        text observacoes "Detalhes da manutenção"
+    }
+
+    FORNECEDOR {
+        int fornecedor_id PK "Identificador único"
+        varchar cnpj UK "CNPJ do fornecedor"
+        varchar razao_social "NOT NULL"
+        varchar nome_fantasia "Nome fantasia"
+        varchar tipo "OFICINA/FUNILARIA/ELETRICA/PNEUS/LAVAGEM/SEGURADORA/OUTROS"
+        varchar telefone "NOT NULL"
+        varchar email "NOT NULL"
+        varchar endereco_completo "Endereço"
+        varchar cidade "Cidade"
+        varchar uf "UF"
+        varchar contato_responsavel "Nome do contato"
+        boolean ativo "Se fornecedor ativo"
+    }
+
+    %% ============================================================
+    %% SINISTRO (acidente / roubo / furto)
+    %% ============================================================
+
+    SINISTRO {
+        int sinistro_id PK "Identificador único"
+        int contrato_id FK "Contrato vigente"
+        int veiculo_id FK "Veículo envolvido"
+        int cliente_id FK "Cliente responsável"
+        varchar tipo "COLISAO/ROUBO/FURTO/INCENDIO/ALAGAMENTO/VANDALISMO"
+        datetime data_hora_ocorrencia "NOT NULL"
+        varchar local_ocorrencia "Endereço/local"
+        varchar cidade_ocorrencia "Cidade"
+        varchar uf_ocorrencia "UF"
+        text descricao "Relato do ocorrido"
+        varchar numero_bo "Número do B.O. policial"
+        varchar delegacia "Delegacia do B.O."
+        boolean houve_vitimas "Se houve vítimas"
+        boolean houve_terceiros "Se envolveu terceiros"
+        decimal valor_estimado_dano "Estimativa de dano"
+        decimal valor_franquia "Franquia da proteção"
+        decimal valor_pago_cliente "Valor pago pelo cliente"
+        varchar protocolo_seguradora "Protocolo da seguradora"
+        varchar status "ABERTO/EM_ANALISE/APROVADO/NEGADO/ENCERRADO"
+        varchar foto_url_1 "Foto 1"
+        varchar foto_url_2 "Foto 2"
+        varchar foto_url_3 "Foto 3"
+        text observacoes "Notas adicionais"
+    }
+
+    %% ============================================================
+    %% TABELA DE PREÇOS (sazonalidade e dinâmica)
+    %% ============================================================
+
+    TABELA_PRECO {
+        int tabela_preco_id PK "Identificador único"
+        int categoria_id FK "Categoria do veículo"
+        int filial_id FK "Filial (preço por praça)"
+        varchar nome_tabela "Ex: Alta temporada verão 2026"
+        varchar tipo_periodo "NORMAL/ALTA_TEMPORADA/FERIADO/PROMOCIONAL"
+        date data_inicio "Início vigência"
+        date data_fim "Fim vigência"
+        decimal valor_diaria "Valor da diária"
+        decimal valor_semanal "Pacote semanal"
+        decimal valor_mensal "Pacote mensal"
+        decimal valor_km_excedente "Valor por km excedente"
+        int km_livre_por_dia "Km livre incluso"
+        decimal desconto_online "% desconto para reserva online"
+        boolean ativo "Se tabela está ativa"
+    }
+
+    %% ============================================================
+    %% PROGRAMA DE FIDELIDADE
+    %% ============================================================
+
+    PROGRAMA_FIDELIDADE {
+        int programa_id PK "Identificador único"
+        varchar nome "Nome do programa"
+        varchar nivel "BRONZE/PRATA/OURO/PLATINA/DIAMANTE"
+        int pontos_minimos "Pontos para atingir nível"
+        decimal desconto_percentual "% de desconto por nível"
+        boolean upgrade_gratuito "Direito a upgrade"
+        int diarias_cortesia_ano "Diárias grátis por ano"
+        boolean prioridade_atendimento "Fila preferencial"
+        boolean acesso_lounge "Acesso a lounge aeroporto"
+    }
+
+    MOVIMENTACAO_PONTOS {
+        int movimentacao_id PK "Identificador único"
+        int cliente_id FK "Cliente"
+        int contrato_id FK "Contrato de origem (se aplicável)"
+        varchar tipo "ACUMULO/RESGATE/EXPIRACAO/BONIFICACAO/AJUSTE"
+        int pontos "Quantidade de pontos"
+        int saldo_anterior "Saldo antes"
+        int saldo_posterior "Saldo depois"
+        varchar descricao "Motivo da movimentação"
+        datetime data_hora "NOT NULL"
+        date data_expiracao "Quando pontos expiram"
+    }
+
+    %% ============================================================
+    %% LOG DE AUDITORIA
+    %% ============================================================
+
+    LOG_AUDITORIA {
+        int log_id PK "Identificador único"
+        int funcionario_id FK "Funcionário que realizou"
+        varchar tabela_afetada "Nome da tabela modificada"
+        int registro_id "ID do registro afetado"
+        varchar acao "INSERT/UPDATE/DELETE"
+        text dados_anteriores "JSON com dados antes"
+        text dados_novos "JSON com dados depois"
+        varchar ip_origem "IP da máquina"
+        datetime data_hora "NOT NULL"
+    }
+
+    %% ============================================================
+    %% PARCEIROS E CONVÊNIOS
+    %% ============================================================
+
+    PARCEIRO {
+        int parceiro_id PK "Identificador único"
+        varchar cnpj UK "CNPJ do parceiro"
+        varchar razao_social "NOT NULL"
+        varchar nome_fantasia "NOT NULL"
+        varchar tipo "CIA_AEREA/HOTEL/SEGURADORA/CARTAO_CREDITO/EMPRESA/AGENCIA_VIAGEM"
+        decimal percentual_desconto "Desconto oferecido"
+        decimal comissao_parceiro "% comissão ao parceiro"
+        varchar codigo_convenio UK "Código do convênio"
+        date data_inicio_parceria "Início"
+        date data_fim_parceria "Fim (null se vigente)"
+        varchar contato_nome "Contato"
+        varchar contato_email "Email do contato"
+        varchar contato_telefone "Telefone"
+        varchar status "ATIVO/INATIVO/SUSPENSO"
+    }
+
+    %% ============================================================
+    %% TRANSFERÊNCIA DE VEÍCULOS ENTRE FILIAIS
+    %% ============================================================
+
+    TRANSFERENCIA_VEICULO {
+        int transferencia_id PK "Identificador único"
+        int veiculo_id FK "Veículo transferido"
+        int filial_origem_id FK "Filial de origem"
+        int filial_destino_id FK "Filial de destino"
+        int funcionario_solicitante_id FK "Quem solicitou"
+        int funcionario_motorista_id FK "Quem levou o veículo"
+        datetime data_hora_saida "Saída da origem"
+        datetime data_hora_chegada "Chegada no destino"
+        decimal km_saida "Km na saída"
+        decimal km_chegada "Km na chegada"
+        varchar motivo "REBALANCEAMENTO/DEMANDA/MANUTENCAO/VENDA"
+        varchar status "SOLICITADA/EM_TRANSITO/CONCLUIDA/CANCELADA"
+        text observacoes "Notas"
+    }
+
+    %% ============================================================
+    %% RELACIONAMENTOS COM CARDINALIDADE (min, max)
+    %% ============================================================
+
+    %% --- Generalização/Especialização ---
+    PESSOA ||--o| CLIENTE : "especializa (0,1)"
+    PESSOA ||--o| FUNCIONARIO : "especializa (0,1)"
+    PESSOA ||--o{ ENDERECO : "possui (1,N)"
+    PESSOA ||--o| CNH : "possui (0,1)"
+
+    %% --- Filial e Funcionário ---
+    FILIAL ||--o{ FUNCIONARIO : "lotado em (0,N)"
+    CARGO ||--o{ FUNCIONARIO : "exerce (0,N)"
+
+    %% --- Veículos ---
+    MARCA ||--o{ MODELO : "fabrica (1,N)"
+    CATEGORIA_VEICULO ||--o{ MODELO : "pertence (1,N)"
+    MODELO ||--o{ VEICULO : "instância (0,N)"
+    FILIAL ||--o{ VEICULO : "estacionado (0,N)"
+    VEICULO ||--o{ ACESSORIO_VEICULO : "possui (0,N)"
+    ACESSORIO ||--o{ ACESSORIO_VEICULO : "instalado em (0,N)"
+
+    %% --- Reserva ---
+    CLIENTE ||--o{ RESERVA : "realiza (0,N)"
+    CATEGORIA_VEICULO ||--o{ RESERVA : "solicitada (0,N)"
+    FILIAL ||--o{ RESERVA : "retirada em (0,N)"
+
+    %% --- Contrato (entidade central) ---
+    CLIENTE ||--o{ CONTRATO : "firma (0,N)"
+    VEICULO ||--o{ CONTRATO : "locado em (0,N)"
+    RESERVA ||--o| CONTRATO : "origina (0,1)"
+    FILIAL ||--o{ CONTRATO : "retirada (0,N)"
+    FUNCIONARIO ||--o{ CONTRATO : "abre (0,N)"
+    CONTRATO ||--o{ CONDUTOR_ADICIONAL : "inclui (0,N)"
+    PESSOA ||--o{ CONDUTOR_ADICIONAL : "atua como (0,N)"
+
+    %% --- Acessórios e Proteções no Contrato ---
+    CONTRATO ||--o{ CONTRATO_ACESSORIO : "contrata (0,N)"
+    ACESSORIO ||--o{ CONTRATO_ACESSORIO : "fornecido (0,N)"
+    CONTRATO ||--o{ CONTRATO_PROTECAO : "contrata (0,N)"
+    PROTECAO ||--o{ CONTRATO_PROTECAO : "aplicada (0,N)"
+
+    %% --- Vistoria e Avarias ---
+    CONTRATO ||--|{ VISTORIA : "inspecionado (2,2)"
+    VEICULO ||--o{ VISTORIA : "vistoriado (0,N)"
+    FUNCIONARIO ||--o{ VISTORIA : "realiza (0,N)"
+    VISTORIA ||--o{ AVARIA : "registra (0,N)"
+
+    %% --- Financeiro ---
+    CONTRATO ||--|{ PAGAMENTO : "gera (1,N)"
+    CLIENTE ||--o{ PAGAMENTO : "efetua (0,N)"
+    CONTRATO ||--o{ NOTA_FISCAL : "fatura (0,N)"
+    FILIAL ||--o{ NOTA_FISCAL : "emite (0,N)"
+
+    %% --- Multas ---
+    CONTRATO ||--o{ MULTA : "gera (0,N)"
+    VEICULO ||--o{ MULTA : "recebe (0,N)"
+    CLIENTE ||--o{ MULTA : "responde (0,N)"
+
+    %% --- Manutenção ---
+    VEICULO ||--o{ MANUTENCAO : "passa por (0,N)"
+    FILIAL ||--o{ MANUTENCAO : "solicita (0,N)"
+    FUNCIONARIO ||--o{ MANUTENCAO : "solicita (0,N)"
+    FORNECEDOR ||--o{ MANUTENCAO : "executa (0,N)"
+
+    %% --- Sinistro ---
+    CONTRATO ||--o{ SINISTRO : "sofre (0,N)"
+    VEICULO ||--o{ SINISTRO : "envolvido (0,N)"
+    CLIENTE ||--o{ SINISTRO : "responsável (0,N)"
+
+    %% --- Tabela de Preços ---
+    CATEGORIA_VEICULO ||--o{ TABELA_PRECO : "precificada (1,N)"
+    FILIAL ||--o{ TABELA_PRECO : "aplica (0,N)"
+
+    %% --- Fidelidade ---
+    CLIENTE ||--o{ MOVIMENTACAO_PONTOS : "acumula (0,N)"
+    CONTRATO ||--o{ MOVIMENTACAO_PONTOS : "gera pontos (0,N)"
+
+    %% --- Transferência de Veículos ---
+    VEICULO ||--o{ TRANSFERENCIA_VEICULO : "transferido (0,N)"
+    FILIAL ||--o{ TRANSFERENCIA_VEICULO : "origem (0,N)"
+    FUNCIONARIO ||--o{ TRANSFERENCIA_VEICULO : "solicita (0,N)"
+
+    %% --- Auditoria ---
+    FUNCIONARIO ||--o{ LOG_AUDITORIA : "registra (0,N)"
