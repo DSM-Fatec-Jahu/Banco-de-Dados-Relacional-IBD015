@@ -150,7 +150,8 @@ Aqui, tentou-se representar múltiplos produtos por pedido criando colunas repet
 
 Para resolver valores não-atômicos, criamos uma tabela separada para o atributo multivalorado:
 
-```erDiagram
+```mermaid
+erDiagram
     CLIENTE {
         int id_cliente PK
         varchar nome
@@ -172,7 +173,8 @@ Para resolver valores não-atômicos, criamos uma tabela separada para o atribut
 
 Para resolver grupos repetidos em pedidos, criamos uma tabela de itens:
 
-```erDiagram
+```mermaid
+erDiagram
     PEDIDO {
         int id_pedido PK
         date data_pedido
@@ -235,7 +237,8 @@ id_produto              → categoria_produto ⚠️  Dependência PARCIAL — v
 
 A solução é **separar os atributos com dependência parcial** em uma nova tabela, criando uma entidade independente para eles:
 
-```erDiagram
+```mermaid
+erDiagram
     PEDIDO {
         int id_pedido PK
         date data_pedido
@@ -308,7 +311,8 @@ id_cidade  → nome_estado   ⚠️  Dependência TRANSITIVA — viola 3FN
 
 Novamente, a solução é extrair os atributos transitivos para sua própria tabela:
 
-```erDiagram
+```mermaid
+erDiagram
     CIDADE {
         int id_cidade PK
         varchar nome_cidade
@@ -395,7 +399,8 @@ cod_disciplina              → disciplina_nome ⚠️  Dependência PARCIAL
 
 **Solução:** separar os atributos com dependências parciais em suas próprias tabelas:
 
-```erDiagram
+```mermaid
+erDiagram
     ALUNO {
         varchar matricula PK
         varchar nome
@@ -441,7 +446,8 @@ professor_nome  → professor_titulo  ⚠️  Transitiva
 
 **Solução:** criar a entidade PROFESSOR e referenciar pela FK:
 
-```erDiagram
+```mermaid
+erDiagram
     PROFESSOR {
         int id_professor PK
         varchar nome
@@ -637,7 +643,8 @@ Separamos em três tabelas: CLIENTE, PEDIDO e PRODUTO, mantendo ITEM_PEDIDO com 
 
 Resultado final:
 
-```erDiagram
+```mermaid
+erDiagram
     CLIENTE {
         varchar cpf PK
         varchar nome
@@ -673,7 +680,8 @@ Resultado final:
 
 Dado o diagrama conceitual abaixo (sistema de uma biblioteca), escreva o modelo lógico completo com todas as tabelas, colunas, PKs e FKs:
 
-```erDiagram
+```mermaid
+erDiagram
     AUTOR {
         int id_autor PK
         varchar nome

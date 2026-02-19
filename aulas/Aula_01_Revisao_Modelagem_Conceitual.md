@@ -137,7 +137,8 @@ Vamos construir juntos um MER para um sistema acadêmico simplificado, com as se
 
 O diagrama abaixo representa esse modelo usando a notação Crow's Foot com Mermaid:
 
-```erDiagram
+```mermaid
+erDiagram
     CURSO {
         int id_curso PK
         varchar nome

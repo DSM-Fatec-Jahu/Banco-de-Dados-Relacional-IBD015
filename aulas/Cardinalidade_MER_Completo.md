@@ -158,7 +158,8 @@ Um relacionamento 1:1 ocorre quando uma instância de A se associa com **no máx
 
 Regra de negócio: cada funcionário possui exatamente um crachá de identificação, e cada crachá pertence a exatamente um funcionário.
 
-```erDiagram
+```mermaid
+erDiagram
     FUNCIONARIO {
         int id_funcionario PK
         varchar nome
@@ -185,7 +186,8 @@ Notação Min-Max: FUNCIONARIO **(1,1)**————**(1,1)** CRACHA — aqui am
 
 Regra de negócio: cada país tem exatamente uma capital, e cada capital pertence a exatamente um país.
 
-```erDiagram
+```mermaid
+erDiagram
     PAIS {
         int id_pais PK
         varchar nome
@@ -209,7 +211,8 @@ Observação pedagógica: note que, neste caso, a capital **não existe sem o pa
 
 Regra de negócio: uma pessoa pode ou não ter CNH (é opcional), mas se tiver, possui apenas uma. E uma CNH pertence a exatamente uma pessoa.
 
-```erDiagram
+```mermaid
+erDiagram
     PESSOA {
         int id_pessoa PK
         varchar nome
@@ -247,7 +250,8 @@ Este é de longe o tipo mais comum em qualquer banco de dados real. Ocorre quand
 
 Regra de negócio: um departamento pode ter muitos funcionários, mas cada funcionário pertence a exatamente um departamento. Todo funcionário deve pertencer a algum departamento; um departamento pode existir mesmo sem funcionários (recém-criado).
 
-```erDiagram
+```mermaid
+erDiagram
     DEPARTAMENTO {
         int id_departamento PK
         varchar nome
@@ -274,7 +278,8 @@ Perguntas aplicadas: *"Um departamento pode ter mais de um funcionário?"* → S
 
 Regra de negócio: uma categoria (como "Eletrônicos" ou "Vestuário") pode conter muitos produtos. Cada produto pertence a exatamente uma categoria. Um produto não pode existir sem categoria; uma categoria pode existir sem produtos cadastrados.
 
-```erDiagram
+```mermaid
+erDiagram
     CATEGORIA {
         int id_categoria PK
         varchar nome
@@ -302,7 +307,8 @@ Este exemplo é clássico em sistemas de e-commerce e ilustra bem como a **chave
 
 Regra de negócio: um pedido pode gerar várias notas fiscais (exemplo: pedido parcelado em entregas separadas, cada uma com sua nota). Cada nota fiscal está vinculada a exatamente um pedido.
 
-```erDiagram
+```mermaid
+erDiagram
     PEDIDO {
         int id_pedido PK
         date data_pedido
@@ -341,7 +347,8 @@ Ocorre quando uma instância de A pode se associar a **muitas** instâncias de B
 
 Regra de negócio: um aluno pode se matricular em várias disciplinas no mesmo semestre. Uma disciplina pode ter muitos alunos matriculados. A matrícula tem atributos próprios: nota e situação.
 
-```erDiagram
+```mermaid
+erDiagram
     ALUNO {
         int id_aluno PK
         varchar nome
@@ -376,7 +383,8 @@ Notação Min-Max original (antes da decomposição): ALUNO **(0,N)**———�
 
 Regra de negócio: um livro pode ter vários autores (obra coletiva). Um autor pode ter escrito vários livros. A relação entre eles registra qual foi a contribuição de cada autor no livro.
 
-```erDiagram
+```mermaid
+erDiagram
     AUTOR {
         int id_autor PK
         varchar nome
@@ -408,7 +416,8 @@ A entidade AUTORIA armazena o atributo `tipo_contribuicao` (autor principal, coa
 
 Regra de negócio: um médico atende muitos pacientes ao longo do tempo. Um paciente pode ser atendido por vários médicos (clínico geral, especialista, etc.). Cada atendimento tem data, diagnóstico e prescrição.
 
-```erDiagram
+```mermaid
+erDiagram
     MEDICO {
         int id_medico PK
         varchar nome
@@ -460,7 +469,8 @@ Para fixar: volte ao exemplo Cliente-Pedido e pense nas consequências práticas
 
 O quadro abaixo funciona como um cartão de referência que você pode consultar sempre que estiver lendo ou construindo um diagrama.
 
-```erDiagram
+```mermaid
+erDiagram
     ENTIDADE_A_1 ||--|| ENTIDADE_B_1 : "exatamente um para exatamente um"
     ENTIDADE_A_2 ||--o| ENTIDADE_B_2 : "exatamente um para zero ou um"
     ENTIDADE_A_3 ||--o{ ENTIDADE_B_3 : "exatamente um para zero ou muitos"
@@ -519,7 +529,8 @@ Aqui está o processo completo, consolidado em um fluxo que você pode aplicar a
 
 Analise o diagrama abaixo e responda às perguntas que se seguem.
 
-```erDiagram
+```mermaid
+erDiagram
     EDITORA {
         int id_editora PK
         varchar nome
@@ -570,7 +581,8 @@ Dadas as regras de negócio abaixo, construa o diagrama ER com a cardinalidade c
 
 **Gabarito:**
 
-```erDiagram
+```mermaid
+erDiagram
     PROFESSOR {
         int id_professor PK
         varchar nome
