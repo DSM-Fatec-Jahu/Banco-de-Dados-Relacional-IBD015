@@ -41,8 +41,6 @@ Ao final da disciplina, o aluno será capaz de:
 | Tipo | Horas |
 |---|---|
 | Carga Horária Semanal | 4 horas |
-| Carga Teórica | 0 horas |
-| Carga Prática | 4 horas |
 | **Carga Horária Semestral** | **80 horas** |
 
 ---
@@ -126,10 +124,10 @@ Todas as atividades avaliativas e exercícios práticos estão organizados na pa
 | # | Atividade | Descrição | Peso |
 |---|---|---|---|
 | T1 | [Modelagem E-commerce](./atividades/T1_Modelagem_Ecommerce.md) | Modelagem Conceitual, Lógica e DDL de um sistema de E-commerce | 2 pts |
-| P1 | [Avaliação P1](./atividades/P1_Avaliacao_Modelagem_SQL.md) | Prova individual sobre modelagem e SQL fundamental | 2 pts |
+| P1 | [Avaliação P1](./atividades/P1_Avaliacao_Modelagem_SQL.md) | Prova individual sobre modelagem e SQL fundamental | 3 pts |
 | T2 | [Projeto Interdisciplinar](./atividades/T2_Projeto_Interdisciplinar.md) | Sistema BD integrado ao projeto de Desenvolvimento Web II e Engenharia de Software II | 2 pts |
-| P2 | [Avaliação P2](./atividades/P2_Avaliacao_Avancada.md) | Prova individual sobre consultas avançadas e programação em BD | 2 pts |
-| R | [Avaliação Substitutiva](./atividades/R_Avaliacao_Substitutiva.md) | Substitui a menor nota entre P1 e P2 | — |
+| P2 | [Avaliação P2](./atividades/P2_Avaliacao_Avancada.md) | Prova individual sobre consultas avançadas e programação em BD | 3 pts |
+| R | [Avaliação Substitutiva](./atividades/R_Avaliacao_Substitutiva.md) | Substitui a menor nota entre P1 e P2 | 3 pts** |
 
 ---
 
