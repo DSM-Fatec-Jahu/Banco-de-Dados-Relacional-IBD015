@@ -1,0 +1,162 @@
+erDiagram
+    %% =====================================================
+    %% SISTEMA DE LOCADORA DE VEÍCULOS
+    %% Baseado exclusivamente no enunciado da Aula 2 (seção 5)
+    %% 
+    %% Conceitos aplicados do PDF:
+    %% - Entidades e Atributos (simples, composto, multivalorado, derivado)
+    %% - Relacionamento 1:1 (Cliente -> CNH)
+    %% - Relacionamento 1:N (Cliente -> Contrato, Veículo -> Contrato)
+    %% - Relacionamento N:M (Contrato -> Pagamento via tabela associativa)
+    %% - Generalização/Especialização MER (Pessoa -> Cliente)
+    %% =====================================================
+
+    %% -------------------------------------------------------
+    %% GENERALIZAÇÃO / ESPECIALIZAÇÃO (Conceito MER - Seção 4.1)
+    %% Pessoa é a entidade genérica (superclasse)
+    %% Cliente é a especialização (subclasse com atributos próprios)
+    %% Abordagem top-down: Pessoa se especializa em Cliente
+    %% -------------------------------------------------------
+
+    PESSOA {
+        int id PK "Chave Primária"
+        varchar nome "Atributo Simples"
+        varchar cpf UK "Atributo Simples - Único"
+        varchar email "Atributo Simples"
+        varchar tipo "Discriminador: CLIENTE"
+    }
+
+    %% -------------------------------------------------------
+    %% CLIENTE - Especialização de PESSOA (MER)
+    %% Herda id, nome, cpf, email de PESSOA
+    %% Possui atributos específicos do contexto de locação
+    %% -------------------------------------------------------
+
+    CLIENTE {
+        int cliente_id PK "Chave Primária"
+        int pessoa_id FK "Herança de PESSOA (1:1)"
+        varchar telefone "Atributo Multivalorado (pode ter vários)"
+        varchar rua "Atributo Composto - parte de Endereço"
+        varchar numero "Atributo Composto - parte de Endereço"
+        varchar cidade "Atributo Composto - parte de Endereço"
+        date data_cadastro "Atributo Simples"
+    }
+
+    %% -------------------------------------------------------
+    %% CNH - Relacionamento 1:1 com Cliente (Seção 3.1)
+    %% Cada cliente possui exatamente uma CNH
+    %% Cada CNH pertence a exatamente um cliente
+    %% Mesmo padrão do exemplo Funcionário-Crachá do PDF
+    %% -------------------------------------------------------
+
+    CNH {
+        int cnh_id PK "Chave Primária"
+        varchar numero_registro UK "Único"
+        varchar categoria "A, B, AB, C, D, E"
+        date data_validade "Atributo Simples"
+        int cliente_id FK "FK para CLIENTE (1:1)"
+    }
+
+    %% -------------------------------------------------------
+    %% VEÍCULO - Entidade principal da frota
+    %% Atributos derivados e simples conforme conceitos da Seção 2.2
+    %% -------------------------------------------------------
+
+    VEICULO {
+        int veiculo_id PK "Chave Primária"
+        varchar placa UK "Atributo Simples - Único"
+        varchar modelo "Atributo Simples"
+        varchar marca "Atributo Simples"
+        int ano "Atributo Simples"
+        varchar cor "Atributo Simples"
+        varchar categoria "Compacto, SUV, Sedan, etc"
+        decimal km_atual "Atributo Simples"
+        decimal valor_diaria "Atributo Simples"
+        varchar status "DISPONIVEL, LOCADO, MANUTENCAO"
+    }
+
+    %% -------------------------------------------------------
+    %% CONTRATO DE ALUGUEL - Entidade central
+    %% Relacionamento 1:N com Cliente (Seção 3.2)
+    %%   -> Um cliente faz vários contratos
+    %%   -> Cada contrato pertence a um único cliente
+    %%   (Mesmo padrão do exemplo Cliente-Pedido do PDF)
+    %%
+    %% Relacionamento 1:N com Veículo
+    %%   -> Um veículo aparece em vários contratos ao longo do tempo
+    %%   -> Cada contrato refere-se a um único veículo
+    %%
+    %% Contém atributo DERIVADO: valor_total (calculado)
+    %% -------------------------------------------------------
+
+    CONTRATO {
+        int contrato_id PK "Chave Primária"
+        int cliente_id FK "FK para CLIENTE (1:N)"
+        int veiculo_id FK "FK para VEICULO (1:N)"
+        date data_retirada "Atributo Simples"
+        date data_devolucao_prevista "Atributo Simples"
+        date data_devolucao_real "Atributo Simples"
+        decimal km_saida "Atributo Simples"
+        decimal km_devolucao "Atributo Simples"
+        decimal km_rodados "Atributo Derivado (devolucao - saida)"
+        int dias_contratados "Atributo Simples"
+        int dias_utilizados "Atributo Derivado"
+        decimal valor_diaria "Atributo Simples"
+        decimal valor_total "Atributo Derivado (diaria x dias)"
+        varchar status "ABERTO, FECHADO, CANCELADO"
+    }
+
+    %% -------------------------------------------------------
+    %% PAGAMENTO - Relacionamento N:M com CONTRATO (Seção 3.3)
+    %% Um contrato pode ter vários pagamentos (parcelas, caução, etc)
+    %% Um pagamento está vinculado a um contrato
+    %%
+    %% Para aplicar o conceito N:M do PDF (Seção 3.3):
+    %% Usamos a tabela intermediária CONTRATO_PAGAMENTO
+    %% como ponte entre CONTRATO e PAGAMENTO
+    %% (Mesmo padrão do exemplo Aluno-Matrícula-Disciplina)
+    %% -------------------------------------------------------
+
+    PAGAMENTO {
+        int pagamento_id PK "Chave Primária"
+        varchar forma_pagamento "Crédito, Débito, Dinheiro, PIX"
+        decimal valor "Atributo Simples"
+        date data_pagamento "Atributo Simples"
+        varchar status "PENDENTE, APROVADO, ESTORNADO"
+    }
+
+    CONTRATO_PAGAMENTO {
+        int contrato_pagamento_id PK "Chave Primária"
+        int contrato_id FK "FK para CONTRATO (PK/FK)"
+        int pagamento_id FK "FK para PAGAMENTO (PK/FK)"
+        varchar tipo "CAUCAO, PARCELA, FINAL, MULTA"
+        varchar descricao "Descrição do lançamento"
+    }
+
+    %% -------------------------------------------------------
+    %% RELACIONAMENTOS COM CARDINALIDADE EXPLÍCITA (min, max)
+    %% -------------------------------------------------------
+
+    %% Generalização/Especialização (MER - Seção 4.1)
+    %% Pessoa se especializa em Cliente (top-down)
+    PESSOA ||--|| CLIENTE : "especializa (1,1)"
+
+    %% Relacionamento 1:1 (Seção 3.1)
+    %% Mesmo padrão de Funcionário-Crachá do PDF
+    %% Cada cliente possui exatamente 1 CNH e vice-versa
+    CLIENTE ||--|| CNH : "possui (1,1)"
+
+    %% Relacionamento 1:N (Seção 3.2)
+    %% Mesmo padrão de Cliente-Pedido do PDF
+    %% Um cliente faz muitos contratos, cada contrato tem 1 cliente
+    CLIENTE ||--o{ CONTRATO : "realiza (1,N)"
+
+    %% Relacionamento 1:N (Seção 3.2)
+    %% Um veículo participa de muitos contratos ao longo do tempo
+    VEICULO ||--o{ CONTRATO : "locado em (1,N)"
+
+    %% Relacionamento N:M via tabela intermediária (Seção 3.3)
+    %% Mesmo padrão de Aluno-Matrícula-Disciplina do PDF
+    %% CONTRATO_PAGAMENTO é a tabela ponte
+    CONTRATO ||--|{ CONTRATO_PAGAMENTO : "gera (1,N)"
+    PAGAMENTO ||--|{ CONTRATO_PAGAMENTO : "vinculado (1,N)"
