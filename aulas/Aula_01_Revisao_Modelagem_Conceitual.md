@@ -17,7 +17,8 @@ Imagine que você foi contratado para construir um sistema de gerenciamento de u
 
 A modelagem passa por três grandes etapas, e é importante entender como elas se conectam:
 
-[Prompt para IA gerar imagem: "Three connected horizontal stages showing database modeling phases: 1) Conceptual Model with abstract shapes and entity symbols, 2) Logical Model with table structures and relationship lines, 3) Physical Model with server icons and SQL code snippets. Clean, educational infographic style with blue and white color scheme, labeled arrows connecting each stage."]
+![Fases da modelagem](../imgs/Aula_01_IMG_01.png)
+
 
 A **Modelagem Conceitual** é a primeira etapa — ela é independente de qualquer tecnologia ou banco de dados específico. Aqui, o objetivo é representar o mundo real de forma abstrata, compreensível tanto pelo desenvolvedor quanto pelo cliente. Pense nela como uma planta arquitetônica: antes de construir, você desenha.
 
@@ -79,7 +80,7 @@ Entender os tipos de atributos é fundamental para fazer uma modelagem precisa. 
 
 **Atributo Chave (ou Identificador):** é o atributo cujo valor identifica unicamente cada instância da entidade. Exemplo: `cpf` para Pessoa, `matricula` para Aluno. Na notação do MER, é sublinhado.
 
-[Prompt para IA gerar imagem: "Educational diagram showing the different types of database attributes in Entity-Relationship Model: Simple attribute (single oval), Composite attribute (oval with sub-ovals for 'endereço' split into 'rua', 'número', 'cidade', 'cep'), Multivalued attribute (double oval), Derived attribute (dashed oval), and Key attribute (oval with underlined text). Clean white background, blue outlines, labeled in Portuguese."]
+![Atributos](../imgs/Aula_01_IMG_02.png)
 
 ---
 
