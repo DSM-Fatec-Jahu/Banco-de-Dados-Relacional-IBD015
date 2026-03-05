@@ -17,7 +17,7 @@ Você deverá projetar e implementar o banco de dados da **StreamAll**, uma plat
 
 A entrega inclui dois produtos:
 
-1. **Diagrama Conceitual (MER):** Usando um arquivo mermaid, dbdiagrans, draw.io ou equivalente.
+1. **Diagrama Conceitual (MER):** Usando um arquivo mermaid, dbdiagrams, draw.io ou equivalente.
 2. **Script DDL completo e funcional:** Um Arquivo chamado trabalho.sql com seu nome completo sendo a primeira linha via comentário.
 
 > ⚠️ **A entrega deve ser feita pela atividade específica criada no Google Classroom da turma.** Não envie por e-mail nem por outros canais.
