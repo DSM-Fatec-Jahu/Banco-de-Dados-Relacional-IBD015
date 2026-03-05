@@ -83,7 +83,7 @@ Cada aula está organizada na pasta [`aulas/`](./aulas/) com conteúdo teórico,
 | [02](./aulas/Aula_02_Normalizacao.md) | Normalização | Dependências funcionais; 1ª, 2ª e 3ª Formas Normais; modelo conceitual ao lógico relacional |
 | [03](./aulas/Aula_03_SQL_DDL.md) | SQL — DDL: Definição de Estruturas | Comandos DDL (CREATE, ALTER, DROP); Tipos de dados; Restrições básicas (PK) |
 | [04](./aulas/Aula_04_SQL_DML.md) | SQL — DML: Manipulação de Dados | Comandos DML (INSERT, UPDATE, DELETE); Controle de transação básico |
-| [05](./aulas/Aula_05_Atividade_Modelagem_Ecommerce.md) | Atividade Prática — Modelagem E-commerce | Modelagem completa de um sistema de E-commerce (Conceitual, Lógico e DDL) |
+| [05](./aulas/Aula_05_Atividade_Modelagem.md) | Atividade Prática — Modelagem E-commerce | Modelagem completa de um sistema de E-commerce (Conceitual, Lógico e DDL) |
 
 ### Bloco 2 — Consultas e Visões
 
@@ -168,7 +168,7 @@ Todas as atividades avaliativas e exercícios práticos estão organizados na pa
 │   ├── Aula_02_Normalizacao.md
 │   ├── Aula_03_SQL_DDL.md
 │   ├── Aula_04_SQL_DML.md
-│   ├── Aula_05_Atividade_Modelagem_Ecommerce.md
+│   ├── Aula_05_Atividade_Modelagem.md
 │   ├── Aula_06_SQL_Consultas_Basicas.md
 │   ├── Aula_07_SQL_DQL_Agregacao.md
 │   ├── Aula_08_Joins_Subconsultas_Views.md
