@@ -67,7 +67,7 @@ WHERE  id_pessoa IN (SELECT cliente_id FROM pedidos GROUP BY cliente_id HAVING C
 INSERT IGNORE INTO categorias (nome) VALUES ('Eletrônicos');
 
 -- Atualiza o registro existente se houver conflito de PK ou UNIQUE
-INSERT INTO produtos (id_produto, nome, preco, estoque, id_categoria)
+INSERT INTO produtos (id_produto, nome, preco, estoque, categoria_id)
 VALUES (1, 'Notebook Pro', 3800.00, 10, 1)
 ON DUPLICATE KEY UPDATE
     preco   = VALUES(preco),
@@ -134,7 +134,7 @@ O `DELETE` remove linhas de uma tabela. Assim como o `UPDATE`, exige `WHERE` na 
 ```sql
 -- Remove um registro específico
 DELETE FROM itens_pedidos
-WHERE  id_pedido = 5 AND id_produto = 3;
+WHERE  pedido_id = 5 AND produto_id = 3;
 ```
 
 ### 3.2 DELETE com subquery

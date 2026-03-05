@@ -468,7 +468,7 @@ CREATE TABLE IF NOT EXISTS categorias (
 ```sql
 CREATE TABLE IF NOT EXISTS produtos (
     id_produto      INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-    id_categoria    INT UNSIGNED    NOT NULL,             -- FK para categorias
+    categoria_id    INT UNSIGNED    NOT NULL,             -- FK para categorias
     nome            VARCHAR(150)    NOT NULL,
     descricao       TEXT                NULL,
     preco           DECIMAL(10, 2)  NOT NULL,
@@ -477,7 +477,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     criado_em       TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT pk_produto         PRIMARY KEY (id_produto),
-    CONSTRAINT fk_produto_cat     FOREIGN KEY (id_categoria)
+    CONSTRAINT fk_produto_categoria FOREIGN KEY (categoria_id)
                                   REFERENCES categorias (id_categoria)
                                   ON DELETE RESTRICT
                                   ON UPDATE CASCADE,
@@ -541,21 +541,21 @@ CREATE TABLE IF NOT EXISTS pedidos (
 -- Tabela que resolve o relacionamento N:M entre pedidos e produtos
 -- Um pedido pode conter muitos produtos; um produto pode estar em muitos pedidos
 CREATE TABLE IF NOT EXISTS itens_pedidos (
-    id_pedido       INT UNSIGNED    NOT NULL,
-    id_produto      INT UNSIGNED    NOT NULL,
+    pedido_id       INT UNSIGNED    NOT NULL,
+    produto_id      INT UNSIGNED    NOT NULL,
     quantidade      INT UNSIGNED    NOT NULL,
     preco_unitario  DECIMAL(10, 2)  NOT NULL,  -- snapshot do preço no momento da compra
     desconto        DECIMAL(5, 2)   NOT NULL DEFAULT 0.00,
 
     -- Chave primária composta pelas duas FKs
-    CONSTRAINT pk_item_pedido PRIMARY KEY (id_pedido, id_produto),
+    CONSTRAINT pk_item_pedido PRIMARY KEY (pedido_id, produto_id),
 
-    CONSTRAINT fk_item_pedido   FOREIGN KEY (id_pedido)
-                                REFERENCES pedidos (id_produto)
+    CONSTRAINT fk_item_pedido   FOREIGN KEY (pedido_id)
+                                REFERENCES pedidos (id_pedido)
                                 ON DELETE CASCADE    -- excluir pedido exclui seus itens
                                 ON UPDATE CASCADE,
 
-    CONSTRAINT fk_item_produto  FOREIGN KEY (id_produto)
+    CONSTRAINT fk_item_produto  FOREIGN KEY (produto_id)
                                 REFERENCES produtos (id_produto)
                                 ON DELETE RESTRICT  -- não deixa excluir produto que está em pedido
                                 ON UPDATE CASCADE,
@@ -889,7 +889,7 @@ CREATE TABLE IF NOT EXISTS pessoas (
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS enderecos (
     id_endereco  INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    id_pessoa    INT UNSIGNED  NOT NULL,
+    pessoa_id    INT UNSIGNED  NOT NULL,
     logradouro   VARCHAR(150)  NOT NULL,
     numero       VARCHAR(10)   NOT NULL,
     complemento  VARCHAR(50)       NULL,
@@ -900,7 +900,7 @@ CREATE TABLE IF NOT EXISTS enderecos (
     principal    TINYINT(1)    NOT NULL DEFAULT 0 COMMENT '1 = endereço principal',
 
     CONSTRAINT pk_endereco       PRIMARY KEY (id_endereco),
-    CONSTRAINT fk_endereco_pessoa FOREIGN KEY (id_pessoa)
+    CONSTRAINT fk_endereco_pessoa FOREIGN KEY (pessoa_id)
                                   REFERENCES pessoas (id_pessoa)
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
@@ -931,7 +931,7 @@ CREATE TABLE IF NOT EXISTS categorias (
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS produtos (
     id_produto    INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-    id_categoria  INT UNSIGNED    NOT NULL,
+    categoria_id  INT UNSIGNED    NOT NULL,
     nome          VARCHAR(150)    NOT NULL,
     descricao     TEXT                NULL,
     preco         DECIMAL(10, 2)  NOT NULL,
@@ -942,7 +942,7 @@ CREATE TABLE IF NOT EXISTS produtos (
                                            ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT pk_produto          PRIMARY KEY (id_produto),
-    CONSTRAINT fk_produto_categoria FOREIGN KEY (id_categoria)
+    CONSTRAINT fk_produto_categoria FOREIGN KEY (categoria_id)
                                     REFERENCES categorias (id_categoria)
                                     ON DELETE RESTRICT
                                     ON UPDATE CASCADE,
@@ -999,18 +999,18 @@ CREATE TABLE IF NOT EXISTS pedidos (
 -- Armazena snapshot do preço no momento da compra
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS itens_pedidos (
-    id_pedido      INT UNSIGNED    NOT NULL,
-    id_produto     INT UNSIGNED    NOT NULL,
+    pedido_id      INT UNSIGNED    NOT NULL,
+    produto_id     INT UNSIGNED    NOT NULL,
     quantidade     INT UNSIGNED    NOT NULL,
     preco_unitario DECIMAL(10, 2)  NOT NULL COMMENT 'Preço no momento da compra',
     desconto       DECIMAL(5, 2)   NOT NULL DEFAULT 0.00 COMMENT 'Percentual de desconto',
 
-    CONSTRAINT pk_item_pedido   PRIMARY KEY (id_pedido, id_produto),
-    CONSTRAINT fk_item_pedido   FOREIGN KEY (id_pedido)
+    CONSTRAINT pk_item_pedido   PRIMARY KEY (pedido_id, produto_id),
+    CONSTRAINT fk_item_pedido   FOREIGN KEY (pedido_id)
                                 REFERENCES pedidos (id_pedido)
                                 ON DELETE CASCADE
                                 ON UPDATE CASCADE,
-    CONSTRAINT fk_item_produto  FOREIGN KEY (id_produto)
+    CONSTRAINT fk_item_produto  FOREIGN KEY (produto_id)
                                 REFERENCES produtos (id_produto)
                                 ON DELETE RESTRICT
                                 ON UPDATE CASCADE,
@@ -1039,19 +1039,19 @@ CREATE TABLE Produto (
 );
 ```
 
-**Gabarito:** os erros são: nome da tabela em singular e com inicial maiúscula (deve ser `produtos`); `idProduto` usa camelCase (deve ser `id_produto`); `INT(11)` está depreciado (use `INT`); `NomeProduto` mistura maiúsculas (deve ser `nome`); `Preco` com maiúscula (deve ser `preco`); `FLOAT` inapropriado para preço (use `DECIMAL(10,2)`); `ID_CATEGORIA` usa maiúsculas e underscore no início (deve ser `id_categoria`); o nome da FK não segue o padrão semântico; faltam `NOT NULL` nas colunas obrigatórias; falta `ENGINE=InnoDB` e `DEFAULT CHARSET`.
+**Gabarito:** os erros são: nome da tabela em singular e com inicial maiúscula (deve ser `produtos`); `idProduto` usa camelCase (deve ser `id_produto`); `INT(11)` está depreciado (use `INT`); `NomeProduto` mistura maiúsculas (deve ser `nome`); `Preco` com maiúscula (deve ser `preco`); `FLOAT` inapropriado para preço (use `DECIMAL(10,2)`); `ID_CATEGORIA` mistura maiúsculas (deve ser `categoria_id` conforme Regra 6); o nome da FK não segue o padrão semântico; faltam `NOT NULL` nas colunas obrigatórias; falta `ENGINE=InnoDB` e `DEFAULT CHARSET`.
 
 Versão corrigida:
 
 ```sql
 CREATE TABLE IF NOT EXISTS produtos (
     id_produto   INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-    id_categoria INT UNSIGNED    NOT NULL,
+    categoria_id INT UNSIGNED    NOT NULL,
     nome         VARCHAR(100)    NOT NULL,
     preco        DECIMAL(10, 2)  NOT NULL,
 
     CONSTRAINT pk_produto          PRIMARY KEY (id_produto),
-    CONSTRAINT fk_produto_categoria FOREIGN KEY (id_categoria)
+    CONSTRAINT fk_produto_categoria FOREIGN KEY (categoria_id)
                                     REFERENCES categorias (id_categoria)
                                     ON DELETE RESTRICT
                                     ON UPDATE CASCADE,

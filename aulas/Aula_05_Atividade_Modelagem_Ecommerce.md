@@ -64,14 +64,14 @@ erDiagram
 
     telefones {
         int id_telefone PK
-        int id_pessoa FK
+        int pessoa_id FK
         char numero
         varchar tipo
     }
 
     enderecos {
         int id_endereco PK
-        int id_pessoa FK
+        int pessoa_id FK
         varchar logradouro
         varchar bairro
         varchar cidade
@@ -88,7 +88,7 @@ erDiagram
 
     produtos {
         int id_produto PK
-        int id_categoria FK
+        int categoria_id FK
         varchar nome
         text descricao
         decimal preco
@@ -98,7 +98,7 @@ erDiagram
 
     imagens_produtos {
         int id_imagem PK
-        int id_produto FK
+        int produto_id FK
         varchar url
         tinyint principal
     }
@@ -125,8 +125,8 @@ erDiagram
     }
 
     itens_pedidos {
-        int id_pedido PK_FK
-        int id_produto PK_FK
+        int pedido_id PK_FK
+        int produto_id PK_FK
         int quantidade
         decimal preco_unitario
         decimal desconto
@@ -135,7 +135,7 @@ erDiagram
     avaliacoes {
         int id_avaliacao PK
         int cliente_id FK
-        int id_produto FK
+        int produto_id FK
         tinyint nota
         text comentario
         timestamp criado_em
@@ -161,14 +161,14 @@ erDiagram
 
 ```
 pessoas          (id_pessoa PK, nome, cpf UNIQUE, email UNIQUE, data_nascimento)
-telefones        (id_telefone PK, id_pessoa FK→pessoas, numero, tipo)
-enderecos        (id_endereco PK, id_pessoa FK→pessoas, logradouro, numero,
+telefones        (id_telefone PK, pessoa_id FK→pessoas, numero, tipo)
+enderecos        (id_endereco PK, pessoa_id FK→pessoas, logradouro, numero,
                   complemento, bairro, cidade, estado, cep, principal)
 
 categorias       (id_categoria PK, nome UNIQUE, descricao, ativa)
-produtos         (id_produto PK, id_categoria FK→categorias, nome, descricao,
+produtos         (id_produto PK, categoria_id FK→categorias, nome, descricao,
                   preco, estoque, ativo)
-imagens_produtos (id_imagem PK, id_produto FK→produtos, url, principal)
+imagens_produtos (id_imagem PK, produto_id FK→produtos, url, principal)
 
 cupons           (id_cupom PK, codigo UNIQUE, tipo_desconto, valor_desconto,
                   validade, max_usos, usos_realizados)
@@ -177,12 +177,12 @@ pedidos          (id_pedido PK, cliente_id FK→pessoas, funcionario_id FK→pes
                   endereco_id FK→enderecos NULL, cupom_id FK→cupons NULL,
                   data_pedido, status, valor_total)
 
-itens_pedidos    (id_pedido PK/FK→pedidos, id_produto PK/FK→produtos,
+itens_pedidos    (pedido_id PK/FK→pedidos, produto_id PK/FK→produtos,
                   quantidade, preco_unitario, desconto)
 
-avaliacoes       (id_avaliacao PK, cliente_id FK→pessoas, id_produto FK→produtos,
+avaliacoes       (id_avaliacao PK, cliente_id FK→pessoas, produto_id FK→produtos,
                   nota, comentario, criado_em,
-                  UNIQUE(cliente_id, id_produto))
+                  UNIQUE(cliente_id, produto_id))
 ```
 
 ---
@@ -217,18 +217,18 @@ CREATE TABLE IF NOT EXISTS pessoas (
 -- ---------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS telefones (
     id_telefone INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    id_pessoa   INT UNSIGNED NOT NULL,
+    pessoa_id   INT UNSIGNED NOT NULL,
     numero      CHAR(11)     NOT NULL,
     tipo        ENUM('celular','residencial','comercial') NOT NULL DEFAULT 'celular',
     CONSTRAINT pk_telefone        PRIMARY KEY (id_telefone),
-    CONSTRAINT fk_telefone_pessoa FOREIGN KEY (id_pessoa)
+    CONSTRAINT fk_telefone_pessoa FOREIGN KEY (pessoa_id)
         REFERENCES pessoas (id_pessoa) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS enderecos (
     id_endereco INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    id_pessoa   INT UNSIGNED  NOT NULL,
+    pessoa_id   INT UNSIGNED  NOT NULL,
     logradouro  VARCHAR(150)  NOT NULL,
     numero      VARCHAR(10)   NOT NULL,
     complemento VARCHAR(50)       NULL,
@@ -238,7 +238,7 @@ CREATE TABLE IF NOT EXISTS enderecos (
     cep         CHAR(8)       NOT NULL,
     principal   TINYINT(1)    NOT NULL DEFAULT 0,
     CONSTRAINT pk_endereco        PRIMARY KEY (id_endereco),
-    CONSTRAINT fk_endereco_pessoa FOREIGN KEY (id_pessoa)
+    CONSTRAINT fk_endereco_pessoa FOREIGN KEY (pessoa_id)
         REFERENCES pessoas (id_pessoa) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS categorias (
 -- ---------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS produtos (
     id_produto    INT UNSIGNED   NOT NULL AUTO_INCREMENT,
-    id_categoria  INT UNSIGNED   NOT NULL,
+    categoria_id  INT UNSIGNED   NOT NULL,
     nome          VARCHAR(150)   NOT NULL,
     descricao     TEXT               NULL,
     preco         DECIMAL(10,2)  NOT NULL,
@@ -263,7 +263,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     ativo         TINYINT(1)     NOT NULL DEFAULT 1,
     criado_em     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_produto          PRIMARY KEY (id_produto),
-    CONSTRAINT fk_produto_cat      FOREIGN KEY (id_categoria)
+    CONSTRAINT fk_produto_cat      FOREIGN KEY (categoria_id)
         REFERENCES categorias (id_categoria) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_produto_preco    CHECK (preco >= 0),
     CONSTRAINT ck_produto_estoque  CHECK (estoque >= 0)
@@ -272,11 +272,11 @@ CREATE TABLE IF NOT EXISTS produtos (
 -- ---------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS imagens_produtos (
     id_imagem   INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    id_produto  INT UNSIGNED  NOT NULL,
+    produto_id  INT UNSIGNED  NOT NULL,
     url         VARCHAR(500)  NOT NULL,
     principal   TINYINT(1)    NOT NULL DEFAULT 0,
     CONSTRAINT pk_imagem         PRIMARY KEY (id_imagem),
-    CONSTRAINT fk_imagem_produto FOREIGN KEY (id_produto)
+    CONSTRAINT fk_imagem_produto FOREIGN KEY (produto_id)
         REFERENCES produtos (id_produto) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -321,15 +321,15 @@ CREATE TABLE IF NOT EXISTS pedidos (
 
 -- ---------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS itens_pedidos (
-    id_pedido      INT UNSIGNED   NOT NULL,
-    id_produto     INT UNSIGNED   NOT NULL,
+    pedido_id      INT UNSIGNED   NOT NULL,
+    produto_id     INT UNSIGNED   NOT NULL,
     quantidade     INT UNSIGNED   NOT NULL,
     preco_unitario DECIMAL(10,2)  NOT NULL,
     desconto       DECIMAL(5,2)   NOT NULL DEFAULT 0.00,
-    CONSTRAINT pk_item_pedido   PRIMARY KEY (id_pedido, id_produto),
-    CONSTRAINT fk_item_pedido   FOREIGN KEY (id_pedido)
+    CONSTRAINT pk_item_pedido   PRIMARY KEY (pedido_id, produto_id),
+    CONSTRAINT fk_item_pedido   FOREIGN KEY (pedido_id)
         REFERENCES pedidos  (id_pedido)  ON DELETE CASCADE  ON UPDATE CASCADE,
-    CONSTRAINT fk_item_produto  FOREIGN KEY (id_produto)
+    CONSTRAINT fk_item_produto  FOREIGN KEY (produto_id)
         REFERENCES produtos (id_produto) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_item_qtd      CHECK (quantidade > 0),
     CONSTRAINT ck_item_preco    CHECK (preco_unitario >= 0),
@@ -340,15 +340,15 @@ CREATE TABLE IF NOT EXISTS itens_pedidos (
 CREATE TABLE IF NOT EXISTS avaliacoes (
     id_avaliacao INT UNSIGNED NOT NULL AUTO_INCREMENT,
     cliente_id   INT UNSIGNED NOT NULL,
-    id_produto   INT UNSIGNED NOT NULL,
+    produto_id   INT UNSIGNED NOT NULL,
     nota         TINYINT      NOT NULL,
     comentario   TEXT             NULL,
     criado_em    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_avaliacao        PRIMARY KEY (id_avaliacao),
-    CONSTRAINT uq_avaliacao        UNIQUE (cliente_id, id_produto),
+    CONSTRAINT uq_avaliacao        UNIQUE (cliente_id, produto_id),
     CONSTRAINT fk_aval_cliente     FOREIGN KEY (cliente_id)
         REFERENCES pessoas  (id_pessoa)  ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_aval_produto     FOREIGN KEY (id_produto)
+    CONSTRAINT fk_aval_produto     FOREIGN KEY (produto_id)
         REFERENCES produtos (id_produto) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT ck_aval_nota        CHECK (nota BETWEEN 1 AND 5)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
