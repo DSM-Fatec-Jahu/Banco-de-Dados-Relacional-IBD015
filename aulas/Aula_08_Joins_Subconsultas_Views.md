@@ -40,7 +40,7 @@ SELECT
     p.preco,
     c.nome              AS categoria
 FROM   produtos p
-INNER JOIN categorias c ON c.id_categoria = p.id_categoria
+INNER JOIN categorias c ON c.id_categoria = p.categoria_id
 ORDER BY c.nome, p.nome;
 
 -- Pedidos com dados do cliente
@@ -98,13 +98,13 @@ SELECT
     p.nome              AS produto,
     p.preco
 FROM   produtos p
-RIGHT JOIN categorias c ON c.id_categoria = p.id_categoria
+RIGHT JOIN categorias c ON c.id_categoria = p.categoria_id
 ORDER BY c.nome;
 
 -- Categorias SEM produtos cadastrados:
 SELECT c.nome AS categoria_vazia
 FROM   produtos p
-RIGHT JOIN categorias c ON c.id_categoria = p.id_categoria
+RIGHT JOIN categorias c ON c.id_categoria = p.categoria_id
 WHERE  p.id_produto IS NULL;
 ```
 
@@ -125,8 +125,8 @@ SELECT
 FROM   pedidos pd
 INNER JOIN pessoas   cl ON cl.id_pessoa  = pd.cliente_id
 LEFT  JOIN pessoas   fn ON fn.id_pessoa  = pd.funcionario_id
-INNER JOIN itens_pedidos ip ON ip.id_pedido  = pd.id_pedido
-INNER JOIN produtos  pr ON pr.id_produto = ip.id_produto
+INNER JOIN itens_pedidos ip ON ip.pedido_id  = pd.id_pedido
+INNER JOIN produtos  pr ON pr.id_produto = ip.produto_id
 ORDER BY pd.id_pedido, pr.nome;
 ```
 
@@ -228,8 +228,8 @@ SELECT * FROM vw_produtos_catalogo WHERE preco < 500 ORDER BY preco;
 -- Views podem ser usadas em JOINs
 SELECT v.cliente, v.data_pedido, p.nome AS produto
 FROM   vw_pedidos_completos v
-JOIN   itens_pedidos ip ON ip.id_pedido   = v.id_pedido
-JOIN   produtos      p  ON p.id_produto   = ip.id_produto;
+JOIN   itens_pedidos ip ON ip.pedido_id   = v.id_pedido
+JOIN   produtos      p  ON p.id_produto   = ip.produto_id;
 ```
 
 ### 7.3 Gerenciando Views

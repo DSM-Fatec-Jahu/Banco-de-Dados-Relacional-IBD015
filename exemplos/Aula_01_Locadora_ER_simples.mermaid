@@ -18,8 +18,8 @@ erDiagram
     %% Abordagem top-down: Pessoa se especializa em Cliente
     %% -------------------------------------------------------
 
-    PESSOA {
-        int id PK "Chave Primária"
+    PESSOAS {
+        int id_pessoa PK "Chave Primária"
         varchar nome "Atributo Simples"
         varchar cpf UK "Atributo Simples - Único"
         varchar email "Atributo Simples"
@@ -32,9 +32,9 @@ erDiagram
     %% Possui atributos específicos do contexto de locação
     %% -------------------------------------------------------
 
-    CLIENTE {
-        int cliente_id PK "Chave Primária"
-        int pessoa_id FK "Herança de PESSOA (1:1)"
+    CLIENTES {
+        int id_cliente PK "Chave Primária"
+        int pessoa_id FK "Herança de PESSOAS (1:1)"
         varchar telefone "Atributo Multivalorado (pode ter vários)"
         varchar rua "Atributo Composto - parte de Endereço"
         varchar numero "Atributo Composto - parte de Endereço"
@@ -49,12 +49,12 @@ erDiagram
     %% Mesmo padrão do exemplo Funcionário-Crachá do PDF
     %% -------------------------------------------------------
 
-    CNH {
-        int cnh_id PK "Chave Primária"
+    CNHS {
+        int id_cnh PK "Chave Primária"
         varchar numero_registro UK "Único"
         varchar categoria "A, B, AB, C, D, E"
         date data_validade "Atributo Simples"
-        int cliente_id FK "FK para CLIENTE (1:1)"
+        int cliente_id FK "FK para CLIENTES (1:1)"
     }
 
     %% -------------------------------------------------------
@@ -62,8 +62,8 @@ erDiagram
     %% Atributos derivados e simples conforme conceitos da Seção 2.2
     %% -------------------------------------------------------
 
-    VEICULO {
-        int veiculo_id PK "Chave Primária"
+    VEICULOS {
+        int id_veiculo PK "Chave Primária"
         varchar placa UK "Atributo Simples - Único"
         varchar modelo "Atributo Simples"
         varchar marca "Atributo Simples"
@@ -89,10 +89,10 @@ erDiagram
     %% Contém atributo DERIVADO: valor_total (calculado)
     %% -------------------------------------------------------
 
-    CONTRATO {
-        int contrato_id PK "Chave Primária"
-        int cliente_id FK "FK para CLIENTE (1:N)"
-        int veiculo_id FK "FK para VEICULO (1:N)"
+    CONTRATOS {
+        int id_contrato PK "Chave Primária"
+        int cliente_id FK "FK para CLIENTES (1:N)"
+        int veiculo_id FK "FK para VEICULOS (1:N)"
         date data_retirada "Atributo Simples"
         date data_devolucao_prevista "Atributo Simples"
         date data_devolucao_real "Atributo Simples"
@@ -117,18 +117,18 @@ erDiagram
     %% (Mesmo padrão do exemplo Aluno-Matrícula-Disciplina)
     %% -------------------------------------------------------
 
-    PAGAMENTO {
-        int pagamento_id PK "Chave Primária"
+    PAGAMENTOS {
+        int id_pagamento PK "Chave Primária"
         varchar forma_pagamento "Crédito, Débito, Dinheiro, PIX"
         decimal valor "Atributo Simples"
         date data_pagamento "Atributo Simples"
         varchar status "PENDENTE, APROVADO, ESTORNADO"
     }
 
-    CONTRATO_PAGAMENTO {
-        int contrato_pagamento_id PK "Chave Primária"
-        int contrato_id FK "FK para CONTRATO (PK/FK)"
-        int pagamento_id FK "FK para PAGAMENTO (PK/FK)"
+    CONTRATOS_PAGAMENTOS {
+        int id_contrato_pagamento PK "Chave Primária"
+        int contrato_id FK "FK para CONTRATOS (PK/FK)"
+        int pagamento_id FK "FK para PAGAMENTOS (PK/FK)"
         varchar tipo "CAUCAO, PARCELA, FINAL, MULTA"
         varchar descricao "Descrição do lançamento"
     }
@@ -139,24 +139,24 @@ erDiagram
 
     %% Generalização/Especialização (MER - Seção 4.1)
     %% Pessoa se especializa em Cliente (top-down)
-    PESSOA ||--|| CLIENTE : "especializa (1,1)"
+    PESSOAS ||--|| CLIENTES : "especializa (1,1)"
 
     %% Relacionamento 1:1 (Seção 3.1)
     %% Mesmo padrão de Funcionário-Crachá do PDF
     %% Cada cliente possui exatamente 1 CNH e vice-versa
-    CLIENTE ||--|| CNH : "possui (1,1)"
+    CLIENTES ||--|| CNHS : "possui (1,1)"
 
     %% Relacionamento 1:N (Seção 3.2)
     %% Mesmo padrão de Cliente-Pedido do PDF
     %% Um cliente faz muitos contratos, cada contrato tem 1 cliente
-    CLIENTE ||--o{ CONTRATO : "realiza (1,N)"
+    CLIENTES ||--o{ CONTRATOS : "realiza (1,N)"
 
     %% Relacionamento 1:N (Seção 3.2)
     %% Um veículo participa de muitos contratos ao longo do tempo
-    VEICULO ||--o{ CONTRATO : "locado em (1,N)"
+    VEICULOS ||--o{ CONTRATOS : "locado em (1,N)"
 
     %% Relacionamento N:M via tabela intermediária (Seção 3.3)
     %% Mesmo padrão de Aluno-Matrícula-Disciplina do PDF
-    %% CONTRATO_PAGAMENTO é a tabela ponte
-    CONTRATO ||--|{ CONTRATO_PAGAMENTO : "gera (1,N)"
-    PAGAMENTO ||--|{ CONTRATO_PAGAMENTO : "vinculado (1,N)"
+    %% CONTRATOS_PAGAMENTOS é a tabela ponte
+    CONTRATOS ||--|{ CONTRATOS_PAGAMENTOS : "gera (1,N)"
+    PAGAMENTOS ||--|{ CONTRATOS_PAGAMENTOS : "vinculado (1,N)"

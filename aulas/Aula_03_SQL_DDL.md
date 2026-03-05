@@ -618,13 +618,13 @@ A FK garante a **integridade referencial** — impede que exista um valor na col
 -- Exemplos comentados de cada cenário:
 
 -- CASCADE em DELETE: excluir um pedido remove seus itens automaticamente
-CONSTRAINT fk_item_pedido FOREIGN KEY (id_pedido)
+CONSTRAINT fk_item_pedido FOREIGN KEY (pedido_id)
     REFERENCES pedidos (id_pedido)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
 
 -- RESTRICT em DELETE: não deixa excluir uma categoria que tem produtos
-CONSTRAINT fk_produto_categoria FOREIGN KEY (id_categoria)
+CONSTRAINT fk_produto_categoria FOREIGN KEY (categoria_id)
     REFERENCES categorias (id_categoria)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,

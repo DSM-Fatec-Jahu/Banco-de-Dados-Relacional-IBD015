@@ -71,7 +71,7 @@ Impede a operação no pai se existirem filhos vinculados. A verificação ocorr
 ```sql
 -- Uma categoria não pode ser excluída se tiver produtos
 -- Um produto não pode ser excluído se tiver itens em pedidos
-CONSTRAINT fk_produto_cat FOREIGN KEY (id_categoria)
+CONSTRAINT fk_produto_cat FOREIGN KEY (categoria_id)
     REFERENCES categorias (id_categoria)
     ON DELETE RESTRICT
     ON UPDATE CASCADE
@@ -85,7 +85,7 @@ Propaga a operação do pai para todos os filhos.
 
 ```sql
 -- Excluir um pedido automaticamente exclui seus itens
-CONSTRAINT fk_item_pedido FOREIGN KEY (id_pedido)
+CONSTRAINT fk_item_pedido FOREIGN KEY (pedido_id)
     REFERENCES pedidos (id_pedido)
     ON DELETE CASCADE
     ON UPDATE CASCADE

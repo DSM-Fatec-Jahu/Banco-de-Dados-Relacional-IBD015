@@ -255,7 +255,7 @@ BEGIN
     INSERT INTO pedidos (cliente_id, status, valor_total)
     VALUES (p_cliente_id, 'pendente', 0.00);
 
-    INSERT INTO itens_pedidos (id_pedido, id_produto, quantidade, preco_unitario)
+    INSERT INTO itens_pedidos (pedido_id, produto_id, quantidade, preco_unitario)
     SELECT LAST_INSERT_ID(), id_produto, p_quantidade, preco
     FROM   produtos
     WHERE  id_produto = p_id_produto;
@@ -265,7 +265,7 @@ BEGIN
     SET    valor_total = (
         SELECT SUM(quantidade * preco_unitario)
         FROM   itens_pedidos
-        WHERE  id_pedido = LAST_INSERT_ID()
+        WHERE  pedido_id = LAST_INSERT_ID()
     )
     WHERE  id_pedido = LAST_INSERT_ID();
 

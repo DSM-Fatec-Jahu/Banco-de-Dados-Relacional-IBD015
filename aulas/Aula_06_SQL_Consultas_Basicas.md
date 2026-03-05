@@ -73,7 +73,7 @@ SELECT DISTINCT estado, cidade FROM enderecos ORDER BY estado, cidade;
 ```sql
 -- Igualdade e diferença
 SELECT * FROM produtos WHERE ativo = 1;
-SELECT * FROM produtos WHERE id_categoria <> 2;  -- diferente
+SELECT * FROM produtos WHERE categoria_id <> 2;  -- diferente
 
 -- Comparações numéricas
 SELECT nome, preco FROM produtos WHERE preco > 500.00;
@@ -106,7 +106,7 @@ SELECT nome, status FROM pedidos
 WHERE  status IN ('confirmado', 'em_separacao', 'enviado');
 
 -- NOT IN — exclui os valores da lista
-SELECT nome FROM categorias WHERE id_categoria NOT IN (1, 3, 5);
+SELECT nome FROM produtos WHERE categoria_id NOT IN (1, 3, 5);
 ```
 
 ### 2.4 LIKE — busca por padrão
@@ -145,9 +145,9 @@ SELECT nome, preco FROM produtos ORDER BY preco ASC;
 SELECT nome, preco FROM produtos ORDER BY preco DESC;
 
 -- Múltiplos critérios de ordenação
-SELECT nome, id_categoria, preco
+SELECT nome, categoria_id, preco
 FROM   produtos
-ORDER BY id_categoria ASC, preco DESC;
+ORDER BY categoria_id ASC, preco DESC;
 
 -- Ordenando por alias ou posição da coluna (posição não recomendada em código mantido)
 SELECT nome AS produto, preco AS valor

@@ -163,7 +163,7 @@ BEGIN
     DECLARE done         INT DEFAULT 0;
 
     DECLARE cur CURSOR FOR
-        SELECT id_produto, quantidade FROM itens_pedidos WHERE id_pedido = p_id_pedido;
+        SELECT produto_id, quantidade FROM itens_pedidos WHERE pedido_id = p_id_pedido;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN

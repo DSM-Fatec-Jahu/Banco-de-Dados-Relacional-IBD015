@@ -200,7 +200,7 @@
 
         <div class="concept-box">
             <strong>Generalização / Especialização (MER)</strong><br>
-            A entidade <strong>PESSOA</strong> é a superclasse que se especializa em <strong>CLIENTE</strong> e <strong>FUNCIONÁRIO</strong> (abordagem top-down). Ambos herdam atributos comuns (nome, CPF, email, endereço) e possuem atributos específicos. O discriminador é o campo <code>tipo_pessoa</code>.
+            A entidade <strong>PESSOAS</strong> é a superclasse que se especializa em <strong>CLIENTES</strong> e <strong>FUNCIONARIOS</strong> (abordagem top-down). Ambos herdam atributos comuns (nome, CPF, email, endereço) e possuem atributos específicos. O discriminador é o campo <code>tipo_pessoa</code>.
         </div>
 
         <div class="concept-box green">
@@ -210,8 +210,8 @@
 
         <div class="concept-box orange">
             <strong>Relacionamentos com Cardinalidade (mín, máx)</strong><br>
-            <strong>1:1</strong> — PESSOA ↔ CNH (cada pessoa possui no máximo 1 CNH) | 
-            <strong>1:N</strong> — CLIENTE ↔ CONTRATO (um cliente faz vários contratos) | 
+            <strong>1:1</strong> — PESSOAS ↔ CNHS (cada pessoa possui no máximo 1 CNH) | 
+            <strong>1:N</strong> — CLIENTES ↔ CONTRATOS (um cliente faz vários contratos) | 
             <strong>N:M</strong> — CONTRATO ↔ ACESSÓRIO (via tabela CONTRATO_ACESSORIO) e CONTRATO ↔ PROTEÇÃO (via CONTRATO_PROTECAO).
         </div>
     </div>
@@ -225,8 +225,8 @@
             <pre class="mermaid">
 erDiagram
 
-    PESSOA {
-        int pessoa_id PK
+    PESSOAS {
+        int id_pessoa PK
         varchar nome_completo
         varchar cpf UK
         varchar rg
@@ -240,8 +240,8 @@ erDiagram
         boolean ativo
     }
 
-    ENDERECO {
-        int endereco_id PK
+    ENDERECOS {
+        int id_endereco PK
         int pessoa_id FK
         varchar cep
         varchar logradouro
@@ -254,8 +254,8 @@ erDiagram
         boolean endereco_principal
     }
 
-    CLIENTE {
-        int cliente_id PK
+    CLIENTES {
+        int id_cliente PK
         int pessoa_id FK
         varchar tipo_cliente
         varchar cnpj UK
@@ -267,8 +267,8 @@ erDiagram
         varchar origem_cadastro
     }
 
-    FUNCIONARIO {
-        int funcionario_id PK
+    FUNCIONARIOS {
+        int id_funcionario PK
         int pessoa_id FK
         int filial_id FK
         int cargo_id FK
@@ -280,16 +280,16 @@ erDiagram
         varchar status
     }
 
-    CARGO {
-        int cargo_id PK
+    CARGOS {
+        int id_cargo PK
         varchar nome_cargo
         varchar departamento
         decimal piso_salarial
         decimal teto_salarial
     }
 
-    CNH {
-        int cnh_id PK
+    CNHS {
+        int id_cnh PK
         int pessoa_id FK
         varchar numero_registro UK
         varchar categoria
@@ -298,8 +298,8 @@ erDiagram
         varchar status
     }
 
-    FILIAL {
-        int filial_id PK
+    FILIAIS {
+        int id_filial PK
         varchar cnpj UK
         varchar nome_fantasia
         varchar tipo_filial
@@ -308,12 +308,12 @@ erDiagram
         decimal latitude
         decimal longitude
         boolean opera_24h
-        int gerente_id FK
+        int funcionario_gerente_id FK
         varchar status
     }
 
-    CATEGORIA_VEICULO {
-        int categoria_id PK
+    CATEGORIAS_VEICULO {
+        int id_categoria PK
         varchar nome
         decimal diaria_base
         decimal valor_km_excedente
@@ -322,15 +322,15 @@ erDiagram
         boolean ativo
     }
 
-    MARCA {
-        int marca_id PK
+    MARCAS {
+        int id_marca PK
         varchar nome
         varchar pais_origem
         boolean ativo
     }
 
-    MODELO {
-        int modelo_id PK
+    MODELOS {
+        int id_modelo PK
         int marca_id FK
         int categoria_id FK
         varchar nome
@@ -341,8 +341,8 @@ erDiagram
         decimal potencia_cv
     }
 
-    VEICULO {
-        int veiculo_id PK
+    VEICULOS {
+        int id_veiculo PK
         int modelo_id FK
         int filial_atual_id FK
         varchar placa UK
@@ -357,23 +357,23 @@ erDiagram
         varchar status
     }
 
-    ACESSORIO {
-        int acessorio_id PK
+    ACESSORIOS {
+        int id_acessorio PK
         varchar nome
         decimal valor_diaria
         varchar tipo
         boolean ativo
     }
 
-    ACESSORIO_VEICULO {
-        int acessorio_veiculo_id PK
+    ACESSORIOS_VEICULO {
+        int id_acessorio_veiculo PK
         int veiculo_id FK
         int acessorio_id FK
         date data_instalacao
     }
 
-    RESERVA {
-        int reserva_id PK
+    RESERVAS {
+        int id_reserva PK
         int cliente_id FK
         int categoria_id FK
         int filial_retirada_id FK
@@ -386,13 +386,13 @@ erDiagram
         varchar status
     }
 
-    CONTRATO {
-        int contrato_id PK
+    CONTRATOS {
+        int id_contrato PK
         int cliente_id FK
         int veiculo_id FK
         int reserva_id FK
         int filial_retirada_id FK
-        int func_abertura_id FK
+        int funcionario_abertura_id FK
         varchar numero_contrato UK
         varchar tipo_contrato
         datetime data_hora_retirada
@@ -405,24 +405,24 @@ erDiagram
         varchar status
     }
 
-    CONDUTOR_ADICIONAL {
-        int condutor_adicional_id PK
+    CONDUTORES_ADICIONAIS {
+        int id_condutor_adicional PK
         int contrato_id FK
         int pessoa_id FK
         varchar parentesco
         decimal valor_cobrado
     }
 
-    CONTRATO_ACESSORIO {
-        int contrato_acessorio_id PK
+    CONTRATOS_ACESSORIOS {
+        int id_contrato_acessorio PK
         int contrato_id FK
         int acessorio_id FK
         int quantidade
         decimal valor_total
     }
 
-    PROTECAO {
-        int protecao_id PK
+    PROTECOES {
+        int id_protecao PK
         varchar nome
         varchar tipo
         decimal valor_diaria
@@ -432,16 +432,16 @@ erDiagram
         boolean ativo
     }
 
-    CONTRATO_PROTECAO {
-        int contrato_protecao_id PK
+    CONTRATOS_PROTECOES {
+        int id_contrato_protecao PK
         int contrato_id FK
         int protecao_id FK
         decimal valor_diaria
         decimal valor_total
     }
 
-    VISTORIA {
-        int vistoria_id PK
+    VISTORIAS {
+        int id_vistoria PK
         int contrato_id FK
         int veiculo_id FK
         int funcionario_id FK
@@ -451,8 +451,8 @@ erDiagram
         varchar resultado
     }
 
-    AVARIA {
-        int avaria_id PK
+    AVARIAS {
+        int id_avaria PK
         int vistoria_id FK
         varchar localizacao
         varchar tipo_avaria
@@ -461,8 +461,8 @@ erDiagram
         decimal valor_reparo_estimado
     }
 
-    PAGAMENTO {
-        int pagamento_id PK
+    PAGAMENTOS {
+        int id_pagamento PK
         int contrato_id FK
         int cliente_id FK
         varchar tipo_pagamento
@@ -474,8 +474,8 @@ erDiagram
         varchar status
     }
 
-    NOTA_FISCAL {
-        int nf_id PK
+    NOTAS_FISCAIS {
+        int id_nota_fiscal PK
         int contrato_id FK
         int filial_id FK
         varchar numero_nf UK
@@ -484,8 +484,8 @@ erDiagram
         varchar status
     }
 
-    MULTA {
-        int multa_id PK
+    MULTAS {
+        int id_multa PK
         int contrato_id FK
         int veiculo_id FK
         int cliente_id FK
@@ -495,8 +495,8 @@ erDiagram
         varchar status
     }
 
-    MANUTENCAO {
-        int manutencao_id PK
+    MANUTENCOES {
+        int id_manutencao PK
         int veiculo_id FK
         int filial_id FK
         int fornecedor_id FK
@@ -506,8 +506,8 @@ erDiagram
         varchar status
     }
 
-    FORNECEDOR {
-        int fornecedor_id PK
+    FORNECEDORES {
+        int id_fornecedor PK
         varchar cnpj UK
         varchar razao_social
         varchar tipo
@@ -515,8 +515,8 @@ erDiagram
         boolean ativo
     }
 
-    SINISTRO {
-        int sinistro_id PK
+    SINISTROS {
+        int id_sinistro PK
         int contrato_id FK
         int veiculo_id FK
         int cliente_id FK
@@ -526,8 +526,8 @@ erDiagram
         varchar status
     }
 
-    TABELA_PRECO {
-        int tabela_preco_id PK
+    TABELAS_PRECO {
+        int id_tabela_preco PK
         int categoria_id FK
         int filial_id FK
         varchar tipo_periodo
@@ -538,8 +538,8 @@ erDiagram
         boolean ativo
     }
 
-    PROGRAMA_FIDELIDADE {
-        int programa_id PK
+    PROGRAMAS_FIDELIDADE {
+        int id_programa PK
         varchar nome
         varchar nivel
         int pontos_minimos
@@ -547,8 +547,8 @@ erDiagram
         boolean upgrade_gratuito
     }
 
-    MOVIMENTACAO_PONTOS {
-        int movimentacao_id PK
+    MOVIMENTACOES_PONTOS {
+        int id_movimentacao PK
         int cliente_id FK
         int contrato_id FK
         varchar tipo
@@ -557,19 +557,19 @@ erDiagram
         datetime data_hora
     }
 
-    TRANSFERENCIA_VEICULO {
-        int transferencia_id PK
+    TRANSFERENCIAS_VEICULO {
+        int id_transferencia PK
         int veiculo_id FK
         int filial_origem_id FK
         int filial_destino_id FK
-        int func_motorista_id FK
+        int funcionario_motorista_id FK
         datetime data_hora_saida
         decimal km_saida
         varchar status
     }
 
-    PARCEIRO {
-        int parceiro_id PK
+    PARCEIROS {
+        int id_parceiro PK
         varchar cnpj UK
         varchar nome_fantasia
         varchar tipo
@@ -578,8 +578,8 @@ erDiagram
         varchar status
     }
 
-    LOG_AUDITORIA {
-        int log_id PK
+    LOGS_AUDITORIA {
+        int id_log PK
         int funcionario_id FK
         varchar tabela_afetada
         varchar acao
@@ -589,51 +589,51 @@ erDiagram
     }
 
     %% Relacionamentos
-    PESSOA ||--o| CLIENTE : "especializa"
-    PESSOA ||--o| FUNCIONARIO : "especializa"
-    PESSOA ||--o{ ENDERECO : "possui"
-    PESSOA ||--o| CNH : "possui"
-    FILIAL ||--o{ FUNCIONARIO : "lotado em"
-    CARGO ||--o{ FUNCIONARIO : "exerce"
-    MARCA ||--o{ MODELO : "fabrica"
-    CATEGORIA_VEICULO ||--o{ MODELO : "pertence"
-    MODELO ||--o{ VEICULO : "instancia"
-    FILIAL ||--o{ VEICULO : "estacionado"
-    VEICULO ||--o{ ACESSORIO_VEICULO : "possui"
-    ACESSORIO ||--o{ ACESSORIO_VEICULO : "instalado"
-    CLIENTE ||--o{ RESERVA : "realiza"
-    CATEGORIA_VEICULO ||--o{ RESERVA : "solicitada"
-    FILIAL ||--o{ RESERVA : "retirada em"
-    CLIENTE ||--o{ CONTRATO : "firma"
-    VEICULO ||--o{ CONTRATO : "locado"
-    RESERVA ||--o| CONTRATO : "origina"
-    FILIAL ||--o{ CONTRATO : "retirada"
-    FUNCIONARIO ||--o{ CONTRATO : "abre"
-    CONTRATO ||--o{ CONDUTOR_ADICIONAL : "inclui"
-    PESSOA ||--o{ CONDUTOR_ADICIONAL : "atua como"
-    CONTRATO ||--o{ CONTRATO_ACESSORIO : "contrata"
-    ACESSORIO ||--o{ CONTRATO_ACESSORIO : "fornecido"
-    CONTRATO ||--o{ CONTRATO_PROTECAO : "contrata"
-    PROTECAO ||--o{ CONTRATO_PROTECAO : "aplicada"
-    CONTRATO ||--|{ VISTORIA : "inspecionado"
-    VEICULO ||--o{ VISTORIA : "vistoriado"
-    FUNCIONARIO ||--o{ VISTORIA : "realiza"
-    VISTORIA ||--o{ AVARIA : "registra"
-    CONTRATO ||--|{ PAGAMENTO : "gera"
-    CLIENTE ||--o{ PAGAMENTO : "efetua"
-    CONTRATO ||--o{ NOTA_FISCAL : "fatura"
-    FILIAL ||--o{ NOTA_FISCAL : "emite"
-    CONTRATO ||--o{ MULTA : "gera"
-    VEICULO ||--o{ MULTA : "recebe"
-    VEICULO ||--o{ MANUTENCAO : "passa por"
-    FORNECEDOR ||--o{ MANUTENCAO : "executa"
-    CONTRATO ||--o{ SINISTRO : "sofre"
-    VEICULO ||--o{ SINISTRO : "envolvido"
-    CATEGORIA_VEICULO ||--o{ TABELA_PRECO : "precificada"
-    FILIAL ||--o{ TABELA_PRECO : "aplica"
-    CLIENTE ||--o{ MOVIMENTACAO_PONTOS : "acumula"
-    VEICULO ||--o{ TRANSFERENCIA_VEICULO : "transferido"
-    FUNCIONARIO ||--o{ LOG_AUDITORIA : "registra"
+    PESSOAS ||--o| CLIENTES : "especializa"
+    PESSOAS ||--o| FUNCIONARIOS : "especializa"
+    PESSOAS ||--o{ ENDERECOS : "possui"
+    PESSOAS ||--o| CNHS : "possui"
+    FILIAIS ||--o{ FUNCIONARIOS : "lotado em"
+    CARGOS ||--o{ FUNCIONARIOS : "exerce"
+    MARCAS ||--o{ MODELOS : "fabrica"
+    CATEGORIAS_VEICULO ||--o{ MODELOS : "pertence"
+    MODELOS ||--o{ VEICULOS : "instancia"
+    FILIAIS ||--o{ VEICULOS : "estacionado"
+    VEICULOS ||--o{ ACESSORIOS_VEICULO : "possui"
+    ACESSORIOS ||--o{ ACESSORIOS_VEICULO : "instalado"
+    CLIENTES ||--o{ RESERVAS : "realiza"
+    CATEGORIAS_VEICULO ||--o{ RESERVAS : "solicitada"
+    FILIAIS ||--o{ RESERVAS : "retirada em"
+    CLIENTES ||--o{ CONTRATOS : "firma"
+    VEICULOS ||--o{ CONTRATOS : "locado"
+    RESERVAS ||--o| CONTRATOS : "origina"
+    FILIAIS ||--o{ CONTRATOS : "retirada"
+    FUNCIONARIOS ||--o{ CONTRATOS : "abre"
+    CONTRATOS ||--o{ CONDUTORES_ADICIONAIS : "inclui"
+    PESSOAS ||--o{ CONDUTORES_ADICIONAIS : "atua como"
+    CONTRATOS ||--o{ CONTRATOS_ACESSORIOS : "contrata"
+    ACESSORIOS ||--o{ CONTRATOS_ACESSORIOS : "fornecido"
+    CONTRATOS ||--o{ CONTRATOS_PROTECOES : "contrata"
+    PROTECOES ||--o{ CONTRATOS_PROTECOES : "aplicada"
+    CONTRATOS ||--|{ VISTORIAS : "inspecionado"
+    VEICULOS ||--o{ VISTORIAS : "vistoriado"
+    FUNCIONARIOS ||--o{ VISTORIAS : "realiza"
+    VISTORIAS ||--o{ AVARIAS : "registra"
+    CONTRATOS ||--|{ PAGAMENTOS : "gera"
+    CLIENTES ||--o{ PAGAMENTOS : "efetua"
+    CONTRATOS ||--o{ NOTAS_FISCAIS : "fatura"
+    FILIAIS ||--o{ NOTAS_FISCAIS : "emite"
+    CONTRATOS ||--o{ MULTAS : "gera"
+    VEICULOS ||--o{ MULTAS : "recebe"
+    VEICULOS ||--o{ MANUTENCOES : "passa por"
+    FORNECEDORES ||--o{ MANUTENCOES : "executa"
+    CONTRATOS ||--o{ SINISTROS : "sofre"
+    VEICULOS ||--o{ SINISTROS : "envolvido"
+    CATEGORIAS_VEICULO ||--o{ TABELAS_PRECO : "precificada"
+    FILIAIS ||--o{ TABELAS_PRECO : "aplica"
+    CLIENTES ||--o{ MOVIMENTACOES_PONTOS : "acumula"
+    VEICULOS ||--o{ TRANSFERENCIAS_VEICULO : "transferido"
+    FUNCIONARIOS ||--o{ LOGS_AUDITORIA : "registra"
             </pre>
         </div>
     </div>
@@ -645,32 +645,32 @@ erDiagram
             <div class="card">
                 <span class="card-badge entity">NÚCLEO - PESSOAS</span>
                 <h4>Cadastro Base</h4>
-                <p>PESSOA (superclasse), CLIENTE (especialização PF/PJ), FUNCIONÁRIO (especialização), CNH, ENDEREÇO, CARGO</p>
+                <p>PESSOAS (superclasse), CLIENTES (especialização PF/PJ), FUNCIONARIOS (especialização), CNHS, ENDERECOS, CARGOS</p>
             </div>
             <div class="card">
                 <span class="card-badge entity">FROTA</span>
                 <h4>Veículos e Categorias</h4>
-                <p>MARCA, MODELO, CATEGORIA_VEICULO, VEICULO, ACESSORIO, ACESSORIO_VEICULO</p>
+                <p>MARCAS, MODELOS, CATEGORIAS_VEICULO, VEICULOS, ACESSORIOS, ACESSORIOS_VEICULO</p>
             </div>
             <div class="card">
                 <span class="card-badge relation">OPERAÇÃO</span>
                 <h4>Locação</h4>
-                <p>RESERVA, CONTRATO, CONDUTOR_ADICIONAL, CONTRATO_ACESSORIO, PROTECAO, CONTRATO_PROTECAO, VISTORIA, AVARIA</p>
+                <p>RESERVAS, CONTRATOS, CONDUTORES_ADICIONAIS, CONTRATOS_ACESSORIOS, PROTECOES, CONTRATOS_PROTECOES, VISTORIAS, AVARIAS</p>
             </div>
             <div class="card">
                 <span class="card-badge assoc">FINANCEIRO</span>
                 <h4>Pagamentos e Fiscal</h4>
-                <p>PAGAMENTO, NOTA_FISCAL, MULTA, TABELA_PRECO</p>
+                <p>PAGAMENTOS, NOTAS_FISCAIS, MULTAS, TABELAS_PRECO</p>
             </div>
             <div class="card">
                 <span class="card-badge entity">SUPORTE</span>
                 <h4>Manutenção e Sinistros</h4>
-                <p>MANUTENCAO, FORNECEDOR, SINISTRO</p>
+                <p>MANUTENCOES, FORNECEDORES, SINISTROS</p>
             </div>
             <div class="card">
                 <span class="card-badge relation">GESTÃO</span>
                 <h4>Operacional</h4>
-                <p>FILIAL, TRANSFERENCIA_VEICULO, PROGRAMA_FIDELIDADE, MOVIMENTACAO_PONTOS, PARCEIRO, LOG_AUDITORIA</p>
+                <p>FILIAIS, TRANSFERENCIAS_VEICULO, PROGRAMAS_FIDELIDADE, MOVIMENTACOES_PONTOS, PARCEIROS, LOGS_AUDITORIA</p>
             </div>
         </div>
     </div>
@@ -683,23 +683,23 @@ erDiagram
                 <tr><th>Entidade A</th><th>Tipo</th><th>Entidade B</th><th>Min:Max (A)</th><th>Min:Max (B)</th><th>Descrição</th></tr>
             </thead>
             <tbody>
-                <tr><td>PESSOA</td><td class="pk">1:1</td><td>CLIENTE</td><td>(1,1)</td><td>(0,1)</td><td>Pessoa pode ser ou não cliente</td></tr>
-                <tr><td>PESSOA</td><td class="pk">1:1</td><td>FUNCIONÁRIO</td><td>(1,1)</td><td>(0,1)</td><td>Pessoa pode ser ou não funcionário</td></tr>
-                <tr><td>PESSOA</td><td class="pk">1:1</td><td>CNH</td><td>(1,1)</td><td>(0,1)</td><td>Nem toda pessoa tem CNH cadastrada</td></tr>
-                <tr><td>PESSOA</td><td class="fk">1:N</td><td>ENDEREÇO</td><td>(1,1)</td><td>(1,N)</td><td>Pessoa tem 1 ou mais endereços</td></tr>
-                <tr><td>FILIAL</td><td class="fk">1:N</td><td>FUNCIONÁRIO</td><td>(1,1)</td><td>(0,N)</td><td>Cada funcionário lotado em 1 filial</td></tr>
-                <tr><td>MARCA</td><td class="fk">1:N</td><td>MODELO</td><td>(1,1)</td><td>(1,N)</td><td>Marca tem vários modelos</td></tr>
-                <tr><td>MODELO</td><td class="fk">1:N</td><td>VEÍCULO</td><td>(1,1)</td><td>(0,N)</td><td>Modelo instanciado em veículos</td></tr>
-                <tr><td>CLIENTE</td><td class="fk">1:N</td><td>CONTRATO</td><td>(1,1)</td><td>(0,N)</td><td>Cliente pode fazer N contratos</td></tr>
-                <tr><td>VEÍCULO</td><td class="fk">1:N</td><td>CONTRATO</td><td>(1,1)</td><td>(0,N)</td><td>Veículo em N contratos ao longo do tempo</td></tr>
-                <tr><td>CONTRATO</td><td class="fk">1:N</td><td>PAGAMENTO</td><td>(1,1)</td><td>(1,N)</td><td>Todo contrato gera ao menos 1 pagamento</td></tr>
-                <tr><td>CONTRATO</td><td class="uk">N:M</td><td>ACESSÓRIO</td><td>(0,N)</td><td>(0,N)</td><td>Via tabela CONTRATO_ACESSORIO</td></tr>
-                <tr><td>CONTRATO</td><td class="uk">N:M</td><td>PROTEÇÃO</td><td>(0,N)</td><td>(0,N)</td><td>Via tabela CONTRATO_PROTECAO</td></tr>
-                <tr><td>CONTRATO</td><td class="fk">1:N</td><td>VISTORIA</td><td>(1,1)</td><td>(2,2)</td><td>Exatamente 2: retirada e devolução</td></tr>
-                <tr><td>VISTORIA</td><td class="fk">1:N</td><td>AVARIA</td><td>(1,1)</td><td>(0,N)</td><td>Vistoria pode registrar N avarias</td></tr>
-                <tr><td>VEÍCULO</td><td class="fk">1:N</td><td>MANUTENÇÃO</td><td>(1,1)</td><td>(0,N)</td><td>Veículo passa por N manutenções</td></tr>
-                <tr><td>CATEGORIA</td><td class="fk">1:N</td><td>TABELA_PREÇO</td><td>(1,1)</td><td>(1,N)</td><td>Preços por categoria e período</td></tr>
-                <tr><td>CLIENTE</td><td class="fk">1:N</td><td>MOV_PONTOS</td><td>(1,1)</td><td>(0,N)</td><td>Movimentações de fidelidade</td></tr>
+                <tr><td>PESSOAS</td><td class="pk">1:1</td><td>CLIENTES</td><td>(1,1)</td><td>(0,1)</td><td>Pessoa pode ser ou não cliente</td></tr>
+                <tr><td>PESSOAS</td><td class="pk">1:1</td><td>FUNCIONARIOS</td><td>(1,1)</td><td>(0,1)</td><td>Pessoa pode ser ou não funcionário</td></tr>
+                <tr><td>PESSOAS</td><td class="pk">1:1</td><td>CNHS</td><td>(1,1)</td><td>(0,1)</td><td>Nem toda pessoa tem CNH cadastrada</td></tr>
+                <tr><td>PESSOAS</td><td class="fk">1:N</td><td>ENDERECOS</td><td>(1,1)</td><td>(1,N)</td><td>Pessoa tem 1 ou mais endereços</td></tr>
+                <tr><td>FILIAIS</td><td class="fk">1:N</td><td>FUNCIONARIOS</td><td>(1,1)</td><td>(0,N)</td><td>Cada funcionário lotado em 1 filial</td></tr>
+                <tr><td>MARCAS</td><td class="fk">1:N</td><td>MODELOS</td><td>(1,1)</td><td>(1,N)</td><td>Marca tem vários modelos</td></tr>
+                <tr><td>MODELOS</td><td class="fk">1:N</td><td>VEICULOS</td><td>(1,1)</td><td>(0,N)</td><td>Modelo instanciado em veículos</td></tr>
+                <tr><td>CLIENTES</td><td class="fk">1:N</td><td>CONTRATOS</td><td>(1,1)</td><td>(0,N)</td><td>Cliente pode fazer N contratos</td></tr>
+                <tr><td>VEICULOS</td><td class="fk">1:N</td><td>CONTRATOS</td><td>(1,1)</td><td>(0,N)</td><td>Veículo em N contratos ao longo do tempo</td></tr>
+                <tr><td>CONTRATOS</td><td class="fk">1:N</td><td>PAGAMENTOS</td><td>(1,1)</td><td>(1,N)</td><td>Todo contrato gera ao menos 1 pagamento</td></tr>
+                <tr><td>CONTRATOS</td><td class="uk">N:M</td><td>ACESSORIOS</td><td>(0,N)</td><td>(0,N)</td><td>Via tabela CONTRATOS_ACESSORIOS</td></tr>
+                <tr><td>CONTRATOS</td><td class="uk">N:M</td><td>PROTECOES</td><td>(0,N)</td><td>(0,N)</td><td>Via tabela CONTRATOS_PROTECOES</td></tr>
+                <tr><td>CONTRATOS</td><td class="fk">1:N</td><td>VISTORIAS</td><td>(1,1)</td><td>(2,2)</td><td>Exatamente 2: retirada e devolução</td></tr>
+                <tr><td>VISTORIAS</td><td class="fk">1:N</td><td>AVARIAS</td><td>(1,1)</td><td>(0,N)</td><td>Vistoria pode registrar N avarias</td></tr>
+                <tr><td>VEICULOS</td><td class="fk">1:N</td><td>MANUTENCOES</td><td>(1,1)</td><td>(0,N)</td><td>Veículo passa por N manutenções</td></tr>
+                <tr><td>CATEGORIAS_VEICULO</td><td class="fk">1:N</td><td>TABELAS_PRECO</td><td>(1,1)</td><td>(1,N)</td><td>Preços por categoria e período</td></tr>
+                <tr><td>CLIENTES</td><td class="fk">1:N</td><td>MOVIMENTACOES_PONTOS</td><td>(1,1)</td><td>(0,N)</td><td>Movimentações de fidelidade</td></tr>
             </tbody>
         </table>
     </div>
@@ -735,14 +735,14 @@ erDiagram
         <h3>Exemplos Concretos de Normalização</h3>
 
         <div class="concept-box">
-            <strong>Antes (desnormalizado):</strong> CONTRATO continha nome_cliente, cpf_cliente, nome_veiculo, placa — tudo redundante.<br>
-            <strong>Depois (3FN):</strong> CONTRATO referencia cliente_id → CLIENTE → PESSOA (nome, CPF) e veiculo_id → VEICULO (placa) → MODELO (nome).
+            <strong>Antes (desnormalizado):</strong> CONTRATOS continha nome_cliente, cpf_cliente, nome_veiculo, placa — tudo redundante.<br>
+            <strong>Depois (3FN):</strong> CONTRATOS referencia cliente_id → CLIENTES → PESSOAS (nome, CPF) e veiculo_id → VEICULOS (placa) → MODELOS (nome).
         </div>
 
         <div class="concept-box green">
             <strong>Tabelas Associativas (N:M → 1:N + N:1):</strong><br>
-            CONTRATO ↔ ACESSÓRIO resolvido via CONTRATO_ACESSORIO com atributos próprios (quantidade, valor_total).<br>
-            CONTRATO ↔ PROTEÇÃO resolvido via CONTRATO_PROTECAO com atributos próprios (valor_diaria, valor_total).
+            CONTRATOS ↔ ACESSORIOS resolvido via CONTRATOS_ACESSORIOS com atributos próprios (quantidade, valor_total).<br>
+            CONTRATOS ↔ PROTECOES resolvido via CONTRATOS_PROTECOES com atributos próprios (valor_diaria, valor_total).
         </div>
     </div>
 
@@ -789,21 +789,21 @@ erDiagram
         <table>
             <thead><tr><th>Ponto Oculto</th><th>Entidade(s)</th><th>Justificativa</th></tr></thead>
             <tbody>
-                <tr><td>Rede de filiais com tipos variados</td><td>FILIAL</td><td>Localiza/Movida operam em aeroportos, lojas de rua, delivery — cada tipo com regras distintas (24h, etc)</td></tr>
-                <tr><td>Condutor adicional</td><td>CONDUTOR_ADICIONAL</td><td>Requisito legal: só condutores cadastrados podem dirigir o veículo locado</td></tr>
-                <tr><td>Vistoria detalhada de entrada/saída</td><td>VISTORIA, AVARIA</td><td>Checklist completo evita disputas sobre responsabilidade por danos</td></tr>
-                <tr><td>Proteções e seguros opcionais</td><td>PROTECAO, CONTRATO_PROTECAO</td><td>LDW, CDW, proteção de vidros, terceiros — produtos financeiros essenciais</td></tr>
-                <tr><td>Tabela de preços dinâmica</td><td>TABELA_PRECO</td><td>Preço varia por categoria, filial, sazonalidade (carnaval, réveillon, férias)</td></tr>
-                <tr><td>Transferência entre filiais</td><td>TRANSFERENCIA_VEICULO</td><td>Rebalanceamento da frota entre cidades com demanda assimétrica</td></tr>
-                <tr><td>Programa de fidelidade</td><td>PROGRAMA_FIDELIDADE, MOVIMENTACAO_PONTOS</td><td>Localiza tem programa de pontos; essencial para retenção de clientes</td></tr>
-                <tr><td>Parceiros e convênios</td><td>PARCEIRO</td><td>Convênios com cias aéreas, hotéis, cartões — descontos corporativos</td></tr>
-                <tr><td>Sinistros com B.O.</td><td>SINISTRO</td><td>Gestão de acidentes, roubos e furtos com rastreamento de ocorrência policial</td></tr>
-                <tr><td>Manutenção com fornecedores</td><td>MANUTENCAO, FORNECEDOR</td><td>Preventiva, corretiva, recalls — controle de custo e disponibilidade da frota</td></tr>
-                <tr><td>Multas de trânsito</td><td>MULTA</td><td>Transferência de responsabilidade ao cliente, controle de prazos</td></tr>
-                <tr><td>NFS-e e compliance fiscal</td><td>NOTA_FISCAL</td><td>Obrigatório no Brasil: chave de acesso, XML, alíquota ISS</td></tr>
-                <tr><td>Rastreador GPS</td><td>VEICULO (campos)</td><td>Segurança patrimonial e recuperação em caso de roubo/furto</td></tr>
-                <tr><td>Log de auditoria</td><td>LOG_AUDITORIA</td><td>LGPD e compliance: rastreabilidade de quem alterou o quê e quando</td></tr>
-                <tr><td>Cliente PJ (corporativo)</td><td>CLIENTE (campos CNPJ)</td><td>Grande parte da receita vem de frotas corporativas</td></tr>
+                <tr><td>Rede de filiais com tipos variados</td><td>FILIAIS</td><td>Localiza/Movida operam em aeroportos, lojas de rua, delivery — cada tipo com regras distintas (24h, etc)</td></tr>
+                <tr><td>Condutor adicional</td><td>CONDUTORES_ADICIONAIS</td><td>Requisito legal: só condutores cadastrados podem dirigir o veículo locado</td></tr>
+                <tr><td>Vistoria detalhada de entrada/saída</td><td>VISTORIAS, AVARIAS</td><td>Checklist completo evita disputas sobre responsabilidade por danos</td></tr>
+                <tr><td>Proteções e seguros opcionais</td><td>PROTECOES, CONTRATOS_PROTECOES</td><td>LDW, CDW, proteção de vidros, terceiros — produtos financeiros essenciais</td></tr>
+                <tr><td>Tabela de preços dinâmica</td><td>TABELAS_PRECO</td><td>Preço varia por categoria, filial, sazonalidade (carnaval, réveillon, férias)</td></tr>
+                <tr><td>Transferência entre filiais</td><td>TRANSFERENCIAS_VEICULO</td><td>Rebalanceamento da frota entre cidades com demanda assimétrica</td></tr>
+                <tr><td>Programa de fidelidade</td><td>PROGRAMAS_FIDELIDADE, MOVIMENTACOES_PONTOS</td><td>Localiza tem programa de pontos; essencial para retenção de clientes</td></tr>
+                <tr><td>Parceiros e convênios</td><td>PARCEIROS</td><td>Convênios com cias aéreas, hotéis, cartões — descontos corporativos</td></tr>
+                <tr><td>Sinistros com B.O.</td><td>SINISTROS</td><td>Gestão de acidentes, roubos e furtos com rastreamento de ocorrência policial</td></tr>
+                <tr><td>Manutenção com fornecedores</td><td>MANUTENCOES, FORNECEDORES</td><td>Preventiva, corretiva, recalls — controle de custo e disponibilidade da frota</td></tr>
+                <tr><td>Multas de trânsito</td><td>MULTAS</td><td>Transferência de responsabilidade ao cliente, controle de prazos</td></tr>
+                <tr><td>NFS-e e compliance fiscal</td><td>NOTAS_FISCAIS</td><td>Obrigatório no Brasil: chave de acesso, XML, alíquota ISS</td></tr>
+                <tr><td>Rastreador GPS</td><td>VEICULOS (campos)</td><td>Segurança patrimonial e recuperação em caso de roubo/furto</td></tr>
+                <tr><td>Log de auditoria</td><td>LOGS_AUDITORIA</td><td>LGPD e compliance: rastreabilidade de quem alterou o quê e quando</td></tr>
+                <tr><td>Cliente PJ (corporativo)</td><td>CLIENTES (campos CNPJ)</td><td>Grande parte da receita vem de frotas corporativas</td></tr>
             </tbody>
         </table>
     </div>

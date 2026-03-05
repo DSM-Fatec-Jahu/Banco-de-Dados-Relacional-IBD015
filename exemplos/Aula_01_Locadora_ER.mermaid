@@ -9,8 +9,8 @@ erDiagram
     %% (Conceito MER - Especialização top-down)
     %% ============================================================
 
-    PESSOA {
-        int pessoa_id PK "Identificador único"
+    PESSOAS {
+        int id_pessoa PK "Identificador único"
         varchar nome_completo "NOT NULL"
         varchar cpf UK "11 dígitos, único, NOT NULL"
         varchar rg "Registro Geral"
@@ -28,9 +28,9 @@ erDiagram
         boolean ativo "Soft delete"
     }
 
-    ENDERECO {
-        int endereco_id PK "Identificador único"
-        int pessoa_id FK "Referência a PESSOA"
+    ENDERECOS {
+        int id_endereco PK "Identificador único"
+        int pessoa_id FK "Referência a PESSOAS"
         varchar cep "8 dígitos, NOT NULL"
         varchar logradouro "NOT NULL"
         varchar numero "NOT NULL"
@@ -47,9 +47,9 @@ erDiagram
     %% ESPECIALIZAÇÃO: CLIENTE (herda de PESSOA)
     %% ============================================================
 
-    CLIENTE {
-        int cliente_id PK "Identificador único"
-        int pessoa_id FK "Herança de PESSOA"
+    CLIENTES {
+        int id_cliente PK "Identificador único"
+        int pessoa_id FK "Herança de PESSOAS"
         varchar tipo_cliente "PF ou PJ"
         varchar cnpj UK "Apenas se PJ, 14 dígitos"
         varchar razao_social "Apenas se PJ"
@@ -69,9 +69,9 @@ erDiagram
     %% ESPECIALIZAÇÃO: FUNCIONÁRIO (herda de PESSOA)
     %% ============================================================
 
-    FUNCIONARIO {
-        int funcionario_id PK "Identificador único"
-        int pessoa_id FK "Herança de PESSOA"
+    FUNCIONARIOS {
+        int id_funcionario PK "Identificador único"
+        int pessoa_id FK "Herança de PESSOAS"
         int filial_id FK "Filial de lotação"
         int cargo_id FK "Cargo atual"
         varchar matricula UK "Matrícula interna, única"
@@ -86,8 +86,8 @@ erDiagram
         varchar status "ATIVO/FERIAS/AFASTADO/DESLIGADO"
     }
 
-    CARGO {
-        int cargo_id PK "Identificador único"
+    CARGOS {
+        int id_cargo PK "Identificador único"
         varchar nome_cargo "NOT NULL"
         varchar departamento "ATENDIMENTO/OPERACOES/FINANCEIRO/TI/RH"
         varchar descricao "Descrição das funções"
@@ -99,9 +99,9 @@ erDiagram
     %% CNH - Documento obrigatório para locação
     %% ============================================================
 
-    CNH {
-        int cnh_id PK "Identificador único"
-        int pessoa_id FK "Referência a PESSOA"
+    CNHS {
+        int id_cnh PK "Identificador único"
+        int pessoa_id FK "Referência a PESSOAS"
         varchar numero_registro UK "Número do registro CNH"
         varchar categoria "A/B/AB/C/D/E"
         date data_emissao "NOT NULL"
@@ -119,8 +119,8 @@ erDiagram
     %% ESTRUTURA DE FILIAIS / AGÊNCIAS
     %% ============================================================
 
-    FILIAL {
-        int filial_id PK "Identificador único"
+    FILIAIS {
+        int id_filial PK "Identificador único"
         varchar cnpj UK "CNPJ da filial"
         varchar razao_social "NOT NULL"
         varchar nome_fantasia "NOT NULL"
@@ -145,11 +145,8 @@ erDiagram
     }
 
     %% ============================================================
-    %% VEÍCULOS E FROTA
-    %% ============================================================
-
-    CATEGORIA_VEICULO {
-        int categoria_id PK "Identificador único"
+    %% CATEGORIAS DE VEÍCULO
+        int id_categoria_veiculo PK "Identificador único"
         varchar nome "COMPACTO/HATCH/SEDAN/SUV/PICKUP/LUXO/VAN/UTILITARIO"
         varchar descricao "Descrição da categoria"
         decimal diaria_base "Valor base da diária"
@@ -163,18 +160,18 @@ erDiagram
         boolean ativo "Se categoria está ativa"
     }
 
-    MARCA {
-        int marca_id PK "Identificador único"
+    MARCAS {
+        int id_marca PK "Identificador único"
         varchar nome "Ex: Volkswagen, Fiat, Toyota"
         varchar pais_origem "País de origem"
         varchar logo_url "Logo da marca"
         boolean ativo "Se marca está ativa"
     }
 
-    MODELO {
-        int modelo_id PK "Identificador único"
-        int marca_id FK "Referência à MARCA"
-        int categoria_id FK "Referência à CATEGORIA"
+    MODELOS {
+        int id_modelo PK "Identificador único"
+        int marca_id FK "Referência à MARCAS"
+        int categoria_veiculo_id FK "Referência à CATEGORIAS_VEICULO"
         varchar nome "Ex: Polo, Argo, Corolla"
         varchar versao "Ex: Comfortline 1.0 TSI"
         int ano_modelo_inicio "Ano modelo início"
@@ -196,9 +193,9 @@ erDiagram
         varchar imagem_url "Foto do modelo"
     }
 
-    VEICULO {
-        int veiculo_id PK "Identificador único"
-        int modelo_id FK "Referência ao MODELO"
+    VEICULOS {
+        int id_veiculo PK "Identificador único"
+        int modelo_id FK "Referência ao MODELOS"
         int filial_atual_id FK "Filial onde está"
         varchar placa UK "Formato Mercosul ABC1D23"
         varchar renavam UK "11 dígitos, único"
@@ -226,16 +223,16 @@ erDiagram
         timestamp updated_at "Última atualização"
     }
 
-    ACESSORIO_VEICULO {
-        int acessorio_veiculo_id PK "Identificador único"
-        int veiculo_id FK "Referência ao VEÍCULO"
-        int acessorio_id FK "Referência ao ACESSÓRIO"
+    ACESSORIOS_VEICULO {
+        int id_acessorio_veiculo PK "Identificador único"
+        int veiculo_id FK "Referência ao VEICULOS"
+        int acessorio_id FK "Referência ao ACESSORIOS"
         date data_instalacao "Data da instalação"
         varchar observacao "Notas"
     }
 
-    ACESSORIO {
-        int acessorio_id PK "Identificador único"
+    ACESSORIOS {
+        int id_acessorio PK "Identificador único"
         varchar nome "Cadeirinha, GPS, Wi-Fi, etc"
         varchar descricao "Descrição detalhada"
         decimal valor_diaria "Custo por dia"
@@ -247,10 +244,10 @@ erDiagram
     %% RESERVA
     %% ============================================================
 
-    RESERVA {
-        int reserva_id PK "Identificador único"
+    RESERVAS {
+        int id_reserva PK "Identificador único"
         int cliente_id FK "Cliente que reservou"
-        int categoria_id FK "Categoria desejada"
+        int categoria_veiculo_id FK "Categoria desejada"
         int filial_retirada_id FK "Filial de retirada"
         int filial_devolucao_id FK "Filial de devolução"
         varchar codigo_reserva UK "Código único legível"
@@ -271,8 +268,8 @@ erDiagram
     %% CONTRATO DE LOCAÇÃO (entidade central)
     %% ============================================================
 
-    CONTRATO {
-        int contrato_id PK "Identificador único"
+    CONTRATOS {
+        int id_contrato PK "Identificador único"
         int cliente_id FK "Cliente locatário"
         int veiculo_id FK "Veículo locado"
         int reserva_id FK "Reserva de origem (opcional)"
@@ -318,8 +315,8 @@ erDiagram
         timestamp updated_at "Última atualização"
     }
 
-    CONDUTOR_ADICIONAL {
-        int condutor_adicional_id PK "Identificador único"
+    CONDUTORES_ADICIONAIS {
+        int id_condutor_adicional PK "Identificador único"
         int contrato_id FK "Contrato associado"
         int pessoa_id FK "Pessoa que é condutor"
         varchar parentesco "Cônjuge, Filho, Colega, etc"
@@ -330,8 +327,8 @@ erDiagram
     %% ACESSÓRIOS CONTRATADOS NO CONTRATO
     %% ============================================================
 
-    CONTRATO_ACESSORIO {
-        int contrato_acessorio_id PK "Identificador único"
+    CONTRATOS_ACESSORIOS {
+        int id_contrato_acessorio PK "Identificador único"
         int contrato_id FK "Contrato associado"
         int acessorio_id FK "Acessório contratado"
         int quantidade "Qtd (ex: 2 cadeirinhas)"
@@ -343,8 +340,8 @@ erDiagram
     %% PROTEÇÕES E SEGUROS
     %% ============================================================
 
-    PROTECAO {
-        int protecao_id PK "Identificador único"
+    PROTECOES {
+        int id_protecao PK "Identificador único"
         varchar nome "LDW/CDW/ALI/PAI/SUPER_PROTECAO/etc"
         varchar descricao "Cobertura detalhada"
         varchar tipo "BASICA/INTERMEDIARIA/PREMIUM/COMPLETA"
@@ -359,8 +356,8 @@ erDiagram
         boolean ativo "Se proteção está ativa"
     }
 
-    CONTRATO_PROTECAO {
-        int contrato_protecao_id PK "Identificador único"
+    CONTRATOS_PROTECOES {
+        int id_contrato_protecao PK "Identificador único"
         int contrato_id FK "Contrato associado"
         int protecao_id FK "Proteção contratada"
         decimal valor_diaria "Valor efetivo cobrado"
@@ -371,8 +368,8 @@ erDiagram
     %% VISTORIA DO VEÍCULO (checklist de entrada e saída)
     %% ============================================================
 
-    VISTORIA {
-        int vistoria_id PK "Identificador único"
+    VISTORIAS {
+        int id_vistoria PK "Identificador único"
         int contrato_id FK "Contrato associado"
         int veiculo_id FK "Veículo inspecionado"
         int funcionario_id FK "Funcionário responsável"
@@ -401,8 +398,8 @@ erDiagram
         varchar resultado "APROVADO/REPROVADO/COM_RESSALVAS"
     }
 
-    AVARIA {
-        int avaria_id PK "Identificador único"
+    AVARIAS {
+        int id_avaria PK "Identificador único"
         int vistoria_id FK "Vistoria onde detectada"
         varchar localizacao "CAPO/PORTA_DE/PORTA_DD/TETO/etc"
         varchar tipo_avaria "RISCO/AMASSADO/TRINCA/FURO/QUEBRA"
@@ -417,8 +414,8 @@ erDiagram
     %% PAGAMENTOS E FINANCEIRO
     %% ============================================================
 
-    PAGAMENTO {
-        int pagamento_id PK "Identificador único"
+    PAGAMENTOS {
+        int id_pagamento PK "Identificador único"
         int contrato_id FK "Contrato associado"
         int cliente_id FK "Cliente pagador"
         varchar tipo_pagamento "CAUÇÃO/PARCIAL/FINAL/MULTA/REEMBOLSO"
@@ -439,8 +436,8 @@ erDiagram
         text observacoes "Notas sobre o pagamento"
     }
 
-    NOTA_FISCAL {
-        int nf_id PK "Identificador único"
+    NOTAS_FISCAIS {
+        int id_nota_fiscal PK "Identificador único"
         int contrato_id FK "Contrato associado"
         int filial_id FK "Filial emissora"
         varchar numero_nf UK "Número da NF"
@@ -464,8 +461,8 @@ erDiagram
     %% MULTAS DE TRÂNSITO
     %% ============================================================
 
-    MULTA {
-        int multa_id PK "Identificador único"
+    MULTAS {
+        int id_multa PK "Identificador único"
         int contrato_id FK "Contrato no período"
         int veiculo_id FK "Veículo multado"
         int cliente_id FK "Cliente responsável"
@@ -488,8 +485,8 @@ erDiagram
     %% MANUTENÇÃO E REVISÕES
     %% ============================================================
 
-    MANUTENCAO {
-        int manutencao_id PK "Identificador único"
+    MANUTENCOES {
+        int id_manutencao PK "Identificador único"
         int veiculo_id FK "Veículo em manutenção"
         int filial_id FK "Filial responsável"
         int funcionario_solicitante_id FK "Quem solicitou"
@@ -509,8 +506,8 @@ erDiagram
         text observacoes "Detalhes da manutenção"
     }
 
-    FORNECEDOR {
-        int fornecedor_id PK "Identificador único"
+    FORNECEDORES {
+        int id_fornecedor PK "Identificador único"
         varchar cnpj UK "CNPJ do fornecedor"
         varchar razao_social "NOT NULL"
         varchar nome_fantasia "Nome fantasia"
@@ -528,8 +525,8 @@ erDiagram
     %% SINISTRO (acidente / roubo / furto)
     %% ============================================================
 
-    SINISTRO {
-        int sinistro_id PK "Identificador único"
+    SINISTROS {
+        int id_sinistro PK "Identificador único"
         int contrato_id FK "Contrato vigente"
         int veiculo_id FK "Veículo envolvido"
         int cliente_id FK "Cliente responsável"
@@ -558,9 +555,9 @@ erDiagram
     %% TABELA DE PREÇOS (sazonalidade e dinâmica)
     %% ============================================================
 
-    TABELA_PRECO {
-        int tabela_preco_id PK "Identificador único"
-        int categoria_id FK "Categoria do veículo"
+    TABELAS_PRECO {
+        int id_tabela_preco PK "Identificador único"
+        int categoria_veiculo_id FK "Categoria do veículo"
         int filial_id FK "Filial (preço por praça)"
         varchar nome_tabela "Ex: Alta temporada verão 2026"
         varchar tipo_periodo "NORMAL/ALTA_TEMPORADA/FERIADO/PROMOCIONAL"
@@ -579,8 +576,8 @@ erDiagram
     %% PROGRAMA DE FIDELIDADE
     %% ============================================================
 
-    PROGRAMA_FIDELIDADE {
-        int programa_id PK "Identificador único"
+    PROGRAMAS_FIDELIDADE {
+        int id_programa_fidelidade PK "Identificador único"
         varchar nome "Nome do programa"
         varchar nivel "BRONZE/PRATA/OURO/PLATINA/DIAMANTE"
         int pontos_minimos "Pontos para atingir nível"
@@ -591,8 +588,8 @@ erDiagram
         boolean acesso_lounge "Acesso a lounge aeroporto"
     }
 
-    MOVIMENTACAO_PONTOS {
-        int movimentacao_id PK "Identificador único"
+    MOVIMENTACOES_PONTOS {
+        int id_movimentacao_pontos PK "Identificador único"
         int cliente_id FK "Cliente"
         int contrato_id FK "Contrato de origem (se aplicável)"
         varchar tipo "ACUMULO/RESGATE/EXPIRACAO/BONIFICACAO/AJUSTE"
@@ -608,8 +605,8 @@ erDiagram
     %% LOG DE AUDITORIA
     %% ============================================================
 
-    LOG_AUDITORIA {
-        int log_id PK "Identificador único"
+    LOGS_AUDITORIA {
+        int id_log_auditoria PK "Identificador único"
         int funcionario_id FK "Funcionário que realizou"
         varchar tabela_afetada "Nome da tabela modificada"
         int registro_id "ID do registro afetado"
@@ -624,8 +621,8 @@ erDiagram
     %% PARCEIROS E CONVÊNIOS
     %% ============================================================
 
-    PARCEIRO {
-        int parceiro_id PK "Identificador único"
+    PARCEIROS {
+        int id_parceiro PK "Identificador único"
         varchar cnpj UK "CNPJ do parceiro"
         varchar razao_social "NOT NULL"
         varchar nome_fantasia "NOT NULL"
@@ -645,8 +642,8 @@ erDiagram
     %% TRANSFERÊNCIA DE VEÍCULOS ENTRE FILIAIS
     %% ============================================================
 
-    TRANSFERENCIA_VEICULO {
-        int transferencia_id PK "Identificador único"
+    TRANSFERENCIAS_VEICULO {
+        int id_transferencia_veiculo PK "Identificador único"
         int veiculo_id FK "Veículo transferido"
         int filial_origem_id FK "Filial de origem"
         int filial_destino_id FK "Filial de destino"
@@ -666,83 +663,83 @@ erDiagram
     %% ============================================================
 
     %% --- Generalização/Especialização ---
-    PESSOA ||--o| CLIENTE : "especializa (0,1)"
-    PESSOA ||--o| FUNCIONARIO : "especializa (0,1)"
-    PESSOA ||--o{ ENDERECO : "possui (1,N)"
-    PESSOA ||--o| CNH : "possui (0,1)"
+    PESSOAS ||--o| CLIENTES : "especializa (0,1)"
+    PESSOAS ||--o| FUNCIONARIOS : "especializa (0,1)"
+    PESSOAS ||--o{ ENDERECOS : "possui (1,N)"
+    PESSOAS ||--o| CNHS : "possui (0,1)"
 
     %% --- Filial e Funcionário ---
-    FILIAL ||--o{ FUNCIONARIO : "lotado em (0,N)"
-    CARGO ||--o{ FUNCIONARIO : "exerce (0,N)"
+    FILIAIS ||--o{ FUNCIONARIOS : "lotado em (0,N)"
+    CARGOS ||--o{ FUNCIONARIOS : "exerce (0,N)"
 
     %% --- Veículos ---
-    MARCA ||--o{ MODELO : "fabrica (1,N)"
-    CATEGORIA_VEICULO ||--o{ MODELO : "pertence (1,N)"
-    MODELO ||--o{ VEICULO : "instância (0,N)"
-    FILIAL ||--o{ VEICULO : "estacionado (0,N)"
-    VEICULO ||--o{ ACESSORIO_VEICULO : "possui (0,N)"
-    ACESSORIO ||--o{ ACESSORIO_VEICULO : "instalado em (0,N)"
+    MARCAS ||--o{ MODELOS : "fabrica (1,N)"
+    CATEGORIAS_VEICULO ||--o{ MODELOS : "pertence (1,N)"
+    MODELOS ||--o{ VEICULOS : "instância (0,N)"
+    FILIAIS ||--o{ VEICULOS : "estacionado (0,N)"
+    VEICULOS ||--o{ ACESSORIOS_VEICULO : "possui (0,N)"
+    ACESSORIOS ||--o{ ACESSORIOS_VEICULO : "instalado em (0,N)"
 
     %% --- Reserva ---
-    CLIENTE ||--o{ RESERVA : "realiza (0,N)"
-    CATEGORIA_VEICULO ||--o{ RESERVA : "solicitada (0,N)"
-    FILIAL ||--o{ RESERVA : "retirada em (0,N)"
+    CLIENTES ||--o{ RESERVAS : "realiza (0,N)"
+    CATEGORIAS_VEICULO ||--o{ RESERVAS : "solicitada (0,N)"
+    FILIAIS ||--o{ RESERVAS : "retirada em (0,N)"
 
     %% --- Contrato (entidade central) ---
-    CLIENTE ||--o{ CONTRATO : "firma (0,N)"
-    VEICULO ||--o{ CONTRATO : "locado em (0,N)"
-    RESERVA ||--o| CONTRATO : "origina (0,1)"
-    FILIAL ||--o{ CONTRATO : "retirada (0,N)"
-    FUNCIONARIO ||--o{ CONTRATO : "abre (0,N)"
-    CONTRATO ||--o{ CONDUTOR_ADICIONAL : "inclui (0,N)"
-    PESSOA ||--o{ CONDUTOR_ADICIONAL : "atua como (0,N)"
+    CLIENTES ||--o{ CONTRATOS : "firma (0,N)"
+    VEICULOS ||--o{ CONTRATOS : "locado em (0,N)"
+    RESERVAS ||--o| CONTRATOS : "origina (0,1)"
+    FILIAIS ||--o{ CONTRATOS : "retirada (0,N)"
+    FUNCIONARIOS ||--o{ CONTRATOS : "abre (0,N)"
+    CONTRATOS ||--o{ CONDUTORES_ADICIONAIS : "inclui (0,N)"
+    PESSOAS ||--o{ CONDUTORES_ADICIONAIS : "atua como (0,N)"
 
     %% --- Acessórios e Proteções no Contrato ---
-    CONTRATO ||--o{ CONTRATO_ACESSORIO : "contrata (0,N)"
-    ACESSORIO ||--o{ CONTRATO_ACESSORIO : "fornecido (0,N)"
-    CONTRATO ||--o{ CONTRATO_PROTECAO : "contrata (0,N)"
-    PROTECAO ||--o{ CONTRATO_PROTECAO : "aplicada (0,N)"
+    CONTRATOS ||--o{ CONTRATOS_ACESSORIOS : "contrata (0,N)"
+    ACESSORIOS ||--o{ CONTRATOS_ACESSORIOS : "fornecido (0,N)"
+    CONTRATOS ||--o{ CONTRATOS_PROTECOES : "contrata (0,N)"
+    PROTECOES ||--o{ CONTRATOS_PROTECOES : "aplicada (0,N)"
 
     %% --- Vistoria e Avarias ---
-    CONTRATO ||--|{ VISTORIA : "inspecionado (2,2)"
-    VEICULO ||--o{ VISTORIA : "vistoriado (0,N)"
-    FUNCIONARIO ||--o{ VISTORIA : "realiza (0,N)"
-    VISTORIA ||--o{ AVARIA : "registra (0,N)"
+    CONTRATOS ||--|{ VISTORIAS : "inspecionado (2,2)"
+    VEICULOS ||--o{ VISTORIAS : "vistoriado (0,N)"
+    FUNCIONARIOS ||--o{ VISTORIAS : "realiza (0,N)"
+    VISTORIAS ||--o{ AVARIAS : "registra (0,N)"
 
     %% --- Financeiro ---
-    CONTRATO ||--|{ PAGAMENTO : "gera (1,N)"
-    CLIENTE ||--o{ PAGAMENTO : "efetua (0,N)"
-    CONTRATO ||--o{ NOTA_FISCAL : "fatura (0,N)"
-    FILIAL ||--o{ NOTA_FISCAL : "emite (0,N)"
+    CONTRATOS ||--|{ PAGAMENTOS : "gera (1,N)"
+    CLIENTES ||--o{ PAGAMENTOS : "efetua (0,N)"
+    CONTRATOS ||--o{ NOTAS_FISCAIS : "fatura (0,N)"
+    FILIAIS ||--o{ NOTAS_FISCAIS : "emite (0,N)"
 
     %% --- Multas ---
-    CONTRATO ||--o{ MULTA : "gera (0,N)"
-    VEICULO ||--o{ MULTA : "recebe (0,N)"
-    CLIENTE ||--o{ MULTA : "responde (0,N)"
+    CONTRATOS ||--o{ MULTAS : "gera (0,N)"
+    VEICULOS ||--o{ MULTAS : "recebe (0,N)"
+    CLIENTES ||--o{ MULTAS : "responde (0,N)"
 
     %% --- Manutenção ---
-    VEICULO ||--o{ MANUTENCAO : "passa por (0,N)"
-    FILIAL ||--o{ MANUTENCAO : "solicita (0,N)"
-    FUNCIONARIO ||--o{ MANUTENCAO : "solicita (0,N)"
-    FORNECEDOR ||--o{ MANUTENCAO : "executa (0,N)"
+    VEICULOS ||--o{ MANUTENCOES : "passa por (0,N)"
+    FILIAIS ||--o{ MANUTENCOES : "solicita (0,N)"
+    FUNCIONARIOS ||--o{ MANUTENCOES : "solicita (0,N)"
+    FORNECEDORES ||--o{ MANUTENCOES : "executa (0,N)"
 
     %% --- Sinistro ---
-    CONTRATO ||--o{ SINISTRO : "sofre (0,N)"
-    VEICULO ||--o{ SINISTRO : "envolvido (0,N)"
-    CLIENTE ||--o{ SINISTRO : "responsável (0,N)"
+    CONTRATOS ||--o{ SINISTROS : "sofre (0,N)"
+    VEICULOS ||--o{ SINISTROS : "envolvido (0,N)"
+    CLIENTES ||--o{ SINISTROS : "responsável (0,N)"
 
     %% --- Tabela de Preços ---
-    CATEGORIA_VEICULO ||--o{ TABELA_PRECO : "precificada (1,N)"
-    FILIAL ||--o{ TABELA_PRECO : "aplica (0,N)"
+    CATEGORIAS_VEICULO ||--o{ TABELAS_PRECO : "precificada (1,N)"
+    FILIAIS ||--o{ TABELAS_PRECO : "aplica (0,N)"
 
     %% --- Fidelidade ---
-    CLIENTE ||--o{ MOVIMENTACAO_PONTOS : "acumula (0,N)"
-    CONTRATO ||--o{ MOVIMENTACAO_PONTOS : "gera pontos (0,N)"
+    CLIENTES ||--o{ MOVIMENTACOES_PONTOS : "acumula (0,N)"
+    CONTRATOS ||--o{ MOVIMENTACOES_PONTOS : "gera pontos (0,N)"
 
     %% --- Transferência de Veículos ---
-    VEICULO ||--o{ TRANSFERENCIA_VEICULO : "transferido (0,N)"
-    FILIAL ||--o{ TRANSFERENCIA_VEICULO : "origem (0,N)"
-    FUNCIONARIO ||--o{ TRANSFERENCIA_VEICULO : "solicita (0,N)"
+    VEICULOS ||--o{ TRANSFERENCIAS_VEICULO : "transferido (0,N)"
+    FILIAIS ||--o{ TRANSFERENCIAS_VEICULO : "origem (0,N)"
+    FUNCIONARIOS ||--o{ TRANSFERENCIAS_VEICULO : "solicita (0,N)"
 
     %% --- Auditoria ---
-    FUNCIONARIO ||--o{ LOG_AUDITORIA : "registra (0,N)"
+    FUNCIONARIOS ||--o{ LOGS_AUDITORIA : "registra (0,N)"

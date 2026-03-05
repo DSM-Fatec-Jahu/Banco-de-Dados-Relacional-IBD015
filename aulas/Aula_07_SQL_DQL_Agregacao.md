@@ -56,14 +56,14 @@ O `GROUP BY` divide as linhas em grupos com base em uma ou mais colunas e aplica
 ```sql
 -- Quantidade de produtos por categoria
 SELECT
-    id_categoria,
+    categoria_id,
     COUNT(*)           AS total_produtos,
     AVG(preco)         AS preco_medio,
     MIN(preco)         AS menor_preco,
     MAX(preco)         AS maior_preco
 FROM   produtos
 WHERE  ativo = 1
-GROUP BY id_categoria
+GROUP BY categoria_id
 ORDER BY total_produtos DESC;
 ```
 
@@ -93,11 +93,11 @@ O `HAVING` filtra grupos **depois** que a agregação foi aplicada. É o equival
 ```sql
 -- Categorias com mais de 5 produtos ativos
 SELECT
-    id_categoria,
+    categoria_id,
     COUNT(*) AS total
 FROM   produtos
 WHERE  ativo = 1
-GROUP BY id_categoria
+GROUP BY categoria_id
 HAVING total > 5;
 
 -- Clientes que fizeram mais de 3 pedidos
@@ -119,17 +119,17 @@ ORDER BY gasto_total DESC;
 -- HAVING filtra GRUPOS DEPOIS da agregação
 
 -- ✅ Correto: WHERE para filtros de linha, HAVING para filtros de grupo
-SELECT id_categoria, COUNT(*) AS total, AVG(preco) AS media
+SELECT categoria_id, COUNT(*) AS total, AVG(preco) AS media
 FROM   produtos
 WHERE  ativo = 1           -- filtra produtos inativos ANTES de agrupar
-GROUP BY id_categoria
+GROUP BY categoria_id
 HAVING media > 500         -- filtra grupos onde a média é maior que 500
 ORDER BY media DESC;
 
 -- ❌ Ineficiente: usar HAVING para filtrar o que poderia ser feito com WHERE
-SELECT id_categoria, COUNT(*) AS total, AVG(preco) AS media
+SELECT categoria_id, COUNT(*) AS total, AVG(preco) AS media
 FROM   produtos
-GROUP BY id_categoria
+GROUP BY categoria_id
 HAVING ativo = 1           -- funciona, mas é mais lento pois agrupa tudo antes
    AND media > 500;
 ```
@@ -164,15 +164,15 @@ Isso explica por que você **não pode usar um alias definido no SELECT dentro d
 ```sql
 -- Top 5 produtos mais vendidos (por quantidade total)
 SELECT
-    ip.id_produto,
+    ip.produto_id,
     p.nome,
     SUM(ip.quantidade)         AS total_vendido,
     SUM(ip.quantidade * ip.preco_unitario) AS receita
 FROM   itens_pedidos ip
-JOIN   produtos p ON p.id_produto = ip.id_produto
-JOIN   pedidos  pd ON pd.id_pedido = ip.id_pedido
+JOIN   produtos p ON p.id_produto = ip.produto_id
+JOIN   pedidos  pd ON pd.id_pedido = ip.pedido_id
 WHERE  pd.status = 'entregue'
-GROUP BY ip.id_produto, p.nome
+GROUP BY ip.produto_id, p.nome
 ORDER BY total_vendido DESC
 LIMIT 5;
 

@@ -105,7 +105,7 @@ CREATE TRIGGER trg_itens_pedidos_after_insert
 BEGIN
     UPDATE produtos
     SET    estoque = estoque - NEW.quantidade
-    WHERE  id_produto = NEW.id_produto;
+    WHERE  id_produto = NEW.produto_id;
 END$$
 
 DELIMITER ;
@@ -153,7 +153,7 @@ BEGIN
     -- Estorna a quantidade antiga e aplica a nova
     UPDATE produtos
     SET    estoque = estoque + OLD.quantidade - NEW.quantidade
-    WHERE  id_produto = NEW.id_produto;
+    WHERE  id_produto = NEW.produto_id;
 END$$
 
 DELIMITER ;
@@ -173,7 +173,7 @@ CREATE TRIGGER trg_itens_pedidos_after_delete
 BEGIN
     UPDATE produtos
     SET    estoque = estoque + OLD.quantidade
-    WHERE  id_produto = OLD.id_produto;
+    WHERE  id_produto = OLD.produto_id;
 END$$
 
 DELIMITER ;
