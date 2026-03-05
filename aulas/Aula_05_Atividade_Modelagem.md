@@ -19,6 +19,7 @@ A entrega inclui dois produtos:
 
 1. **Diagrama Conceitual (MER):** Usando um arquivo mermaid, dbdiagrams, draw.io ou equivalente.
 2. **Script DDL completo e funcional:** Um Arquivo chamado trabalho.sql com seu nome completo sendo a primeira linha via comentário.
+   **NÃO COMPACTE OS ARQUIVOS!**
 
 > ⚠️ **A entrega deve ser feita pela atividade específica criada no Google Classroom da turma.** Não envie por e-mail nem por outros canais.
 
@@ -111,6 +112,8 @@ O script deve ser executável do zero, seguindo as melhores práticas abordadas 
 - Comentários que identifiquem seções e justifiquem decisões de projeto não óbvias
 - Apague o banco e tabelas antes de cada criação para garantir a criação completa da versão final do script SQL.
 
+---
+ **NÃO COMPACTE OS ARQUIVOS!**
 ---
 
 ## 4. Critérios de Avaliação do T1
