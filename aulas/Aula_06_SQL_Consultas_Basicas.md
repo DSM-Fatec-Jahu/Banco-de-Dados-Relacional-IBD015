@@ -15,8 +15,7 @@ Ao final desta aula, você será capaz de escrever consultas SQL com `SELECT`, f
 
 A **DQL** — *Data Query Language* — é o subconjunto do SQL responsável pela consulta de dados. O `SELECT` é o comando mais usado em qualquer banco de dados: enquanto um sistema típico executa muito mais leituras do que escritas, saber construir consultas eficientes é uma das habilidades mais valorizadas no mercado.
 
-[prompt para nanobanana: "Educational diagram showing the anatomy of a SQL SELECT statement with labeled parts: SELECT (columns), FROM (table), WHERE (filter condition), ORDER BY (sorting). Each part highlighted in a different color (blue for SELECT, green for FROM, orange for WHERE, purple for ORDER BY). Clean flat design, white background, monospace font for SQL code, labels in Portuguese pointing to each clause."]
-![Anatomia do SELECT](../imgs/Aula_06_img_01.png)
+![Anatomia do SELECT](../imgs/Aula_06_IMG_01.png)
 
 ---
 
