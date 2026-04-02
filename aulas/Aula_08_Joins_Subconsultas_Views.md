@@ -23,7 +23,6 @@ Ao final desta aula, você será capaz de combinar dados de múltiplas tabelas c
 
 Um banco de dados normalizado distribui as informações em múltiplas tabelas para eliminar redundâncias. Para obter uma visão completa dos dados — por exemplo, um pedido com nome do cliente, produtos e valores — precisamos **juntar** essas tabelas. O `JOIN` é o mecanismo que faz isso.
 
-[prompt para nanobanana: "Visual diagram showing three types of SQL JOINs as Venn diagrams side by side. Left: INNER JOIN showing only the overlapping (intersection) area highlighted in blue, labeled 'INNER JOIN - Apenas correspondências'. Middle: LEFT JOIN showing left circle fully highlighted plus intersection in blue, labeled 'LEFT JOIN - Todos da esquerda + correspondências'. Right: RIGHT JOIN showing right circle fully highlighted plus intersection in blue, labeled 'RIGHT JOIN - Todos da direita + correspondências'. Clean flat design, white background, Portuguese labels."]
 ![Tipos de JOIN - Diagrama Venn](../imgs/Aula_08_img_01.png)
 
 ---
