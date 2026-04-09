@@ -1,0 +1,103 @@
+-- =============================================================================
+-- AVALIAÇÃO — Modelagem e DDL
+-- Professor: Ronan Adriel Zenatti · ronan.zenatti@cps.sp.gov.br
+-- Fatec Jahu — 1º Semestre / 2026
+--
+--
+-- Valor simulado: 3,0 pontos (equivalente a 30% da nota final)
+-- Nome do arquivo: RA_NomeCompleto_Simulacao.sql
+-- Exemplo:         2300042_MariaOliveira_Simulacao.sql
+--
+-- O arquivo deve executar do início ao fim sem erros.
+-- Use comentários SQL para identificar cada tabela criada e para
+-- registrar decisões de modelagem que julgar importante justificar.
+-- =============================================================================
+
+
+-- =============================================================================
+-- CRITÉRIOS DE AVALIAÇÃO
+-- =============================================================================
+--
+-- Critério               Descrição                                    Pontos
+-- --------------------   ------------------------------------------   -------
+-- Criação do banco       Banco criado com charset, collation, USE e
+--                        recursos de segurança (IF EXISTS)             0,40
+--
+-- Modelagem              Identificação correta das entidades,
+--                        relacionamentos, generalização/
+--                        especialização e N:M                          0,90
+--
+-- Chaves                 PKs com AUTO_INCREMENT, FKs nomeadas com
+--                        CONSTRAINT e uso correto da Regra 7           0,70
+--
+-- Constraints            Uso adequado de NOT NULL, UNIQUE, CHECK
+--                        e DEFAULT conforme o contexto                 0,40
+--
+-- Convenções             Nomenclatura em snake_case, tabelas no
+--                        plural, casing correto de comandos e nomes    0,40
+--
+-- Tipos e tamanhos       Escolha de tipos e tamanhos de colunas
+--                        coerentes com os dados de cada campo          0,40
+--
+-- Comentários            Comentários identificando as tabelas e
+--                        registrando decisões de modelagem             0,20
+-- --------------------   ------------------------------------------   -------
+-- TOTAL                                                                3,00
+--
+-- Descontos automáticos:
+--   • Arquivo com nome fora do padrão solicitado        : -0,10
+--   • Arquivo que não executa sem erros do início ao fim: -0,50
+-- =============================================================================
+
+
+-- =============================================================================
+-- CONTEXTO
+-- =============================================================================
+--
+-- Você foi visitar o Seu Humberto, dono de uma funilaria chamada
+-- "Funilaria do Humberto", aqui em Jahu mesmo. Ele quer informatizar
+-- o negócio, mas não entende nada de tecnologia — então você anotou
+-- tudo que ele foi falando durante a conversa:
+--
+-- "Olha, o que eu preciso mesmo é controlar as ordens de serviço.
+--  Quando um carro entra aqui, eu anoto o problema que o cliente
+--  trouxe, a data que chegou, e quando termina eu coloco a data de
+--  saída também. Cada OS tem um status — pode tá Aberta, Em Andamento,
+--  Aguardando Peça, Concluída ou Cancelada.
+--
+--  O cliente eu já tenho cadastrado: nome, CPF, telefone. Às vezes
+--  o mesmo cliente traz mais de um carro, então preciso guardar os
+--  carros separado — cada carro tem a placa, a marca, o modelo e o
+--  ano. Cada carro é de um cliente, mas um cliente pode ter vários
+--  carros aqui no sistema.
+--
+--  Agora, sobre os funcionários — e aqui tem um detalhe importante —
+--  eu tenho dois tipos: os funileiros e os pintores. Todo mundo tem
+--  nome, CPF e data de contratação. Mas o funileiro tem uma
+--  certificação técnica que ele tirou no SENAI, e o pintor tem
+--  a especialidade dele — se é automotivo, industrial, esse tipo de
+--  coisa. São coisas diferentes, mas todos são meus funcionários.
+--
+--  E aí cada OS tem um responsável — um funcionário que tá tocando
+--  aquele serviço. Mas eu também quero saber quem foi que abriu a OS
+--  no sistema, porque às vezes não é o mesmo que tá fazendo o serviço.
+--  Por exemplo: o Carlão abre a OS quando o carro chega, mas quem
+--  vai fazer o serviço é o Zé. Então eu preciso dos dois registrados
+--  na mesma OS — quem abriu e quem tá executando.
+--
+--  Por último, cada OS pode ter vários serviços dentro dela — troca
+--  de para-choque, alinhamento, pintura parcial, essas coisas. Cada
+--  tipo de serviço tem um nome e um preço padrão. Na OS eu guardo
+--  quanto foi cobrado de fato por cada serviço, porque às vezes dou
+--  desconto pro cliente antigo."
+--
+-- Com base nessa conversa, escreva o script SQL completo que cria
+-- o banco de dados "funilaria_humberto" e todas as suas tabelas.
+--
+-- Seu arquivo deve conter, nesta ordem:
+--   1. Remoção do banco anterior e criação do banco novo
+--   2. Criação de todas as tabelas, na ordem correta, com PKs,
+--      FKs e demais constraints adequadas ao contexto descrito
+--
+-- Inserir 3 dados em 1 tabela e exibir os registros.
+-- =============================================================================
