@@ -30,14 +30,6 @@ Nesta aula, nosso foco é a **etapa conceitual**, usando a abordagem mais consag
 
 ---
 
-## 🎥 Vídeo de Apoio
-
-Antes de prosseguir, este vídeo do canal **Bóson Treinamentos** oferece uma introdução clara e didática ao MER, em português:
-
-- 📺 [Modelagem de Dados — Introdução ao MER](https://www.youtube.com/watch?v=Q_KTYFgvu1s) — Bóson Treinamentos
-
----
-
 ## 1. O Modelo Entidade-Relacionamento (MER)
 
 O MER foi proposto por **Peter Chen em 1976** e até hoje é a forma mais utilizada para modelagem conceitual de bancos de dados. Ele é composto por três elementos principais: **Entidades**, **Atributos** e **Relacionamentos**. Vamos explorar cada um deles com profundidade.
@@ -286,19 +278,19 @@ erDiagram
     }
 
     CARRO {
-        int id_veiculo PK_FK
+        int id_veiculo PK, FK
         int numero_portas
         varchar tipo_cambio
     }
 
     MOTO {
-        int id_veiculo PK_FK
+        int id_veiculo PK, FK
         varchar cilindrada
         tinyint tem_sidecar
     }
 
     CAMINHAO {
-        int id_veiculo PK_FK
+        int id_veiculo PK, FK
         decimal capacidade_carga_ton
         int numero_eixos
     }
@@ -327,13 +319,13 @@ erDiagram
     }
 
     CONTA_CORRENTE {
-        int id_conta PK_FK
+        int id_conta PK, FK
         decimal limite_cheque_especial
         decimal taxa_manutencao
     }
 
     CONTA_POUPANCA {
-        int id_conta PK_FK
+        int id_conta PK, FK
         decimal taxa_rendimento
         date data_aniversario
     }
@@ -361,19 +353,19 @@ erDiagram
     }
 
     MEDICO {
-        int id_pessoa PK_FK
+        int id_pessoa PK, FK
         varchar crm
         varchar especialidade
     }
 
     ENFERMEIRO {
-        int id_pessoa PK_FK
+        int id_pessoa PK, FK
         varchar coren
         varchar turno
     }
 
     PACIENTE {
-        int id_pessoa PK_FK
+        int id_pessoa PK, FK
         varchar convenio
         varchar tipo_sanguineo
     }
@@ -402,13 +394,13 @@ erDiagram
     }
 
     GERENTE {
-        int id_funcionario PK_FK
+        int id_funcionario PK, FK
         decimal bonus_anual
         int tamanho_equipe
     }
 
     TECNICO {
-        int id_funcionario PK_FK
+        int id_funcionario PK, FK
         varchar area_tecnica
         varchar nivel_certificacao
     }
@@ -436,7 +428,7 @@ erDiagram
     }
 
     PRODUTO_FISICO {
-        int id_produto PK_FK
+        int id_produto PK, FK
         decimal peso_kg
         decimal altura_cm
         decimal largura_cm
@@ -444,7 +436,7 @@ erDiagram
     }
 
     PRODUTO_DIGITAL {
-        int id_produto PK_FK
+        int id_produto PK, FK
         varchar url_download
         decimal tamanho_mb
         int validade_dias
@@ -472,13 +464,13 @@ erDiagram
     }
 
     MUSICA {
-        int id_conteudo PK_FK
+        int id_conteudo PK, FK
         text letra
         int id_album FK
     }
 
     FILME {
-        int id_conteudo PK_FK
+        int id_conteudo PK, FK
         text sinopse
         varchar classificacao_etaria
     }
@@ -505,8 +497,8 @@ A hierarquia de generalização/especialização não tem representação direta
 ```sql
 -- Exemplo: Produto com tudo em uma tabela
 CREATE TABLE produtos (
-    id_produto   INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    nome         VARCHAR(150) NOT NULL,
+    id_produto   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    nome         VARCHAR(255) NOT NULL,
     preco        DECIMAL(10,2) NOT NULL,
     tipo         ENUM('fisico','digital') NOT NULL,  -- discriminador
     -- colunas de produto físico (NULL para digitais):
@@ -523,20 +515,20 @@ CREATE TABLE produtos (
 ```sql
 -- Tabela da superclasse
 CREATE TABLE produtos (
-    id_produto INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    nome       VARCHAR(150) NOT NULL,
+    id_produto BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    nome       VARCHAR(255) NOT NULL,
     preco      DECIMAL(10,2) NOT NULL,
     CONSTRAINT pk_produto PRIMARY KEY (id_produto)
-) ENGINE=InnoDB ...;
+);
 
 -- Tabela da subclasse (PK = FK para superclasse)
 CREATE TABLE produtos_fisicos (
-    id_produto INT UNSIGNED NOT NULL,
+    id_produto BIGINT UNSIGNED NOT NULL,
     peso_kg    DECIMAL(8,3) NOT NULL,
     CONSTRAINT pk_prod_fisico  PRIMARY KEY (id_produto),
     CONSTRAINT fk_prod_fisico  FOREIGN KEY (id_produto)
         REFERENCES produtos (id_produto) ON DELETE CASCADE
-) ENGINE=InnoDB ...;
+);
 ```
 
 **Estratégia 3 — Uma tabela por subclasse (sem superclasse):** cada subclasse tem sua própria tabela com todos os atributos, inclusive os herdados da superclasse. Evita JOINs, mas duplica a definição dos atributos comuns.
@@ -639,16 +631,6 @@ Conhecer os erros mais frequentes ajuda a evitá-los. Fique atento a:
 **Usar generalização quando não há atributos específicos:** se as subclasses candidatas não têm nenhum atributo ou relacionamento próprio além dos herdados, a hierarquia provavelmente é desnecessária. Use uma coluna `tipo` com `CHECK` na própria entidade e evite complexidade sem benefício.
 
 **Confundir generalização com relacionamento comum:** a relação "é um" (herança) é fundamentalmente diferente de "tem um" (associação). Gerente **é um** Funcionário — isso é herança. Funcionário **tem um** Departamento — isso é relacionamento. Aplique generalização somente quando a relação semântica for realmente de subtipagem.
-
----
-
-## 🎥 Vídeos Complementares
-
-Para reforçar o conteúdo desta aula, recomendamos os seguintes vídeos:
-
-- 📺 [Cardinalidade no MER — Explicação Completa](https://www.youtube.com/watch?v=Q_KTYFgvu1s) — Bóson Treinamentos
-- 📺 [Entidades Fortes e Fracas no Banco de Dados](https://www.youtube.com/watch?v=uwCRtxnN5e4) — Curso em Vídeo
-- 📺 [Generalização e Especialização no MER](https://www.youtube.com/watch?v=lSqiJ5gUSNI) — Bóson Treinamentos
 
 ---
 
