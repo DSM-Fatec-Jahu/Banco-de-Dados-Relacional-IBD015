@@ -19,13 +19,6 @@ A **DQL** — *Data Query Language* — é o subconjunto do SQL responsável pel
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [SELECT, WHERE e ORDER BY — MySQL do zero](https://www.youtube.com/watch?v=7S_tz1z_5bA) — Bóson Treinamentos
-- 📺 [Operadores SQL — LIKE, BETWEEN, IN, IS NULL](https://www.youtube.com/watch?v=g3xi4ZHQCM8) — CFBCursos
-
----
-
 ## 1. Estrutura Básica do SELECT
 
 ```sql

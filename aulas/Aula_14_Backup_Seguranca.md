@@ -11,13 +11,6 @@ Ao final desta aula, você será capaz de realizar backup e restauração de ban
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [Backup e Restore com mysqldump](https://www.youtube.com/watch?v=8Ib1tRjX6EA) — Bóson Treinamentos
-- 📺 [Usuários e Permissões no MySQL](https://www.youtube.com/watch?v=OFcpg-wfOzs) — CFBCursos
-
----
-
 ## 1. Estratégias de Backup
 
 [prompt para nanobanana: "Timeline diagram showing three database backup strategies. Top row: 'Backup Completo' - full database cylinder icon on Sunday, labeled 'Copia tudo - Mais lento, arquivo maior'. Middle row: 'Backup Incremental' - small delta icons on Mon/Tue/Wed/Thu/Fri/Sat, labeled 'Apenas mudanças desde o último backup'. Bottom row: 'Backup Diferencial' - medium icons growing in size Mon through Sat, labeled 'Mudanças desde o último backup COMPLETO'. A restore scenario at the bottom shows: Completo needs Sunday only, Incremental needs Sunday+each day, Diferencial needs Sunday+latest differential. Clean educational flat design, blue/green/orange color coding, white background, Portuguese labels."]

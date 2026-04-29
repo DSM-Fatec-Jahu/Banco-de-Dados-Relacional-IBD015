@@ -11,13 +11,6 @@ Ao final desta aula, você será capaz de usar as funções de agregação `COUN
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [GROUP BY e HAVING — MySQL](https://www.youtube.com/watch?v=HXV3zeQKqGY) — Bóson Treinamentos
-- 📺 [Funções de Agregação no SQL](https://www.youtube.com/watch?v=yPu6qV5byu4) — CFBCursos
-
----
-
 ## 1. Funções de Agregação
 
 Funções de agregação **calculam um único valor** a partir de múltiplas linhas. Elas ignoram valores `NULL` (exceto `COUNT(*)`).

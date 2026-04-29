@@ -11,13 +11,6 @@ Ao final desta aula, você será capaz de criar funções definidas pelo usuári
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [Functions vs Procedures no MySQL](https://www.youtube.com/watch?v=cw4-OaAB_OU) — Bóson Treinamentos
-- 📺 [Transações ACID no MySQL](https://www.youtube.com/watch?v=AcqtAEzuoj0) — CFBCursos
-
----
-
 ## 1. FUNCTION vs PROCEDURE — A Diferença Fundamental
 
 [prompt para nanobanana: "Side-by-side comparison table showing FUNCTION vs PROCEDURE differences. FUNCTION column (blue): 'Retorna UM valor via RETURN', 'Pode ser usada dentro de SELECT', 'Não pode executar INSERT/UPDATE/DELETE por padrão', 'Chamada: SELECT fn_nome()'. PROCEDURE column (orange): 'Retorna via parâmetros OUT', 'Chamada com CALL', 'Pode executar qualquer DML', 'Pode ter múltiplos resultados'. Clean flat design, white background, Portuguese labels."]

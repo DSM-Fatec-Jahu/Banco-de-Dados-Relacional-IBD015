@@ -11,13 +11,6 @@ Ao final desta aula, você será capaz de criar Stored Procedures com parâmetro
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [Stored Procedures no MySQL — do zero](https://www.youtube.com/watch?v=lx7PFtCJtGQ) — Bóson Treinamentos
-- 📺 [Parâmetros IN, OUT e INOUT](https://www.youtube.com/watch?v=Ot9FD1BYVQA) — CFBCursos
-
----
-
 ## 1. O que é uma Stored Procedure?
 
 Uma **Stored Procedure** (procedimento armazenado) é um bloco de código SQL salvo no banco de dados com um nome, que pode ser chamado quando necessário. Ela encapsula lógica de negócio dentro do banco, reduzindo o tráfego de rede e centralizando regras críticas.

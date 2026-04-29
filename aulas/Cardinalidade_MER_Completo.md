@@ -15,13 +15,6 @@ Este material foi construído para atacar esse ponto com precisão. Vamos constr
 
 ---
 
-## 🎥 Vídeo de Apoio
-
-- 📺 [Cardinalidade em Banco de Dados — do básico ao avançado](https://www.youtube.com/watch?v=Q_KTYFgvu1s) — Bóson Treinamentos
-- 📺 [Relacionamentos e Cardinalidade no MER](https://www.youtube.com/watch?v=rMnvCaP_oF4) — Curso em Vídeo
-
----
-
 ## 1. O que é Cardinalidade?
 
 A cardinalidade descreve **quantas instâncias** de uma entidade podem se associar a **quantas instâncias** de outra entidade, dentro de um relacionamento. Pense nela como uma **regra de negócio expressa graficamente** — ela não é uma decisão técnica, mas sim um reflexo de como o mundo real funciona.

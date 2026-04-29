@@ -11,13 +11,6 @@ Ao final desta aula, você será capaz de criar Triggers `BEFORE` e `AFTER` para
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [Triggers no MySQL — Gatilhos BEFORE e AFTER](https://www.youtube.com/watch?v=ibeW6BsUhv0) — Bóson Treinamentos
-- 📺 [Auditoria com Triggers no MySQL](https://www.youtube.com/watch?v=G3Qc1KPe1SM) — CFBCursos
-
----
-
 ## 1. O que é um Trigger?
 
 Um **Trigger** é um bloco de código que é executado **automaticamente** pelo banco de dados em resposta a um evento DML (`INSERT`, `UPDATE` ou `DELETE`) em uma tabela específica. Ao contrário de procedures (que são chamadas explicitamente), triggers disparam de forma transparente — o usuário nem sabe que estão executando.
@@ -203,7 +196,7 @@ CREATE TABLE IF NOT EXISTS auditoria_precos (
                                      REFERENCES produtos (id_produto)
                                      ON DELETE RESTRICT
                                      ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 DELIMITER $$
 

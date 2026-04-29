@@ -20,13 +20,6 @@ Na Aula 03 você criou as estruturas (tabelas, colunas, constraints). Agora vamo
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [INSERT, UPDATE e DELETE no MySQL](https://www.youtube.com/watch?v=7S_tz1z_5bA) — Programming with Mosh (legendas PT)
-- 📺 [Transações no MySQL — COMMIT e ROLLBACK](https://www.youtube.com/watch?v=P3dITOSvpXU) — Bóson Treinamentos
-
----
-
 ## 1. INSERT — Inserindo Dados
 
 O `INSERT` adiciona novas linhas a uma tabela. Existem três formas principais de uso.

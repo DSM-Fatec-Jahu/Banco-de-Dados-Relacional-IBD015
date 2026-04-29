@@ -11,13 +11,6 @@ Ao final desta aula, você compreenderá profundamente as restrições de domín
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [Integridade Referencial e FK no MySQL](https://www.youtube.com/watch?v=oBSHWGmjpjQ) — Bóson Treinamentos
-- 📺 [Índices no MySQL — Como funcionam](https://www.youtube.com/watch?v=HubezKbFL7E) — Bóson Treinamentos
-
----
-
 ## 1. Restrições de Integridade
 
 Restrições de integridade são regras que o próprio banco de dados aplica automaticamente para garantir que os dados permaneçam válidos e consistentes — independentemente de como foram inseridos (via aplicação, script ou acesso direto).

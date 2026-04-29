@@ -11,13 +11,6 @@ Ao final desta aula, você será capaz de usar `EXPLAIN` e `EXPLAIN ANALYZE` par
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [EXPLAIN no MySQL — Entendendo planos de execução](https://www.youtube.com/watch?v=MuqMoO7KBm0) — Bóson Treinamentos
-- 📺 [Índices B-Tree e Hash no MySQL](https://www.youtube.com/watch?v=HubezKbFL7E) — Otávio Collodel
-
----
-
 ## 1. Como o Banco Executa uma Query — O Query Optimizer
 
 Antes de executar qualquer `SELECT`, o MariaDB passa a query pelo **Query Optimizer** — um componente que analisa diferentes formas de executar a consulta e escolhe o plano mais eficiente baseado em estatísticas sobre as tabelas e índices disponíveis.

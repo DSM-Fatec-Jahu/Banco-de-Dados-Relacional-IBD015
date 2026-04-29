@@ -23,14 +23,6 @@ Esses dois processos se complementam: você pode chegar ao modelo lógico pela n
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [Normalização de Banco de Dados — Parte 1 (1FN e 2FN)](https://www.youtube.com/watch?v=GFQaEYEc8_8) — Bóson Treinamentos
-- 📺 [Normalização de Banco de Dados — Parte 2 (3FN)](https://www.youtube.com/watch?v=GFQaEYEc8_8) — Bóson Treinamentos
-- 📺 [Dependência Funcional explicada do zero](https://www.youtube.com/watch?v=UrYLYV7WSHM) — Curso em Vídeo
-
----
-
 ## 1. O Problema que a Normalização Resolve
 
 Antes de falar sobre as formas normais em si, é essencial entender *o que acontece quando não normalizamos*. Veja a tabela abaixo, que registra pedidos de uma loja:
@@ -760,13 +752,6 @@ EMPRESTIMO (id_emprestimo PK, id_usuario FK, id_livro FK,
 **Erro 4 — Não colocar UNIQUE em FK de relacionamento 1:1:** ao implementar um 1:1, a FK sem a constraint UNIQUE se comportará como um 1:N no banco de dados. O SGBD não saberá que você quer restringir a um único relacionamento.
 
 **Erro 5 — Esquecer atributos do relacionamento N:M:** quando um N:M é resolvido com tabela intermediária, os atributos que pertencem ao *relacionamento* (como `quantidade` em ITEM_PEDIDO, ou `nota` em HISTORICO) devem ir para essa tabela — não para nenhuma das entidades originais.
-
----
-
-## 🎥 Vídeos Complementares
-
-- 📺 [Anomalias de Inserção, Atualização e Exclusão](https://www.youtube.com/watch?v=aAx_T0ojaks) — Bóson Treinamentos
-- 📺 [Exercício Completo de Normalização](https://www.youtube.com/watch?v=2v5HzV_R3aI) — Danilo Aparecido
 
 ---
 

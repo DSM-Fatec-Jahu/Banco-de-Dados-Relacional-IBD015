@@ -11,14 +11,6 @@ Ao final desta aula, você será capaz de combinar dados de múltiplas tabelas c
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [SQL JOIN — Explicação Visual Completa](https://www.youtube.com/watch?v=9yeOJ0ZMUYw) — Bóson Treinamentos
-- 📺 [Subqueries no MySQL — do básico ao avançado](https://www.youtube.com/watch?v=nJILuzw5UaU) — Bóson Treinamentos
-- 📺 [CREATE VIEW no MySQL](https://www.youtube.com/watch?v=Eh1dz_RDKqM) — CFBCursos
-
----
-
 ## 1. Por que precisamos de JOINs?
 
 Um banco de dados normalizado distribui as informações em múltiplas tabelas para eliminar redundâncias. Para obter uma visão completa dos dados — por exemplo, um pedido com nome do cliente, produtos e valores — precisamos **juntar** essas tabelas. O `JOIN` é o mecanismo que faz isso.

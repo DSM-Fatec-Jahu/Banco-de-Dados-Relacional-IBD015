@@ -21,14 +21,6 @@ Os três comandos centrais da DDL são `CREATE` (criar), `ALTER` (modificar) e `
 
 ---
 
-## 🎥 Vídeos de Apoio
-
-- 📺 [SQL DDL — CREATE, ALTER e DROP explicados](https://www.youtube.com/watch?v=Ofwq7R8TxSI) — Bóson Treinamentos
-- 📺 [Tipos de Dados no MySQL — Guia Completo](https://www.youtube.com/watch?v=M7TgHWpBvwQ) — Bóson Treinamentos
-- 📺 [Constraints no MySQL — PK, FK, UNIQUE, CHECK](https://www.youtube.com/watch?v=jm7ZHZK0z7Q) — CFBCursos
-
----
-
 ## 1. Convenções de Nomenclatura desta Disciplina
 
 Antes de escrever uma única linha de SQL, precisamos estabelecer um conjunto de convenções que seguiremos em toda a disciplina. Convenções não são caprichos estéticos — elas são acordos que tornam o código legível, previsível e manutenível por qualquer pessoa do time, inclusive você mesmo daqui a seis meses.
@@ -427,12 +419,12 @@ CREATE TABLE IF NOT EXISTS nome_tabela (
     -- Constraints de tabela (PK, FK, UNIQUE compostos)
     [CONSTRAINT nome_constraint] TIPO_CONSTRAINT (coluna),
     ...
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 ```
 
-O `ENGINE=InnoDB` é o mecanismo de armazenamento que suporta **transações**, **chaves estrangeiras** e **bloqueios a nível de linha** — sem ele, as FKs são ignoradas silenciosamente. Sempre especifique `InnoDB` explicitamente.
+**Sobre `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`:** especificar essa cláusula é uma **boa prática documental**, mas **não é obrigatória**. Tanto o MariaDB quanto o MySQL modernos já aplicam, no momento da criação, o melhor padrão disponível — InnoDB como engine, `utf8mb4` como charset e a collation associada. Vamos demonstrar a cláusula completa apenas na primeira tabela desta aula (`pessoas`, abaixo). A partir daí, **todos os `CREATE TABLE` desta disciplina serão escritos sem essa cláusula**, confiando no padrão do SGBD — assim o foco fica nas colunas, constraints e relacionamentos, que é o que de fato muda de tabela para tabela.
 
-> **Diferença MariaDB vs MySQL:** no MariaDB, o engine padrão também é InnoDB (ou Aria em alguns contextos), mas é boa prática sempre especificá-lo. No MySQL 8.0+, InnoDB é o padrão e a especificação também é considerada boa prática pela legibilidade.
+> **Diferença MariaDB vs MySQL:** ambos usam InnoDB como engine padrão. Você só precisa declarar `ENGINE=...` explicitamente quando quer um engine diferente (`MyISAM`, `Aria`, `Memory` etc.) — algo raro fora de casos muito específicos.
 
 ### 6.2 Tabela `pessoas` — a base do sistema
 
@@ -481,10 +473,7 @@ CREATE TABLE IF NOT EXISTS categorias (
 
     CONSTRAINT pk_categoria  PRIMARY KEY (id_categoria),
     CONSTRAINT uq_cat_nome   UNIQUE      (nome)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 ```
 
 ### 6.4 Tabela `produtos` — com FK e CHECK
@@ -510,10 +499,7 @@ CREATE TABLE IF NOT EXISTS produtos (
                                   ON UPDATE CASCADE,
     CONSTRAINT ck_produto_preco   CHECK (preco >= 0),
     CONSTRAINT ck_produto_estoque CHECK (estoque >= 0)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 ```
 
 > ⚠️ **Diferença importante — `CHECK` no MariaDB vs MySQL:**
@@ -560,10 +546,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
                                       ON UPDATE CASCADE,
 
     CONSTRAINT ck_pedido_valor CHECK (valor_total >= 0)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 ```
 
 ### 6.6 Tabela `itens_pedidos` — chave composta e relacionamento N:M
@@ -598,10 +581,7 @@ CREATE TABLE IF NOT EXISTS itens_pedidos (
     CONSTRAINT ck_item_qtd      CHECK (quantidade > 0),
     CONSTRAINT ck_item_preco    CHECK (preco_unitario >= 0),
     CONSTRAINT ck_item_desc     CHECK (desconto >= 0 AND desconto <= 100)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 ```
 
 > 💡 **Por que armazenar `preco_unitario` na tabela de itens?** Porque o preço do produto pode mudar depois que o pedido foi feito. Se você armazenar apenas a FK do produto e consultar o preço atual, o valor do pedido histórico mudaria retroativamente — um erro grave em qualquer sistema comercial. O `preco_unitario` é um *snapshot* (fotografia) do preço no momento da compra.
@@ -913,10 +893,7 @@ CREATE TABLE IF NOT EXISTS pessoas (
     CONSTRAINT pk_pessoa   PRIMARY KEY (id_pessoa),
     CONSTRAINT uq_cpf      UNIQUE (cpf),
     CONSTRAINT uq_email    UNIQUE (email)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci
+)
   COMMENT='Cadastro base de pessoas físicas';
 
 -- -----------------------------------------------------------------------------
@@ -945,10 +922,7 @@ CREATE TABLE IF NOT EXISTS enderecos (
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
     CONSTRAINT ck_estado         CHECK (LENGTH(estado) = 2)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 
 -- -----------------------------------------------------------------------------
 -- Tabela: categorias
@@ -965,10 +939,7 @@ CREATE TABLE IF NOT EXISTS categorias (
 
     CONSTRAINT pk_categoria  PRIMARY KEY (id_categoria),
     CONSTRAINT uq_cat_nome   UNIQUE (nome)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 
 -- -----------------------------------------------------------------------------
 -- Tabela: produtos
@@ -993,10 +964,7 @@ CREATE TABLE IF NOT EXISTS produtos (
                                     ON UPDATE CASCADE,
     CONSTRAINT ck_preco            CHECK (preco >= 0),
     CONSTRAINT ck_estoque          CHECK (estoque >= 0)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 
 -- -----------------------------------------------------------------------------
 -- Tabela: pedidos
@@ -1037,10 +1005,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
                                      ON DELETE SET NULL
                                      ON UPDATE CASCADE,
     CONSTRAINT ck_valor_total        CHECK (valor_total >= 0)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 
 -- -----------------------------------------------------------------------------
 -- Tabela: itens_pedidos
@@ -1070,10 +1035,7 @@ CREATE TABLE IF NOT EXISTS itens_pedidos (
     CONSTRAINT ck_item_qtd      CHECK (quantidade > 0),
     CONSTRAINT ck_item_preco    CHECK (preco_unitario >= 0),
     CONSTRAINT ck_item_desconto CHECK (desconto >= 0 AND desconto <= 100)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 ```
 
 ---
@@ -1092,7 +1054,7 @@ CREATE TABLE Produto (
 );
 ```
 
-**Gabarito:** os erros são: nome da tabela em singular e com inicial maiúscula (deve ser `produtos` — Regras 2 e 4); `idProduto` usa camelCase (deve ser `id_produto` — Regras 1 e 5); o tipo da PK deve ser `BIGINT UNSIGNED AUTO_INCREMENT` e `INT(11)` está depreciado (Regra 5); `NomeProduto` mistura maiúsculas (deve ser `nome`); `Preco` com maiúscula (deve ser `preco`); `FLOAT` inapropriado para preço — use `DECIMAL(10,2)` (Regra 8); `ID_CATEGORIA` mistura maiúsculas e tipo errado (deve ser `categoria_id BIGINT UNSIGNED` — Regra 6); o nome da FK não segue o padrão semântico; faltam `NOT NULL` nas colunas obrigatórias; faltam os campos de log `criado_em`, `atualizado_em` e `deletado_em` (Regra 9); falta `ENGINE=InnoDB` e `DEFAULT CHARSET`.
+**Gabarito:** os erros são: nome da tabela em singular e com inicial maiúscula (deve ser `produtos` — Regras 2 e 4); `idProduto` usa camelCase (deve ser `id_produto` — Regras 1 e 5); o tipo da PK deve ser `BIGINT UNSIGNED AUTO_INCREMENT` e `INT(11)` está depreciado (Regra 5); `NomeProduto` mistura maiúsculas (deve ser `nome`); `Preco` com maiúscula (deve ser `preco`); `FLOAT` inapropriado para preço — use `DECIMAL(10,2)` (Regra 8); `ID_CATEGORIA` mistura maiúsculas e tipo errado (deve ser `categoria_id BIGINT UNSIGNED` — Regra 6); o nome da FK não segue o padrão semântico; faltam `NOT NULL` nas colunas obrigatórias; faltam os campos de log `criado_em`, `atualizado_em` e `deletado_em` (Regra 9). Note que **não** é erro a ausência de `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci` — o MariaDB usa esse padrão automaticamente; declarar é apenas boa prática documental.
 
 Versão corrigida:
 
@@ -1113,10 +1075,7 @@ CREATE TABLE IF NOT EXISTS produtos (
                                     ON DELETE RESTRICT
                                     ON UPDATE CASCADE,
     CONSTRAINT ck_preco            CHECK (preco >= 0)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+);
 ```
 
 **Exercício 2 — Criação guiada:** crie o DDL completo para um sistema de biblioteca com as entidades: `autores`, `livros`, `usuarios`, `emprestimos`. Siga todas as convenções. Um livro pode ter múltiplos autores; um usuário pode ter múltiplos empréstimos; cada empréstimo é de um único livro.
