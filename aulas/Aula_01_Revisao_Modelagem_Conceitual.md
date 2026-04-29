@@ -131,54 +131,54 @@ O diagrama abaixo representa esse modelo usando a notação Crow's Foot com Merm
 
 ```mermaid
 erDiagram
-    CURSO {
-        int id_curso PK
+    CURSOS {
+        bigint id_curso PK
         varchar nome
         int duracao_semestres
     }
 
-    DISCIPLINA {
-        int id_disciplina PK
+    DISCIPLINAS {
+        bigint id_disciplina PK
         varchar nome
         varchar sigla
         int carga_horaria
-        int id_curso FK
+        bigint curso_id FK
     }
 
-    PROFESSOR {
-        int id_professor PK
+    PROFESSORES {
+        bigint id_professor PK
         varchar nome
         varchar email
         varchar titulacao
     }
 
-    ALUNO {
-        int id_aluno PK
+    ALUNOS {
+        bigint id_aluno PK
         varchar nome
         varchar cpf
         date data_nascimento
-        int id_curso FK
+        bigint curso_id FK
     }
 
-    MATRICULA {
-        int id_matricula PK
-        int id_aluno FK
-        int id_disciplina FK
+    MATRICULAS {
+        bigint id_matricula PK
+        bigint aluno_id FK
+        bigint disciplina_id FK
         decimal nota
         varchar situacao
     }
 
-    LECIONA {
-        int id_professor FK
-        int id_disciplina FK
+    LECIONAM {
+        bigint professor_id FK
+        bigint disciplina_id FK
         varchar semestre
     }
 
-    CURSO ||--o{ DISCIPLINA : "possui"
-    CURSO ||--o{ ALUNO : "possui"
-    ALUNO ||--o{ MATRICULA : "realiza"
-    DISCIPLINA ||--o{ MATRICULA : "recebe"
-    PROFESSOR }o--o{ DISCIPLINA : "leciona"
+    CURSOS ||--o{ DISCIPLINAS : "possui"
+    CURSOS ||--o{ ALUNOS : "possui"
+    ALUNOS ||--o{ MATRICULAS : "realiza"
+    DISCIPLINAS ||--o{ MATRICULAS : "recebe"
+    PROFESSORES }o--o{ DISCIPLINAS : "leciona"
 ```
 
 > 📌 **Leitura do diagrama:** a notação `||--o{` significa "um e apenas um para zero ou muitos". Lemos a linha entre CURSO e DISCIPLINA como: *"um Curso possui zero ou muitas Disciplinas, e cada Disciplina pertence a exatamente um Curso"*.
@@ -191,7 +191,7 @@ Um exercício muito importante — e que cai em avaliações — é a capacidade
 
 Treine com o diagrama acima:
 
-Olhando a linha entre **ALUNO** e **MATRICULA**: o `||` do lado do Aluno indica participação de "um e apenas um" — cada matrícula pertence a exatamente um aluno. O `o{` do lado da Matrícula indica "zero ou muitos" — um aluno pode ter zero ou muitas matrículas. Traduzindo: *um aluno pode se matricular em zero ou muitas disciplinas, e cada matrícula pertence a exatamente um aluno*.
+Olhando a linha entre **ALUNOS** e **MATRICULAS**: o `||` do lado do Aluno indica participação de "um e apenas um" — cada matrícula pertence a exatamente um aluno. O `o{` do lado da Matrícula indica "zero ou muitos" — um aluno pode ter zero ou muitas matrículas. Traduzindo: *um aluno pode se matricular em zero ou muitas disciplinas, e cada matrícula pertence a exatamente um aluno*.
 
 ---
 
@@ -218,23 +218,23 @@ Pense no raciocínio: *"Uma Pessoa pode ser Cliente ou Funcionário. Clientes t�
 A principal vantagem desse mecanismo é a **herança**: toda subclasse automaticamente herda todos os atributos e relacionamentos da superclasse, além de possuir os seus próprios.
 
 ```
-PESSOA (superclasse)
+PESSOAS (superclasse)
 │   ├── id_pessoa
 │   ├── nome
 │   ├── cpf
 │   └── email
 │
-├── CLIENTE (subclasse — herda tudo de PESSOA, acrescenta:)
+├── CLIENTES (subclasse — herda tudo de PESSOAS, acrescenta:)
 │       ├── data_primeiro_pedido
 │       └── limite_credito
 │
-└── FUNCIONARIO (subclasse — herda tudo de PESSOA, acrescenta:)
+└── FUNCIONARIOS (subclasse — herda tudo de PESSOAS, acrescenta:)
         ├── cargo
         ├── salario
         └── data_admissao
 ```
 
-Uma instância de CLIENTE **é uma** PESSOA — ela tem nome, CPF e e-mail (herdados), mais os atributos específicos de cliente. Esse é o princípio central da herança: a relação entre subclasse e superclasse é sempre do tipo **"é um"** (*is-a*).
+Uma instância de CLIENTES **é uma** PESSOA — ela tem nome, CPF e e-mail (herdados), mais os atributos específicos de cliente. Esse é o princípio central da herança: a relação entre subclasse e superclasse é sempre do tipo **"é um"** (*is-a*).
 
 ### 8.4 Restrições de Generalização/Especialização
 
@@ -265,39 +265,39 @@ A combinação dessas duas dimensões gera quatro tipos possíveis:
 
 **Exemplo 1 — Generalização de Veículos:**
 
-Ao modelar um sistema de locadora, você identificou separadamente as entidades **Carro**, **Moto** e **Caminhão**. Percebeu que todas têm placa, ano de fabricação, cor e quilometragem. Ao generalizar, você cria **Veículo** como superclasse.
+Ao modelar um sistema de locadora, você identificou separadamente as entidades **Carros**, **Motos** e **Caminhãos**. Percebeu que todas têm placa, ano de fabricação, cor e quilometragem. Ao generalizar, você cria **Veículos** como superclasse.
 
 ```mermaid
 erDiagram
-    VEICULO {
-        int id_veiculo PK
+    VEICULOS {
+        bigint id_veiculo PK
         varchar placa
         int ano_fabricacao
         varchar cor
         int quilometragem
     }
 
-    CARRO {
-        int id_veiculo PK, FK
+    CARROS {
+        bigint id_veiculo PK, FK
         int numero_portas
         varchar tipo_cambio
     }
 
-    MOTO {
-        int id_veiculo PK, FK
+    MOTOS {
+        bigint id_veiculo PK, FK
         varchar cilindrada
         tinyint tem_sidecar
     }
 
-    CAMINHAO {
-        int id_veiculo PK, FK
+    CAMINHAOS {
+        bigint id_veiculo PK, FK
         decimal capacidade_carga_ton
         int numero_eixos
     }
 
-    VEICULO ||--o| CARRO     : "é um"
-    VEICULO ||--o| MOTO      : "é um"
-    VEICULO ||--o| CAMINHAO  : "é um"
+    VEICULOS ||--o| CARROS     : "é um"
+    VEICULOS ||--o| MOTOS      : "é um"
+    VEICULOS ||--o| CAMINHAOS  : "é um"
 ```
 
 Restrição: **Total Exclusiva** — todo veículo cadastrado é obrigatoriamente um carro, uma moto ou um caminhão; e não pode ser dois ao mesmo tempo.
@@ -306,32 +306,32 @@ Restrição: **Total Exclusiva** — todo veículo cadastrado é obrigatoriament
 
 **Exemplo 2 — Generalização de Contas Bancárias:**
 
-Em um sistema bancário, você identificou **Conta Corrente** e **Conta Poupança**. Ambas têm número de conta, saldo e data de abertura. Ao generalizar: **Conta** é a superclasse.
+Em um sistema bancário, você identificou **Contas Correntes** e **Contas Poupanças**. Ambas têm número de conta, saldo e data de abertura. Ao generalizar: **Contas** é a superclasse.
 
 ```mermaid
 erDiagram
-    CONTA {
-        int id_conta PK
+    CONTAS {
+        bigint id_conta PK
         varchar numero_conta
         decimal saldo
         date data_abertura
-        int id_cliente FK
+        bigint id_cliente FK
     }
 
-    CONTA_CORRENTE {
-        int id_conta PK, FK
+    CONTAS_CORRENTES {
+        bigint id_conta PK, FK
         decimal limite_cheque_especial
         decimal taxa_manutencao
     }
 
-    CONTA_POUPANCA {
-        int id_conta PK, FK
+    CONTAS_POUPANCAS {
+        bigint id_conta PK, FK
         decimal taxa_rendimento
         date data_aniversario
     }
 
-    CONTA ||--o| CONTA_CORRENTE : "é uma"
-    CONTA ||--o| CONTA_POUPANCA : "é uma"
+    CONTAS ||--o| CONTAS_CORRENTES : "é uma"
+    CONTAS ||--o| CONTAS_POUPANCAS : "é uma"
 ```
 
 Restrição: **Total Exclusiva** — toda conta é corrente ou poupança, nunca as duas.
@@ -340,39 +340,39 @@ Restrição: **Total Exclusiva** — toda conta é corrente ou poupança, nunca 
 
 **Exemplo 3 — Generalização de Pessoas em um Hospital:**
 
-Ao modelar um sistema hospitalar, você identificou **Médico**, **Enfermeiro** e **Paciente** como entidades separadas. Todas têm nome, CPF, data de nascimento e telefone. Ao generalizar: **Pessoa** é a superclasse.
+Ao modelar um sistema hospitalar, você identificou **Médicos**, **Enfermeiros** e **Pacientes** como entidades separadas. Todas têm nome, CPF, data de nascimento e telefone. Ao generalizar: **Pessoa** é a superclasse.
 
 ```mermaid
 erDiagram
-    PESSOA {
-        int id_pessoa PK
+    PESSOAS {
+        bigint id_pessoa PK
         varchar nome
         char cpf
         date data_nascimento
         char telefone
     }
 
-    MEDICO {
-        int id_pessoa PK, FK
+    MEDICOS {
+        bigint id_pessoa PK, FK
         varchar crm
         varchar especialidade
     }
 
-    ENFERMEIRO {
-        int id_pessoa PK, FK
+    ENFERMEIROS {
+        bigint id_pessoa PK, FK
         varchar coren
         varchar turno
     }
 
-    PACIENTE {
-        int id_pessoa PK, FK
+    PACIENTES {
+        bigint id_pessoa PK, FK
         varchar convenio
         varchar tipo_sanguineo
     }
 
-    PESSOA ||--o| MEDICO      : "é uma"
-    PESSOA ||--o| ENFERMEIRO  : "é uma"
-    PESSOA ||--o| PACIENTE    : "é uma"
+    PESSOAS ||--o| MEDICOS      : "é uma"
+    PESSOAS ||--o| ENFERMEIROS  : "é uma"
+    PESSOAS ||--o| PACIENTES    : "é uma"
 ```
 
 Restrição: **Parcial Sobreposta** — uma pessoa pode ser médico e paciente ao mesmo tempo (um médico que se interna no hospital onde trabalha), e também pode existir uma pessoa cadastrada que ainda não se enquadrou em nenhuma subclasse.
@@ -381,32 +381,32 @@ Restrição: **Parcial Sobreposta** — uma pessoa pode ser médico e paciente a
 
 **Exemplo 1 — Especialização de Funcionário:**
 
-Ao modelar um sistema de RH, você tem a entidade **Funcionário** com nome, CPF, salário e data de admissão. Percebe que alguns funcionários são **Gerentes** (com bônus e equipe sob responsabilidade) e outros são **Técnicos** (com certificações). Você especializa Funcionário nessas subclasses.
+Ao modelar um sistema de RH, você tem a entidade **Funcionários** com nome, CPF, salário e data de admissão. Percebe que alguns funcionários são **Gerentes** (com bônus e equipe sob responsabilidade) e outros são **Técnicos** (com certificações). Você especializa Funcionário nessas subclasses.
 
 ```mermaid
 erDiagram
-    FUNCIONARIO {
-        int id_funcionario PK
+    FUNCIONARIOS {
+        bigint id_funcionario PK
         varchar nome
         char cpf
         decimal salario
         date data_admissao
     }
 
-    GERENTE {
-        int id_funcionario PK, FK
+    GERENTES {
+        bigint id_funcionario PK, FK
         decimal bonus_anual
         int tamanho_equipe
     }
 
-    TECNICO {
-        int id_funcionario PK, FK
+    TECNICOS {
+        bigint id_funcionario PK, FK
         varchar area_tecnica
         varchar nivel_certificacao
     }
 
-    FUNCIONARIO ||--o| GERENTE  : "é um"
-    FUNCIONARIO ||--o| TECNICO  : "é um"
+    FUNCIONARIOS ||--o| GERENTES  : "é um"
+    FUNCIONARIOS ||--o| TECNICOS  : "é um"
 ```
 
 Restrição: **Parcial Sobreposta** — nem todo funcionário é gerente ou técnico (pode ser outro tipo); e um funcionário pode acumular as duas funções.
@@ -419,31 +419,31 @@ Em uma loja virtual, a entidade **Produto** tem nome, preço, estoque e descriç
 
 ```mermaid
 erDiagram
-    PRODUTO {
-        int id_produto PK
+    PRODUTOS {
+        bigint id_produto PK
         varchar nome
         decimal preco
         int estoque
         text descricao
     }
 
-    PRODUTO_FISICO {
-        int id_produto PK, FK
+    PRODUTOS_FISICOS {
+        bigint id_produto PK, FK
         decimal peso_kg
         decimal altura_cm
         decimal largura_cm
         decimal profundidade_cm
     }
 
-    PRODUTO_DIGITAL {
-        int id_produto PK, FK
+    PRODUTOS_DIGITAIS {
+        bigint id_produto PK, FK
         varchar url_download
         decimal tamanho_mb
         int validade_dias
     }
 
-    PRODUTO ||--o| PRODUTO_FISICO   : "é um"
-    PRODUTO ||--o| PRODUTO_DIGITAL  : "é um"
+    PRODUTOS ||--o| PRODUTOS_FISICOS   : "é um"
+    PRODUTOS ||--o| PRODUTOS_DIGITAIS  : "é um"
 ```
 
 Restrição: **Total Exclusiva** — todo produto é obrigatoriamente físico ou digital; nunca os dois.
@@ -452,38 +452,38 @@ Restrição: **Total Exclusiva** — todo produto é obrigatoriamente físico ou
 
 **Exemplo 3 — Especialização de Conteúdo em Streaming:**
 
-Em uma plataforma de streaming, a entidade **Conteudo** agrupa tudo que pode ser reproduzido: tem título, duração e data de lançamento. Ao especializar, você identifica **Musica** (com letra e álbum) e **Filme** (com sinopse e classificação etária) como subclasses com atributos e relacionamentos distintos.
+Em uma plataforma de streaming, a entidade **Conteudos** agrupa tudo que pode ser reproduzido: tem título, duração e data de lançamento. Ao especializar, você identifica **Musicas** (com letra e álbum) e **Filmes** (com sinopse e classificação etária) como subclasses com atributos e relacionamentos distintos.
 
 ```mermaid
 erDiagram
-    CONTEUDO {
-        int id_conteudo PK
+    CONTEUDOS {
+        bigint id_conteudo PK
         varchar titulo
         int duracao_segundos
         date data_lancamento
     }
 
-    MUSICA {
-        int id_conteudo PK, FK
+    MUSICAS {
+        bigint id_conteudo PK, FK
         text letra
-        int id_album FK
+        bigint id_album FK
     }
 
-    FILME {
-        int id_conteudo PK, FK
+    FILMES {
+        bigint id_conteudo PK, FK
         text sinopse
         varchar classificacao_etaria
     }
 
-    ALBUM {
-        int id_album PK
+    ALBUNS {
+        bigint id_album PK
         varchar titulo
         varchar url_capa
     }
 
-    CONTEUDO ||--o| MUSICA  : "é um"
-    CONTEUDO ||--o| FILME   : "é um"
-    ALBUM    ||--o{ MUSICA  : "contém"
+    CONTEUDOS ||--o| MUSICAS  : "é um"
+    CONTEUDOS ||--o| FILMES   : "é um"
+    ALBUNS    ||--o{ MUSICAS  : "contém"
 ```
 
 Restrição: **Total Exclusiva** — todo conteúdo cadastrado é música ou filme; e um conteúdo não pode ser os dois ao mesmo tempo. Este é exatamente o padrão que resolve o problema do **item de playlist** mencionado na Atividade T1.
@@ -550,54 +550,54 @@ O diagrama abaixo representa esse modelo usando a notação Crow's Foot com Merm
 
 ```mermaid
 erDiagram
-    CURSO {
-        int id_curso PK
+    CURSOS {
+        bigint id_curso PK
         varchar nome
         int duracao_semestres
     }
 
-    DISCIPLINA {
-        int id_disciplina PK
+    DISCIPLINAS {
+        bigint id_disciplina PK
         varchar nome
         varchar sigla
         int carga_horaria
-        int id_curso FK
+        bigint curso_id FK
     }
 
-    PROFESSOR {
-        int id_professor PK
+    PROFESSORES {
+        bigint id_professor PK
         varchar nome
         varchar email
         varchar titulacao
     }
 
-    ALUNO {
-        int id_aluno PK
+    ALUNOS {
+        bigint id_aluno PK
         varchar nome
         varchar cpf
         date data_nascimento
-        int id_curso FK
+        bigint curso_id FK
     }
 
-    MATRICULA {
-        int id_matricula PK
-        int id_aluno FK
-        int id_disciplina FK
+    MATRICULAS {
+        bigint id_matricula PK
+        bigint aluno_id FK
+        bigint disciplina_id FK
         decimal nota
         varchar situacao
     }
 
     LECIONA {
-        int id_professor FK
-        int id_disciplina FK
+        bigint professor_id FK
+        bigint disciplina_id FK
         varchar semestre
     }
 
-    CURSO ||--o{ DISCIPLINA : "possui"
-    CURSO ||--o{ ALUNO : "possui"
-    ALUNO ||--o{ MATRICULA : "realiza"
-    DISCIPLINA ||--o{ MATRICULA : "recebe"
-    PROFESSOR }o--o{ DISCIPLINA : "leciona"
+    CURSOS ||--o{ DISCIPLINAS : "possui"
+    CURSOS ||--o{ ALUNOS : "possui"
+    ALUNOS ||--o{ MATRICULAS : "realiza"
+    DISCIPLINAS ||--o{ MATRICULAS : "recebe"
+    PROFESSOR }o--o{ DISCIPLINAS : "leciona"
 ```
 
 > 📌 **Leitura do diagrama:** a notação `||--o{` significa "um e apenas um para zero ou muitos". Lemos a linha entre CURSO e DISCIPLINA como: *"um Curso possui zero ou muitas Disciplinas, e cada Disciplina pertence a exatamente um Curso"*.
