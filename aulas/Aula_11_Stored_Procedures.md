@@ -98,7 +98,7 @@ SELECT @resultado, @valor;
 DELIMITER $$
 
 CREATE PROCEDURE sp_calcular_desconto (
-    IN  p_id_produto  INT UNSIGNED,
+    IN  p_id_produto  BIGINT UNSIGNED,
     IN  p_percentual  DECIMAL(5,2),
     OUT p_preco_final DECIMAL(10,2)
 )
@@ -129,7 +129,7 @@ SELECT @preco_com_desconto;
 DELIMITER $$
 
 CREATE PROCEDURE sp_classificar_cliente (
-    IN  p_id_cliente INT UNSIGNED,
+    IN  p_id_cliente BIGINT UNSIGNED,
     OUT p_categoria  VARCHAR(20)
 )
 BEGIN
@@ -162,7 +162,7 @@ DELIMITER ;
 DELIMITER $$
 
 CREATE PROCEDURE sp_desconto_por_status_cliente (
-    IN  p_id_cliente  INT UNSIGNED,
+    IN  p_id_cliente  BIGINT UNSIGNED,
     OUT p_desconto    DECIMAL(5,2)
 )
 BEGIN
@@ -227,8 +227,8 @@ CALL sp_gerar_relatorio_mensal(2026);
 DELIMITER $$
 
 CREATE PROCEDURE sp_novo_pedido_seguro (
-    IN  p_cliente_id    INT UNSIGNED,
-    IN  p_id_produto    INT UNSIGNED,
+    IN  p_cliente_id    BIGINT UNSIGNED,
+    IN  p_id_produto    BIGINT UNSIGNED,
     IN  p_quantidade    INT,
     OUT p_sucesso       TINYINT,
     OUT p_mensagem      VARCHAR(255)

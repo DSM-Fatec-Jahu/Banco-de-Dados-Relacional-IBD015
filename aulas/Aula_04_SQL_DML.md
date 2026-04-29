@@ -54,7 +54,8 @@ INSERT INTO categorias (nome, descricao) VALUES
 
 ```sql
 -- Copia dados de outra tabela (útil em migrações e relatórios)
-INSERT INTO clientes_vip (id_pessoa, data_promocao)
+-- Em clientes_vip, pessoa_id é FK para pessoas (Regra 6)
+INSERT INTO clientes_vip (pessoa_id, data_promocao)
 SELECT id_pessoa, NOW()
 FROM   pessoas
 WHERE  id_pessoa IN (SELECT cliente_id FROM pedidos GROUP BY cliente_id HAVING COUNT(*) > 10);
@@ -97,8 +98,8 @@ WHERE  id_pessoa = 1;
 -- Várias colunas separadas por vírgula
 UPDATE produtos
 SET    preco   = 3200.00,
-       estoque = estoque + 50,
-       atualizado_em = NOW()
+       estoque = estoque + 50
+       -- atualizado_em é mantido automaticamente pelo MariaDB (ON UPDATE CURRENT_TIMESTAMP)
 WHERE  id_produto = 5;
 ```
 
@@ -106,9 +107,10 @@ WHERE  id_produto = 5;
 
 ```sql
 -- Aplica 10% de desconto em todos os produtos de uma categoria
+-- Note: em produtos, a FK é categoria_id (Regra 6); em categorias, a PK é id_categoria (Regra 5)
 UPDATE produtos
 SET    preco = preco * 0.90
-WHERE  id_categoria = (SELECT id_categoria FROM categorias WHERE nome = 'Eletrônicos');
+WHERE  categoria_id = (SELECT id_categoria FROM categorias WHERE nome = 'Eletrônicos');
 ```
 
 ### 2.4 O perigo do UPDATE sem WHERE
@@ -195,7 +197,7 @@ VALUES (1, 450.00);
 
 UPDATE produtos
 SET    estoque = estoque - 1
-WHERE  id_produto = 10;
+WHERE  id_produto = 10;  -- baixa de 1 unidade no estoque
 
 -- Se tudo correu bem, confirma permanentemente:
 COMMIT;
@@ -211,7 +213,7 @@ ROLLBACK;
 BEGIN;
 
 -- Débito na conta origem
-UPDATE contas SET saldo = saldo - 500.00 WHERE id_conta = 1;
+UPDATE contas SET saldo = saldo - 500.00 WHERE id_conta = 1;  -- conta origem
 
 -- Verifica se o saldo ficou negativo (regra de negócio)
 -- Em aplicações reais, isso seria feito na camada de aplicação ou com stored procedure
@@ -233,7 +235,7 @@ INSERT INTO pedidos (cliente_id, valor_total) VALUES (2, 200.00);
 
 SAVEPOINT sp_pedido_inserido;  -- marca um ponto de retorno
 
-INSERT INTO itens_pedidos (id_pedido, id_produto, quantidade, preco_unitario)
+INSERT INTO itens_pedidos (pedido_id, produto_id, quantidade, preco_unitario)
 VALUES (LAST_INSERT_ID(), 5, 2, 100.00);
 
 -- Se o INSERT de itens falhar, volta apenas até o savepoint
@@ -265,8 +267,8 @@ INSERT INTO categorias (nome, descricao) VALUES
     ('Periféricos',  'Mouse, teclado, headset e similares'),
     ('Livros',       'Técnicos, acadêmicos e literatura');
 
--- Produtos
-INSERT INTO produtos (id_categoria, nome, preco, estoque) VALUES
+-- Produtos (categoria_id é FK para categorias — Regra 6)
+INSERT INTO produtos (categoria_id, nome, preco, estoque) VALUES
     (1, 'Notebook Lenovo IdeaPad', 3499.90, 15),
     (1, 'Smartphone Samsung A55',  1899.00, 30),
     (2, 'Mouse Logitech MX Master',  399.90, 50),
@@ -279,7 +281,8 @@ BEGIN;
 INSERT INTO pedidos (cliente_id, funcionario_id, status, valor_total)
 VALUES (1, 5, 'confirmado', 3899.80);
 
-INSERT INTO itens_pedidos (id_pedido, id_produto, quantidade, preco_unitario)
+-- itens_pedidos: pedido_id e produto_id são FKs (Regra 6)
+INSERT INTO itens_pedidos (pedido_id, produto_id, quantidade, preco_unitario)
 VALUES
     (LAST_INSERT_ID(), 1, 1, 3499.90),
     (LAST_INSERT_ID(), 3, 1, 399.90);

@@ -187,14 +187,22 @@ Um dos usos mais comuns de triggers é criar um **log de auditoria** — um regi
 
 ```sql
 -- Tabela de auditoria para preços de produtos
+-- Segue todas as 9 regras: BIGINT UNSIGNED, FK como produto_id, log fields padrão
 CREATE TABLE IF NOT EXISTS auditoria_precos (
-    id_auditoria  INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-    id_produto    INT UNSIGNED    NOT NULL,
-    preco_antigo  DECIMAL(10,2)   NOT NULL,
-    preco_novo    DECIMAL(10,2)   NOT NULL,
-    alterado_em   TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    alterado_por  VARCHAR(100)    NOT NULL DEFAULT USER(),
-    CONSTRAINT pk_auditoria PRIMARY KEY (id_auditoria)
+    id_auditoria  BIGINT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    produto_id    BIGINT UNSIGNED  NOT NULL,
+    preco_antigo  DECIMAL(10, 2)   NOT NULL,
+    preco_novo    DECIMAL(10, 2)   NOT NULL,
+    alterado_por  VARCHAR(255)     NOT NULL DEFAULT (USER()),
+    criado_em     DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                            ON UPDATE CURRENT_TIMESTAMP,
+    deletado_em   DATETIME             NULL,
+    CONSTRAINT pk_auditoria          PRIMARY KEY (id_auditoria),
+    CONSTRAINT fk_auditoria_produto  FOREIGN KEY (produto_id)
+                                     REFERENCES produtos (id_produto)
+                                     ON DELETE RESTRICT
+                                     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DELIMITER $$
@@ -205,7 +213,7 @@ CREATE TRIGGER trg_produtos_audit_preco
 BEGIN
     -- Registra apenas quando o preço de fato mudou
     IF OLD.preco <> NEW.preco THEN
-        INSERT INTO auditoria_precos (id_produto, preco_antigo, preco_novo, alterado_por)
+        INSERT INTO auditoria_precos (produto_id, preco_antigo, preco_novo, alterado_por)
         VALUES (NEW.id_produto, OLD.preco, NEW.preco, USER());
     END IF;
 END$$
@@ -216,6 +224,8 @@ DELIMITER ;
 UPDATE produtos SET preco = 3299.90 WHERE id_produto = 1;
 SELECT * FROM auditoria_precos;
 ```
+
+> 💡 **Sobre `DEFAULT (USER())`:** o MariaDB exige expressões em `DEFAULT` envoltas em parênteses (a partir do 10.2.7). Em versões mais antigas, ou se o XAMPP estiver com 10.4 sem suporte, mova `USER()` para dentro do trigger via `SET NEW.alterado_por = USER()`.
 
 ---
 

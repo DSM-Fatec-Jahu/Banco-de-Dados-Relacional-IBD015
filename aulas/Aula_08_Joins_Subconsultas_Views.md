@@ -213,7 +213,7 @@ SELECT
     p.estoque,
     c.nome AS categoria
 FROM   produtos p
-INNER JOIN categorias c ON c.id_categoria = p.id_categoria
+INNER JOIN categorias c ON c.id_categoria = p.categoria_id
 WHERE  p.ativo = 1;
 ```
 

@@ -161,16 +161,16 @@ Regra de negócio: cada funcionário possui exatamente um crachá de identifica�
 ```mermaid
 erDiagram
     FUNCIONARIO {
-        int id_funcionario PK
+        bigint id_funcionario PK
         varchar nome
         date data_admissao
     }
 
     CRACHA {
-        int id_cracha PK
+        bigint id_cracha PK
         varchar numero_serie
         date data_emissao
-        int id_funcionario FK
+        bigint funcionario_id FK
     }
 
     FUNCIONARIO ||--|| CRACHA : "possui"
@@ -189,15 +189,15 @@ Regra de negócio: cada país tem exatamente uma capital, e cada capital pertenc
 ```mermaid
 erDiagram
     PAIS {
-        int id_pais PK
+        bigint id_pais PK
         varchar nome
         int populacao
     }
 
     CAPITAL {
-        int id_capital PK
+        bigint id_capital PK
         varchar nome
-        int id_pais FK
+        bigint pais_id FK
     }
 
     PAIS ||--|| CAPITAL : "tem como capital"
@@ -214,17 +214,17 @@ Regra de negócio: uma pessoa pode ou não ter CNH (é opcional), mas se tiver, 
 ```mermaid
 erDiagram
     PESSOA {
-        int id_pessoa PK
+        bigint id_pessoa PK
         varchar nome
         varchar cpf
     }
 
     CNH {
-        int id_cnh PK
+        bigint id_cnh PK
         varchar numero_registro
         date data_validade
         varchar categoria
-        int id_pessoa FK
+        bigint pessoa_id FK
     }
 
     PESSOA |o--|| CNH : "possui"
@@ -253,16 +253,16 @@ Regra de negócio: um departamento pode ter muitos funcionários, mas cada funci
 ```mermaid
 erDiagram
     DEPARTAMENTO {
-        int id_departamento PK
+        bigint id_departamento PK
         varchar nome
         varchar localizacao
     }
 
     FUNCIONARIO {
-        int id_funcionario PK
+        bigint id_funcionario PK
         varchar nome
         decimal salario
-        int id_departamento FK
+        bigint departamento_id FK
     }
 
     DEPARTAMENTO |o--o{ FUNCIONARIO : "emprega"
@@ -281,17 +281,17 @@ Regra de negócio: uma categoria (como "Eletrônicos" ou "Vestuário") pode cont
 ```mermaid
 erDiagram
     CATEGORIA {
-        int id_categoria PK
+        bigint id_categoria PK
         varchar nome
         varchar descricao
     }
 
     PRODUTO {
-        int id_produto PK
+        bigint id_produto PK
         varchar nome
         decimal preco
         int estoque
-        int id_categoria FK
+        bigint categoria_id FK
     }
 
     CATEGORIA |o--o{ PRODUTO : "classifica"
@@ -310,18 +310,18 @@ Regra de negócio: um pedido pode gerar várias notas fiscais (exemplo: pedido p
 ```mermaid
 erDiagram
     PEDIDO {
-        int id_pedido PK
+        bigint id_pedido PK
         date data_pedido
         decimal valor_total
         varchar status
     }
 
     NOTA_FISCAL {
-        int id_nota PK
+        bigint id_nota PK
         varchar numero_nota
         date data_emissao
         decimal valor
-        int id_pedido FK
+        bigint pedido_id FK
     }
 
     PEDIDO ||--o{ NOTA_FISCAL : "gera"
@@ -350,20 +350,20 @@ Regra de negócio: um aluno pode se matricular em várias disciplinas no mesmo s
 ```mermaid
 erDiagram
     ALUNO {
-        int id_aluno PK
+        bigint id_aluno PK
         varchar nome
         varchar matricula
     }
 
     DISCIPLINA {
-        int id_disciplina PK
+        bigint id_disciplina PK
         varchar nome
         int carga_horaria
     }
 
     MATRICULA {
-        int id_aluno FK
-        int id_disciplina FK
+        bigint aluno_id FK
+        bigint disciplina_id FK
         decimal nota
         varchar situacao
         varchar semestre
@@ -386,21 +386,21 @@ Regra de negócio: um livro pode ter vários autores (obra coletiva). Um autor p
 ```mermaid
 erDiagram
     AUTOR {
-        int id_autor PK
+        bigint id_autor PK
         varchar nome
         varchar nacionalidade
     }
 
     LIVRO {
-        int id_livro PK
+        bigint id_livro PK
         varchar titulo
         varchar isbn
         int ano_publicacao
     }
 
     AUTORIA {
-        int id_autor FK
-        int id_livro FK
+        bigint autor_id FK
+        bigint livro_id FK
         varchar tipo_contribuicao
     }
 
@@ -419,23 +419,23 @@ Regra de negócio: um médico atende muitos pacientes ao longo do tempo. Um paci
 ```mermaid
 erDiagram
     MEDICO {
-        int id_medico PK
+        bigint id_medico PK
         varchar nome
         varchar crm
         varchar especialidade
     }
 
     PACIENTE {
-        int id_paciente PK
+        bigint id_paciente PK
         varchar nome
         date data_nascimento
         varchar cpf
     }
 
     CONSULTA {
-        int id_consulta PK
-        int id_medico FK
-        int id_paciente FK
+        bigint id_consulta PK
+        bigint medico_id FK
+        bigint paciente_id FK
         datetime data_hora
         text diagnostico
         text prescricao
@@ -532,16 +532,16 @@ Analise o diagrama abaixo e responda às perguntas que se seguem.
 ```mermaid
 erDiagram
     EDITORA {
-        int id_editora PK
+        bigint id_editora PK
         varchar nome
         varchar cnpj
     }
 
     LIVRO {
-        int id_livro PK
+        bigint id_livro PK
         varchar titulo
         decimal preco
-        int id_editora FK
+        bigint editora_id FK
     }
 
     EDITORA ||--o{ LIVRO : "publica"
@@ -584,16 +584,16 @@ Dadas as regras de negócio abaixo, construa o diagrama ER com a cardinalidade c
 ```mermaid
 erDiagram
     PROFESSOR {
-        int id_professor PK
+        bigint id_professor PK
         varchar nome
         varchar titulacao
     }
 
     ALUNO {
-        int id_aluno PK
+        bigint id_aluno PK
         varchar nome
         varchar matricula
-        int id_professor FK "nullable"
+        bigint professor_id FK "nullable"
     }
 
     PROFESSOR |o--o{ ALUNO : "orienta"

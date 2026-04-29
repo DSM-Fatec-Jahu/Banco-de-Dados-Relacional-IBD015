@@ -153,15 +153,15 @@ Para resolver valores não-atômicos, criamos uma tabela separada para o atribut
 ```mermaid
 erDiagram
     CLIENTE {
-        int id_cliente PK
+        bigint id_cliente PK
         varchar nome
         varchar email
         varchar cidade
     }
 
     TELEFONE_CLIENTE {
-        int id_telefone PK
-        int id_cliente FK
+        bigint id_telefone PK
+        bigint cliente_id FK
         varchar numero
         varchar tipo
     }
@@ -176,14 +176,14 @@ Para resolver grupos repetidos em pedidos, criamos uma tabela de itens:
 ```mermaid
 erDiagram
     PEDIDO {
-        int id_pedido PK
+        bigint id_pedido PK
         date data_pedido
-        int id_cliente FK
+        bigint cliente_id FK
     }
 
     ITEM_PEDIDO {
-        int id_item PK
-        int id_pedido FK
+        bigint id_item PK
+        bigint pedido_id FK
         varchar produto_nome
         int quantidade
         decimal preco_unitario
@@ -240,21 +240,21 @@ A solução é **separar os atributos com dependência parcial** em uma nova tab
 ```mermaid
 erDiagram
     PEDIDO {
-        int id_pedido PK
+        bigint id_pedido PK
         date data_pedido
-        int id_cliente FK
+        bigint cliente_id FK
     }
 
     PRODUTO {
-        int id_produto PK
+        bigint id_produto PK
         varchar nome_produto
         varchar categoria
         decimal preco_unitario
     }
 
     ITEM_PEDIDO {
-        int id_pedido PK "FK"
-        int id_produto PK "FK"
+        bigint id_pedido PK "FK"
+        bigint id_produto PK "FK"
         int quantidade
     }
 
@@ -314,17 +314,17 @@ Novamente, a solução é extrair os atributos transitivos para sua própria tab
 ```mermaid
 erDiagram
     CIDADE {
-        int id_cidade PK
+        bigint id_cidade PK
         varchar nome_cidade
         varchar nome_estado
         varchar sigla_estado
     }
 
     CLIENTE {
-        int id_cliente PK
+        bigint id_cliente PK
         varchar nome
         varchar email
-        int id_cidade FK
+        bigint cidade_id FK
     }
 
     CIDADE ||--o{ CLIENTE : "pertence a"
@@ -449,7 +449,7 @@ professor_nome  → professor_titulo  ⚠️  Transitiva
 ```mermaid
 erDiagram
     PROFESSOR {
-        int id_professor PK
+        bigint id_professor PK
         varchar nome
         varchar email
         varchar titulacao
@@ -458,7 +458,7 @@ erDiagram
     TURMA {
         varchar cod_turma PK
         varchar nome
-        int id_professor FK
+        bigint professor_id FK
     }
 
     DISCIPLINA {
@@ -683,39 +683,39 @@ Dado o diagrama conceitual abaixo (sistema de uma biblioteca), escreva o modelo 
 ```mermaid
 erDiagram
     AUTOR {
-        int id_autor PK
+        bigint id_autor PK
         varchar nome
         varchar nacionalidade
     }
 
     LIVRO {
-        int id_livro PK
+        bigint id_livro PK
         varchar titulo
         varchar isbn
         int ano
     }
 
     CATEGORIA {
-        int id_categoria PK
+        bigint id_categoria PK
         varchar nome
     }
 
     USUARIO {
-        int id_usuario PK
+        bigint id_usuario PK
         varchar nome
         varchar email
     }
 
     AUTORIA {
-        int id_autor FK
-        int id_livro FK
+        bigint id_autor FK
+        bigint id_livro FK
         varchar tipo
     }
 
     EMPRESTIMO {
-        int id_emprestimo PK
-        int id_usuario FK
-        int id_livro FK
+        bigint id_emprestimo PK
+        bigint id_usuario FK
+        bigint id_livro FK
         date data_retirada
         date data_devolucao
         varchar status

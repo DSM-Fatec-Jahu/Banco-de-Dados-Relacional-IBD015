@@ -497,43 +497,58 @@ A hierarquia de generalização/especialização não tem representação direta
 ```sql
 -- Exemplo: Produto com tudo em uma tabela
 CREATE TABLE produtos (
-    id_produto   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    nome         VARCHAR(255) NOT NULL,
-    preco        DECIMAL(10,2) NOT NULL,
-    tipo         ENUM('fisico','digital') NOT NULL,  -- discriminador
+    id_produto    BIGINT UNSIGNED            NOT NULL AUTO_INCREMENT,
+    nome          VARCHAR(255)               NOT NULL,
+    preco         DECIMAL(10, 2)             NOT NULL,
+    tipo          ENUM('fisico', 'digital')  NOT NULL,  -- discriminador
     -- colunas de produto físico (NULL para digitais):
-    peso_kg      DECIMAL(8,3) NULL,
+    peso_kg       DECIMAL(8, 3)                  NULL,
     -- colunas de produto digital (NULL para físicos):
-    url_download VARCHAR(500) NULL,
-    tamanho_mb   DECIMAL(10,2) NULL,
-    ...
+    url_download  VARCHAR(255)                   NULL,
+    tamanho_mb    DECIMAL(10, 2)                 NULL,
+    criado_em     DATETIME                   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME                   NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                                      ON UPDATE CURRENT_TIMESTAMP,
+    deletado_em   DATETIME                       NULL,
+    CONSTRAINT pk_produto PRIMARY KEY (id_produto)
 );
 ```
 
-**Estratégia 2 — Uma tabela por subclasse (com JOIN):** cria-se uma tabela para a superclasse e uma tabela para cada subclasse. A PK da subclasse é também FK para a superclasse. É o padrão mais fiel ao modelo conceitual e o adotado nesta disciplina.
+**Estratégia 2 — Uma tabela por subclasse (com JOIN):** cria-se uma tabela para a superclasse e uma tabela para cada subclasse. Cada subclasse tem PK própria e referencia a superclasse por FK com `UNIQUE` (garantindo o 1:1). É o padrão adotado nesta disciplina.
 
 ```sql
 -- Tabela da superclasse
 CREATE TABLE produtos (
-    id_produto BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    nome       VARCHAR(255) NOT NULL,
-    preco      DECIMAL(10,2) NOT NULL,
+    id_produto    BIGINT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    nome          VARCHAR(255)     NOT NULL,
+    preco         DECIMAL(10, 2)   NOT NULL,
+    criado_em     DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                            ON UPDATE CURRENT_TIMESTAMP,
+    deletado_em   DATETIME             NULL,
     CONSTRAINT pk_produto PRIMARY KEY (id_produto)
 );
 
--- Tabela da subclasse (PK = FK para superclasse)
+-- Tabela da subclasse: PK própria (Regra 5) + FK para a superclasse (Regra 6)
+-- O UNIQUE em produto_id garante que cada produto físico aponte para um único produto
 CREATE TABLE produtos_fisicos (
-    id_produto BIGINT UNSIGNED NOT NULL,
-    peso_kg    DECIMAL(8,3) NOT NULL,
-    CONSTRAINT pk_prod_fisico  PRIMARY KEY (id_produto),
-    CONSTRAINT fk_prod_fisico  FOREIGN KEY (id_produto)
+    id_produto_fisico  BIGINT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    produto_id         BIGINT UNSIGNED  NOT NULL,
+    peso_kg            DECIMAL(8, 3)    NOT NULL,
+    criado_em          DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em      DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                                 ON UPDATE CURRENT_TIMESTAMP,
+    deletado_em        DATETIME             NULL,
+    CONSTRAINT pk_produto_fisico  PRIMARY KEY (id_produto_fisico),
+    CONSTRAINT uq_produto_fisico  UNIQUE (produto_id),  -- garante o 1:1 da especialização
+    CONSTRAINT fk_produto_fisico  FOREIGN KEY (produto_id)
         REFERENCES produtos (id_produto) ON DELETE CASCADE
 );
 ```
 
 **Estratégia 3 — Uma tabela por subclasse (sem superclasse):** cada subclasse tem sua própria tabela com todos os atributos, inclusive os herdados da superclasse. Evita JOINs, mas duplica a definição dos atributos comuns.
 
-> 📌 **Nesta disciplina, adotaremos sempre a Estratégia 2** — uma tabela para a superclasse e uma tabela para cada subclasse, com a PK da subclasse sendo também FK para a superclasse. É a estratégia mais coerente com os princípios de normalização que estudaremos na Aula 02.
+> 📌 **Nesta disciplina, adotaremos sempre a Estratégia 2** — uma tabela para a superclasse e uma tabela para cada subclasse. Cada subclasse mantém sua própria PK (Regra 5) e referencia a superclasse por FK com `UNIQUE` (Regra 6), preservando o 1:1 da especialização sem violar as convenções de nomenclatura.
 
 ---
 

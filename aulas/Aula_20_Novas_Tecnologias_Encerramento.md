@@ -130,8 +130,8 @@ db.produtos.insertOne({
 
 // Equivalente SQL que precisaria de 3 tabelas e 2 JOINs para o mesmo resultado:
 // SELECT p.*, e.*, i.url FROM produtos p
-// LEFT JOIN especificacoes e ON e.id_produto = p.id_produto
-// LEFT JOIN imagens i ON i.id_produto = p.id_produto
+// LEFT JOIN especificacoes e ON e.produto_id = p.id_produto
+// LEFT JOIN imagens i ON i.produto_id = p.id_produto
 ```
 
 ---

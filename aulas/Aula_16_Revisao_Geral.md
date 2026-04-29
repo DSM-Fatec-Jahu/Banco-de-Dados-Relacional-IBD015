@@ -40,26 +40,26 @@ Com base no diagrama abaixo, implemente: (a) o DDL completo; (b) uma procedure p
 ```mermaid
 erDiagram
     usuarios {
-        int id_usuario PK
+        bigint id_usuario PK
         varchar nome
         varchar email
         char cpf
     }
     livros {
-        int id_livro PK
+        bigint id_livro PK
         varchar titulo
         varchar isbn
-        int id_categoria FK
+        bigint categoria_id FK
         tinyint disponivel
     }
     categorias {
-        int id_categoria PK
+        bigint id_categoria PK
         varchar nome
     }
     emprestimos {
-        int id_emprestimo PK
-        int id_usuario FK
-        int id_livro FK
+        bigint id_emprestimo PK
+        bigint usuario_id FK
+        bigint livro_id FK
         date data_retirada
         date data_prevista
         date data_devolucao
@@ -82,9 +82,9 @@ SELECT c.nome AS categoria,
        COUNT(DISTINCT pd.id_pedido) AS total_pedidos,
        SUM(ip.quantidade * ip.preco_unitario) AS faturamento
 FROM   categorias c
-LEFT JOIN produtos p  ON p.id_categoria = c.id_categoria
-LEFT JOIN itens_pedidos ip ON ip.id_produto = p.id_produto
-LEFT JOIN pedidos pd ON pd.id_pedido = ip.id_pedido AND pd.status = 'entregue'
+LEFT JOIN produtos p  ON p.categoria_id = c.id_categoria
+LEFT JOIN itens_pedidos ip ON ip.produto_id = p.id_produto
+LEFT JOIN pedidos pd ON pd.id_pedido = ip.pedido_id AND pd.status = 'entregue'
 GROUP BY c.id_categoria, c.nome
 ORDER BY faturamento DESC;
 
@@ -114,8 +114,8 @@ Implemente um sistema de auditoria para a tabela `produtos` que:
 -- Procedure para registrar empréstimo com validação
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_emprestimo (
-    IN  p_id_usuario  INT UNSIGNED,
-    IN  p_id_livro    INT UNSIGNED,
+    IN  p_id_usuario  BIGINT UNSIGNED,
+    IN  p_id_livro    BIGINT UNSIGNED,
     IN  p_dias        INT,
     OUT p_sucesso     TINYINT,
     OUT p_mensagem    VARCHAR(255)

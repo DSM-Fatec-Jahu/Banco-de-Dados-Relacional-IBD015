@@ -41,7 +41,7 @@ DELIMITER $$
 -- Função: calcula o preço com desconto para um cliente
 CREATE FUNCTION fn_preco_com_desconto (
     p_preco      DECIMAL(10,2),
-    p_id_cliente INT UNSIGNED
+    p_id_cliente BIGINT UNSIGNED
 ) RETURNS DECIMAL(10,2)
 READS SQL DATA  -- indica que a função apenas lê dados (necessário no MariaDB)
 DETERMINISTIC   -- o mesmo input sempre produz o mesmo output
@@ -151,7 +151,7 @@ SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
 DELIMITER $$
 
 CREATE PROCEDURE sp_confirmar_pedido (
-    IN  p_id_pedido  INT UNSIGNED,
+    IN  p_id_pedido  BIGINT UNSIGNED,
     OUT p_sucesso    TINYINT,
     OUT p_mensagem   VARCHAR(255)
 )

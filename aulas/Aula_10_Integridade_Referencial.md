@@ -121,7 +121,8 @@ DELETE FROM pedidos WHERE id_pedido = 1;
 -- Sucesso — os itens_pedidos com id_pedido=1 são removidos junto
 
 -- Verificar: itens do pedido 1 foram removidos?
-SELECT * FROM itens_pedidos WHERE id_pedido = 1;  -- retorna vazio
+-- Nota: em itens_pedidos, a FK para pedidos é pedido_id (Regra 6)
+SELECT * FROM itens_pedidos WHERE pedido_id = 1;  -- retorna vazio
 ```
 
 ---
@@ -147,7 +148,7 @@ SHOW INDEX FROM produtos;
 -- Table     | Key_name              | Column_name  | Non_unique
 -- produtos  | PRIMARY               | id_produto   | 0
 -- produtos  | uq_prod_nome          | nome         | 0  (se existir)
--- produtos  | fk_produto_cat        | id_categoria | 1
+-- produtos  | fk_produto_cat        | categoria_id | 1
 ```
 
 ### 3.2 Criando Índices Manualmente
@@ -186,7 +187,7 @@ CREATE INDEX idx_produtos_preco   ON produtos (preco);
 
 **Exercício 1:** no banco `ecommerce`, tente excluir uma categoria que possui produtos. Observe o erro. Depois, altere a FK para `ON DELETE SET NULL` e repita. O que aconteceu com os produtos?
 
-**Exercício 2:** crie um índice composto em `itens_pedidos` que cubra a consulta: `SELECT * FROM itens_pedidos WHERE id_produto = ? AND quantidade > ?`.
+**Exercício 2:** crie um índice composto em `itens_pedidos` que cubra a consulta: `SELECT * FROM itens_pedidos WHERE produto_id = ? AND quantidade > ?`.
 
 **Exercício 3:** identifique quais colunas das tabelas do e-commerce seriam boas candidatas a índices manuais (além dos já criados automaticamente) e justifique sua escolha.
 

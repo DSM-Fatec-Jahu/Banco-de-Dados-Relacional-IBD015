@@ -35,7 +35,7 @@ O `EXPLAIN` mostra **como** o banco pretende executar uma query — sem realment
 -- Adicione EXPLAIN antes de qualquer SELECT
 EXPLAIN SELECT p.nome, c.nome AS categoria
 FROM   produtos p
-INNER JOIN categorias c ON c.id_categoria = p.id_categoria
+INNER JOIN categorias c ON c.id_categoria = p.categoria_id
 WHERE  p.preco > 500;
 ```
 
@@ -84,9 +84,9 @@ No MariaDB 10.9+ e MySQL 8.0.18+, o `EXPLAIN ANALYZE` realmente executa a query 
 ```sql
 -- Executa a query e retorna o plano com tempos reais
 EXPLAIN ANALYZE
-SELECT p.nome, COUNT(ip.id_produto) AS vezes_vendido
+SELECT p.nome, COUNT(ip.produto_id) AS vezes_vendido
 FROM   produtos p
-LEFT JOIN itens_pedidos ip ON ip.id_produto = p.id_produto
+LEFT JOIN itens_pedidos ip ON ip.produto_id = p.id_produto
 GROUP BY p.id_produto, p.nome
 ORDER BY vezes_vendido DESC;
 ```
@@ -182,8 +182,8 @@ WHERE cpf = '11122233344'
 EXPLAIN
 SELECT p.nome, SUM(ip.quantidade) AS total
 FROM   produtos p
-INNER JOIN itens_pedidos ip ON ip.id_produto = p.id_produto
-INNER JOIN pedidos pd ON pd.id_pedido = ip.id_pedido
+INNER JOIN itens_pedidos ip ON ip.produto_id = p.id_produto
+INNER JOIN pedidos pd ON pd.id_pedido = ip.pedido_id
 WHERE  pd.status = 'entregue'           -- filtra pedidos primeiro
   AND  pd.data_pedido >= '2026-01-01'   -- restringe por data
 GROUP BY p.id_produto, p.nome
