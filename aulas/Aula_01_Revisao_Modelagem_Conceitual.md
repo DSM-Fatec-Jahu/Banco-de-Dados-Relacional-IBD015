@@ -315,7 +315,7 @@ erDiagram
         varchar numero_conta
         decimal saldo
         date data_abertura
-        bigint id_cliente FK
+        bigint cliente_id FK
     }
 
     CONTAS_CORRENTES {
@@ -466,7 +466,7 @@ erDiagram
     MUSICAS {
         bigint id_conteudo PK, FK
         text letra
-        bigint id_album FK
+        bigint album_id FK
     }
 
     FILMES {

@@ -76,10 +76,10 @@ Proposta por Elmasri e Navathe — autores do livro-texto desta disciplina — e
 > ⚠️ **Atenção crítica:** nesta notação, o par (min, max) fica do lado da entidade a que se refere. Isso é diferente da notação Crow's Foot, como veremos a seguir.
 
 ```
-CLIENTE  (0,N)————————(1,1)  PEDIDO
+CLIENTES  (0,N)————————(1,1)  PEDIDOS
 ```
 
-Leitura: do lado do PEDIDO está anotado **(1,1)** — isso descreve o PEDIDO em relação ao CLIENTE: cada pedido pertence a no mínimo 1 e no máximo 1 cliente. Do lado do CLIENTE está **(0,N)** — isso descreve o CLIENTE em relação ao PEDIDO: cada cliente tem no mínimo 0 e no máximo N pedidos.
+Leitura: do lado do PEDIDOS está anotado **(1,1)** — isso descreve o PEDIDOS em relação ao CLIENTES: cada pedido pertence a no mínimo 1 e no máximo 1 cliente. Do lado do CLIENTES está **(0,N)** — isso descreve o CLIENTES em relação ao PEDIDOS: cada cliente tem no mínimo 0 e no máximo N pedidos.
 
 ### 3.2 Notação Crow's Foot (Pé de Galinha)
 
@@ -108,13 +108,13 @@ Vamos dedicar uma seção inteira a esse ponto, porque ele é responsável pela 
 ```
          você lê daqui ──────────────────────────────────► para cá
          
-CLIENTE  ──────────────────────────────────────────────── PEDIDO
+CLIENTES  ──────────────────────────────────────────────── PEDIDOS
          O{                                          ||
          ▲                                           ▲
          │                                           │
          Este símbolo está                    Este símbolo está
-         próximo a CLIENTE,                   próximo a PEDIDO,
-         mas descreve PEDIDO                  mas descreve CLIENTE
+         próximo a CLIENTES,                   próximo a PEDIDOS,
+         mas descreve PEDIDOS                  mas descreve CLIENTES
          (a entidade do outro lado)           (a entidade do outro lado)
 ```
 
@@ -122,16 +122,16 @@ CLIENTE  ───────────────────────�
 
 **Como ler corretamente, passo a passo:**
 
-Passo 1: coloque o dedo sobre a entidade **CLIENTE**.
-Passo 2: deslize o olhar pela linha em direção a **PEDIDO**, até chegar ao símbolo que está do **lado de CLIENTE** (no início da linha, próximo a ele).
-Passo 3: esse símbolo descreve quantos **PEDIDOS** um CLIENTE pode ter.
+Passo 1: coloque o dedo sobre a entidade **CLIENTES**.
+Passo 2: deslize o olhar pela linha em direção a **PEDIDOS**, até chegar ao símbolo que está do **lado de CLIENTES** (no início da linha, próximo a ele).
+Passo 3: esse símbolo descreve quantos **PEDIDOS** um CLIENTES pode ter.
 
-No exemplo: o símbolo `O{` está próximo a CLIENTE → logo, um CLIENTE pode ter **zero ou muitos** PEDIDOS.
+No exemplo: o símbolo `O{` está próximo a CLIENTES → logo, um CLIENTES pode ter **zero ou muitos** PEDIDOS.
 
-Passo 4: agora vá até o símbolo no **lado de PEDIDO** (no final da linha, próximo a ele).
-Passo 5: esse símbolo descreve quantos **CLIENTES** um PEDIDO pode ter.
+Passo 4: agora vá até o símbolo no **lado de PEDIDOS** (no final da linha, próximo a ele).
+Passo 5: esse símbolo descreve quantos **CLIENTES** um PEDIDOS pode ter.
 
-No exemplo: o símbolo `||` está próximo a PEDIDO → logo, um PEDIDO pertence a **exatamente um** CLIENTE.
+No exemplo: o símbolo `||` está próximo a PEDIDOS → logo, um PEDIDOS pertence a **exatamente um** CLIENTES.
 
 > 🔑 **A regra de ouro:** o símbolo próximo à entidade A descreve a entidade B (e vice-versa). Sempre leia o símbolo do lado *oposto* à entidade que você está descrevendo. Quando esta regra estiver automatizada no seu raciocínio, a notação Crow's Foot se torna completamente intuitiva.
 
@@ -153,25 +153,25 @@ Regra de negócio: cada funcionário possui exatamente um crachá de identifica�
 
 ```mermaid
 erDiagram
-    FUNCIONARIO {
+    FUNCIONARIOS {
         bigint id_funcionario PK
         varchar nome
         date data_admissao
     }
 
-    CRACHA {
+    CRACHAS {
         bigint id_cracha PK
         varchar numero_serie
         date data_emissao
         bigint funcionario_id FK
     }
 
-    FUNCIONARIO ||--|| CRACHA : "possui"
+    FUNCIONARIOS ||--|| CRACHAS : "possui"
 ```
 
 Perguntas-chave aplicadas: *"Um funcionário pode ter mais de um crachá?"* → Não. *"Um crachá pode pertencer a mais de um funcionário?"* → Não. Logo, 1:1.
 
-Notação Min-Max: FUNCIONARIO **(1,1)**————**(1,1)** CRACHA — aqui ambos os lados têm participação total e máximo 1.
+Notação Min-Max: FUNCIONARIOS **(1,1)**————**(1,1)** CRACHAS — aqui ambos os lados têm participação total e máximo 1.
 
 ---
 
@@ -181,38 +181,38 @@ Regra de negócio: cada país tem exatamente uma capital, e cada capital pertenc
 
 ```mermaid
 erDiagram
-    PAIS {
+    PAISES {
         bigint id_pais PK
         varchar nome
         int populacao
     }
 
-    CAPITAL {
+    CAPITAIS {
         bigint id_capital PK
         varchar nome
         bigint pais_id FK
     }
 
-    PAIS ||--|| CAPITAL : "tem como capital"
+    PAISES ||--|| CAPITAIS : "tem como capital"
 ```
 
 Observação pedagógica: note que, neste caso, a capital **não existe sem o país** (participação total de ambos os lados). É uma relação simétrica e indivisível — se o país existe, a capital existe; se a capital é registrada, é de um país específico.
 
 ---
 
-**Exemplo 3 — Pessoa e CNH:**
+**Exemplo 3 — Pessoa e CNHS:**
 
-Regra de negócio: uma pessoa pode ou não ter CNH (é opcional), mas se tiver, possui apenas uma. E uma CNH pertence a exatamente uma pessoa.
+Regra de negócio: uma pessoa pode ou não ter CNHS (é opcional), mas se tiver, possui apenas uma. E uma CNHS pertence a exatamente uma pessoa.
 
 ```mermaid
 erDiagram
-    PESSOA {
+    PESSOAS {
         bigint id_pessoa PK
         varchar nome
         varchar cpf
     }
 
-    CNH {
+    CNHS {
         bigint id_cnh PK
         varchar numero_registro
         date data_validade
@@ -220,14 +220,14 @@ erDiagram
         bigint pessoa_id FK
     }
 
-    PESSOA |o--|| CNH : "possui"
+    PESSOAS |o--|| CNHS : "possui"
 ```
 
-Este é um 1:1 com participação **parcial do lado de PESSOA** (o `|o` indica que uma pessoa pode existir sem CNH — mínimo 0) e **total do lado de CNH** (cada CNH obrigatoriamente pertence a uma pessoa — mínimo 1).
+Este é um 1:1 com participação **parcial do lado de PESSOAS** (o `|o` indica que uma pessoa pode existir sem CNHS — mínimo 0) e **total do lado de CNHS** (cada CNHS obrigatoriamente pertence a uma pessoa — mínimo 1).
 
-Notação Min-Max: PESSOA **(0,1)**————**(1,1)** CNH.
+Notação Min-Max: PESSOAS **(0,1)**————**(1,1)** CNHS.
 
-> 📌 **Dica de projeto:** em relacionamentos 1:1, a chave estrangeira (FK) geralmente vai para a entidade com participação parcial, ou para aquela que "depende" conceitualmente da outra. No exemplo, `id_pessoa` vai na tabela CNH porque a CNH depende da pessoa, não o contrário.
+> 📌 **Dica de projeto:** em relacionamentos 1:1, a chave estrangeira (FK) geralmente vai para a entidade com participação parcial, ou para aquela que "depende" conceitualmente da outra. No exemplo, `id_pessoa` vai na tabela CNHS porque a CNHS depende da pessoa, não o contrário.
 
 ---
 
@@ -245,25 +245,25 @@ Regra de negócio: um departamento pode ter muitos funcionários, mas cada funci
 
 ```mermaid
 erDiagram
-    DEPARTAMENTO {
+    DEPARTAMENTOS {
         bigint id_departamento PK
         varchar nome
         varchar localizacao
     }
 
-    FUNCIONARIO {
+    FUNCIONARIOS {
         bigint id_funcionario PK
         varchar nome
         decimal salario
         bigint departamento_id FK
     }
 
-    DEPARTAMENTO |o--o{ FUNCIONARIO : "emprega"
+    DEPARTAMENTOS |o--o{ FUNCIONARIOS : "emprega"
 ```
 
-Notação Min-Max: DEPARTAMENTO **(0,N)**————**(1,1)** FUNCIONARIO.
+Notação Min-Max: DEPARTAMENTOS **(0,N)**————**(1,1)** FUNCIONARIOS.
 
-Perguntas aplicadas: *"Um departamento pode ter mais de um funcionário?"* → Sim (lado N). *"Um funcionário pode pertencer a mais de um departamento?"* → Não (lado 1). Logo, 1:N com o N do lado de FUNCIONARIO.
+Perguntas aplicadas: *"Um departamento pode ter mais de um funcionário?"* → Sim (lado N). *"Um funcionário pode pertencer a mais de um departamento?"* → Não (lado 1). Logo, 1:N com o N do lado de FUNCIONARIOS.
 
 ---
 
@@ -273,13 +273,13 @@ Regra de negócio: uma categoria (como "Eletrônicos" ou "Vestuário") pode cont
 
 ```mermaid
 erDiagram
-    CATEGORIA {
+    CATEGORIAS {
         bigint id_categoria PK
         varchar nome
         varchar descricao
     }
 
-    PRODUTO {
+    PRODUTOS {
         bigint id_produto PK
         varchar nome
         decimal preco
@@ -287,12 +287,12 @@ erDiagram
         bigint categoria_id FK
     }
 
-    CATEGORIA |o--o{ PRODUTO : "classifica"
+    CATEGORIAS |o--o{ PRODUTOS : "classifica"
 ```
 
-Notação Min-Max: CATEGORIA **(0,N)**————**(1,1)** PRODUTO.
+Notação Min-Max: CATEGORIAS **(0,N)**————**(1,1)** PRODUTOS.
 
-Este exemplo é clássico em sistemas de e-commerce e ilustra bem como a **chave estrangeira sempre vai para o lado N** — no caso, `id_categoria` é atributo da tabela PRODUTO.
+Este exemplo é clássico em sistemas de e-commerce e ilustra bem como a **chave estrangeira sempre vai para o lado N** — no caso, `id_categoria` é atributo da tabela PRODUTOS.
 
 ---
 
@@ -302,14 +302,14 @@ Regra de negócio: um pedido pode gerar várias notas fiscais (exemplo: pedido p
 
 ```mermaid
 erDiagram
-    PEDIDO {
+    PEDIDOS {
         bigint id_pedido PK
         date data_pedido
         decimal valor_total
         varchar status
     }
 
-    NOTA_FISCAL {
+    NOTAS_FISCAIS {
         bigint id_nota PK
         varchar numero_nota
         date data_emissao
@@ -317,14 +317,14 @@ erDiagram
         bigint pedido_id FK
     }
 
-    PEDIDO ||--o{ NOTA_FISCAL : "gera"
+    PEDIDOS ||--o{ NOTAS_FISCAIS : "gera"
 ```
 
-Notação Min-Max: PEDIDO **(0,N)**————**(1,1)** NOTA_FISCAL.
+Notação Min-Max: PEDIDOS **(0,N)**————**(1,1)** NOTAS_FISCAIS.
 
 Este exemplo é útil porque mostra que mesmo em domínios onde intuitivamente esperaríamos 1:1 (um pedido, uma nota), as regras de negócio podem exigir 1:N. **A cardinalidade sempre vem da regra de negócio, nunca da suposição.**
 
-> 📌 **Regra prática de implementação:** em todo relacionamento 1:N, a chave estrangeira (FK) **sempre fica na tabela do lado N**. Neste caso, `id_pedido` fica em NOTA_FISCAL — a entidade do lado "muitos".
+> 📌 **Regra prática de implementação:** em todo relacionamento 1:N, a chave estrangeira (FK) **sempre fica na tabela do lado N**. Neste caso, `id_pedido` fica em NOTAS_FISCAIS — a entidade do lado "muitos".
 
 ---
 
@@ -342,19 +342,19 @@ Regra de negócio: um aluno pode se matricular em várias disciplinas no mesmo s
 
 ```mermaid
 erDiagram
-    ALUNO {
+    ALUNOS {
         bigint id_aluno PK
         varchar nome
         varchar matricula
     }
 
-    DISCIPLINA {
+    DISCIPLINAS {
         bigint id_disciplina PK
         varchar nome
         int carga_horaria
     }
 
-    MATRICULA {
+    MATRICULAS {
         bigint aluno_id FK
         bigint disciplina_id FK
         decimal nota
@@ -362,13 +362,13 @@ erDiagram
         varchar semestre
     }
 
-    ALUNO ||--o{ MATRICULA : "realiza"
-    DISCIPLINA ||--o{ MATRICULA : "recebe"
+    ALUNOS ||--o{ MATRICULAS : "realiza"
+    DISCIPLINAS ||--o{ MATRICULAS : "recebe"
 ```
 
-Observe que o relacionamento N:M entre Aluno e Disciplina foi **decomposto** em dois relacionamentos 1:N através da entidade intermediária MATRICULA. Essa entidade possui seus próprios atributos — `nota`, `situacao`, `semestre` — o que a caracteriza como uma **entidade associativa** (também chamada de *entidade de relacionamento* ou *tabela de junção com atributos*).
+Observe que o relacionamento N:M entre Aluno e Disciplina foi **decomposto** em dois relacionamentos 1:N através da entidade intermediária MATRICULAS. Essa entidade possui seus próprios atributos — `nota`, `situacao`, `semestre` — o que a caracteriza como uma **entidade associativa** (também chamada de *entidade de relacionamento* ou *tabela de junção com atributos*).
 
-Notação Min-Max original (antes da decomposição): ALUNO **(0,N)**————**(0,N)** DISCIPLINA.
+Notação Min-Max original (antes da decomposição): ALUNOS **(0,N)**————**(0,N)** DISCIPLINAS.
 
 ---
 
@@ -378,30 +378,30 @@ Regra de negócio: um livro pode ter vários autores (obra coletiva). Um autor p
 
 ```mermaid
 erDiagram
-    AUTOR {
+    AUTORES {
         bigint id_autor PK
         varchar nome
         varchar nacionalidade
     }
 
-    LIVRO {
+    LIVROS {
         bigint id_livro PK
         varchar titulo
         varchar isbn
         int ano_publicacao
     }
 
-    AUTORIA {
+    AUTORIAS {
         bigint autor_id FK
         bigint livro_id FK
         varchar tipo_contribuicao
     }
 
-    AUTOR ||--o{ AUTORIA : "escreve"
-    LIVRO ||--o{ AUTORIA : "é escrito por"
+    AUTORES ||--o{ AUTORIAS : "escreve"
+    LIVROS ||--o{ AUTORIAS : "é escrito por"
 ```
 
-A entidade AUTORIA armazena o atributo `tipo_contribuicao` (autor principal, coautor, organizador etc.), o que justifica sua existência como entidade intermediária com atributo próprio.
+A entidade AUTORIAS armazena o atributo `tipo_contribuicao` (autor principal, coautor, organizador etc.), o que justifica sua existência como entidade intermediária com atributo próprio.
 
 ---
 
@@ -411,21 +411,21 @@ Regra de negócio: um médico atende muitos pacientes ao longo do tempo. Um paci
 
 ```mermaid
 erDiagram
-    MEDICO {
+    MEDICOS {
         bigint id_medico PK
         varchar nome
         varchar crm
         varchar especialidade
     }
 
-    PACIENTE {
+    PACIENTES {
         bigint id_paciente PK
         varchar nome
         date data_nascimento
         varchar cpf
     }
 
-    CONSULTA {
+    CONSULTAS {
         bigint id_consulta PK
         bigint medico_id FK
         bigint paciente_id FK
@@ -434,13 +434,13 @@ erDiagram
         text prescricao
     }
 
-    MEDICO ||--o{ CONSULTA : "realiza"
-    PACIENTE ||--o{ CONSULTA : "recebe"
+    MEDICOS ||--o{ CONSULTAS : "realiza"
+    PACIENTES ||--o{ CONSULTAS : "recebe"
 ```
 
-Este exemplo é particularmente rico porque a entidade intermediária CONSULTA tem muitos atributos próprios — ela não existe apenas para "resolver" o N:M, mas carrega informações vitais do negócio. Em casos assim, é muito claro que a entidade associativa tem vida própria.
+Este exemplo é particularmente rico porque a entidade intermediária CONSULTAS tem muitos atributos próprios — ela não existe apenas para "resolver" o N:M, mas carrega informações vitais do negócio. Em casos assim, é muito claro que a entidade associativa tem vida própria.
 
-> 📌 **Regra prática de implementação:** para todo N:M, cria-se uma tabela intermediária cuja chave primária é composta pelas FKs das duas entidades originais (ou uma nova PK sintética, dependendo do caso). As FKs `id_medico` e `id_paciente` ficam na tabela CONSULTA.
+> 📌 **Regra prática de implementação:** para todo N:M, cria-se uma tabela intermediária cuja chave primária é composta pelas FKs das duas entidades originais (ou uma nova PK sintética, dependendo do caso). As FKs `id_medico` e `id_paciente` ficam na tabela CONSULTAS.
 
 ---
 
@@ -454,7 +454,7 @@ A participação — também chamada de modalidade — é determinada exclusivam
 
 ![Notações erradas](../imgs/Aula_01_IMG_05.png)
 
-Para fixar: volte ao exemplo Cliente-Pedido e pense nas consequências práticas. Se tentarmos inserir um pedido sem informar o cliente, o banco de dados deve rejeitar essa operação — isso é o que a participação total de PEDIDO (mínimo 1) representa em termos de restrições de integridade referencial.
+Para fixar: volte ao exemplo Cliente-Pedido e pense nas consequências práticas. Se tentarmos inserir um pedido sem informar o cliente, o banco de dados deve rejeitar essa operação — isso é o que a participação total de PEDIDOS (mínimo 1) representa em termos de restrições de integridade referencial.
 
 ---
 
@@ -524,20 +524,20 @@ Analise o diagrama abaixo e responda às perguntas que se seguem.
 
 ```mermaid
 erDiagram
-    EDITORA {
+    EDITORAS {
         bigint id_editora PK
         varchar nome
         varchar cnpj
     }
 
-    LIVRO {
+    LIVROS {
         bigint id_livro PK
         varchar titulo
         decimal preco
         bigint editora_id FK
     }
 
-    EDITORA ||--o{ LIVRO : "publica"
+    EDITORAS ||--o{ LIVROS : "publica"
 ```
 
 **Perguntas:**
@@ -554,15 +554,15 @@ e) Escreva a cardinalidade na notação Min-Max.
 
 **Gabarito:**
 
-a) Sim — o símbolo `O{` próximo a EDITORA (descrevendo LIVRO) começa com círculo (O), indicando mínimo 0. Uma editora pode ter zero livros.
+a) Sim — o símbolo `O{` próximo a EDITORAS (descrevendo LIVROS) começa com círculo (O), indicando mínimo 0. Uma editora pode ter zero livros.
 
-b) Não — o símbolo `||` próximo a LIVRO (descrevendo EDITORA) começa com barra dupla, indicando mínimo 1. Todo livro deve ter uma editora.
+b) Não — o símbolo `||` próximo a LIVROS (descrevendo EDITORAS) começa com barra dupla, indicando mínimo 1. Todo livro deve ter uma editora.
 
 c) Sim — o `{` indica máximo N. Uma editora pode publicar muitos livros.
 
 d) Não — o segundo `|` indica máximo 1. Um livro é publicado por exatamente uma editora.
 
-e) EDITORA **(0,N)**————**(1,1)** LIVRO.
+e) EDITORAS **(0,N)**————**(1,1)** LIVROS.
 
 ---
 
@@ -576,23 +576,23 @@ Dadas as regras de negócio abaixo, construa o diagrama ER com a cardinalidade c
 
 ```mermaid
 erDiagram
-    PROFESSOR {
+    PROFESSORES {
         bigint id_professor PK
         varchar nome
         varchar titulacao
     }
 
-    ALUNO {
+    ALUNOS {
         bigint id_aluno PK
         varchar nome
         varchar matricula
         bigint professor_id FK "nullable"
     }
 
-    PROFESSOR |o--o{ ALUNO : "orienta"
+    PROFESSORES |o--o{ ALUNOS : "orienta"
 ```
 
-Notação Min-Max: PROFESSOR **(0,N)**————**(0,1)** ALUNO.
+Notação Min-Max: PROFESSORES **(0,N)**————**(0,1)** ALUNOS.
 
 Raciocínio: um professor pode ter zero ou muitos orientandos (O{). Um aluno pode ter zero ou um orientador — não dois, porque a regra diz "exatamente um orientador", mas permite que ainda não tenha sido escolhido (O|).
 
@@ -614,13 +614,13 @@ a) **N:M** — a entidade intermediária seria ITEM_CARRINHO, com atributos `id_
 
 b) **1:1** — participação total dos dois lados (todo funcionário tem um contrato; todo contrato pertence a um funcionário).
 
-c) **1:N** — TURMA (1) para ALUNO (N). A FK `id_turma` vai na tabela ALUNO.
+c) **1:N** — TURMA (1) para ALUNOS (N). A FK `id_turma` vai na tabela ALUNOS.
 
 ---
 
 ## 11. Armadilhas Clássicas e Como Evitá-las
 
-**Armadilha 1 — Inverter os símbolos:** colocar o símbolo de "muitos" no lado errado é o erro mais comum. Lembre-se sempre: o pé de galinha fica do lado da entidade que aparece em quantidade. Se muitos ALUNOS pertencem a uma TURMA, o pé de galinha fica do lado de ALUNO.
+**Armadilha 1 — Inverter os símbolos:** colocar o símbolo de "muitos" no lado errado é o erro mais comum. Lembre-se sempre: o pé de galinha fica do lado da entidade que aparece em quantidade. Se muitos ALUNOS pertencem a uma TURMA, o pé de galinha fica do lado de ALUNOS.
 
 **Armadilha 2 — Confundir participação com cardinalidade máxima:** a participação (total ou parcial) é determinada pelo **mínimo**, não pelo máximo. Um relacionamento pode ser 1:N com participação parcial (mínimo 0 de um lado), e isso é completamente válido.
 
