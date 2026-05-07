@@ -15,7 +15,6 @@ Ao final desta aula, você será capaz de usar as funções de agregação `COUN
 
 Funções de agregação **calculam um único valor** a partir de múltiplas linhas. Elas ignoram valores `NULL` (exceto `COUNT(*)`).
 
-[prompt para nanobanana: "Educational infographic showing five SQL aggregate functions as icons: COUNT as a numbered list icon, SUM as a sigma symbol with numbers, AVG as a balance scale showing average, MIN as a downward arrow pointing to smallest number, MAX as an upward arrow pointing to largest number. Each with a brief Portuguese label and example value. Clean flat design, blue color scheme, white background."]
 ![Funções de Agregação SQL](../imgs/Aula_07_img_01.png)
 
 ```sql
@@ -43,7 +42,6 @@ FROM   produtos WHERE ativo = 1;
 
 O `GROUP BY` divide as linhas em grupos com base em uma ou mais colunas e aplica a função de agregação em cada grupo.
 
-[prompt para nanobanana: "Diagram showing how SQL GROUP BY works: on the left, a flat table with rows having different category values (Eletrônicos x3, Vestuário x2, Livros x4). In the middle, an arrow labeled GROUP BY categoria. On the right, a grouped result table showing one row per category with COUNT values (3, 2, 4). Clean educational flat design, blue arrows, white background, Portuguese labels."]
 ![Como funciona o GROUP BY](../imgs/Aula_07_img_02.png)
 
 ```sql
@@ -127,7 +125,6 @@ HAVING ativo = 1           -- funciona, mas é mais lento pois agrupa tudo antes
    AND media > 500;
 ```
 
-[prompt para nanobanana: "Two-panel comparison diagram. Left panel labeled 'WHERE - filtra antes do GROUP BY' showing a funnel icon filtering rows before they reach a GROUP BY box, with label 'Mais eficiente - usa índices'. Right panel labeled 'HAVING - filtra depois do GROUP BY' showing all rows going through GROUP BY first, then a filter removing some groups, with label 'Necessário quando filtra por valor agregado'. Blue and orange color scheme, clean flat design, white background, Portuguese labels."]
 ![WHERE vs HAVING](../imgs/Aula_07_img_03.png)
 
 ---
