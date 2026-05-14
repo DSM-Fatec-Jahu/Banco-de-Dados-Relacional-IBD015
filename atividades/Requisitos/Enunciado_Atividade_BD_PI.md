@@ -16,7 +16,7 @@ Cada grupo de Projeto Integrador (PI) produziu um levantamento de requisitos par
 - Completei lacunas de informação.
 - Sinalizei explicitamente os **dilemas de modelagem** que você deverá decidir.
 
-A partir desse documento, **cada aluno do grupo, individualmente** deverá projetar e implementar o banco de dados relacional do projeto, tomando decisões fundamentadas sobre os pontos em aberto.
+A partir desse documento, **cada aluno do grupo, individualmente**, deverá projetar e implementar o banco de dados relacional do projeto, tomando decisões fundamentadas sobre os pontos em aberto.
 
 Selecione o seu projeto e acesse o respectivo arquivo de requisitos:
 
@@ -55,13 +55,13 @@ O arquivo deve seguir as convenções definidas em aula e presentes no Github de
 
 ### 4.1 Decisão Opcional
 
-- **Soft-delete** (exclusão lógica via campo `deletado_em` ou similar): decisão livre do aluno. Pode ser aplicado em qualquer tabela, em todas, ou em nenhuma. Caso utilize, justifique no bloco de decisões.
+- **Soft-delete** (exclusão lógica via campo `deletado_em` ou similar): Você decide se irá utilizar em seu projeto. Podendo ser aplicado em qualquer tabela, em todas, ou em nenhuma. Caso utilize, justifique no bloco de decisões.
 
----
+--- 
 
 ## 5. Decisões de Modelagem (Análise Individual)
 
-Os pontos a seguir **devem ser decididos por você** com base no levantamento refinado do seu grupo. Para cada um, registre sua decisão e justificativa em **comentários no arquivo SQL**, no início do arquivo, em um bloco de comentário multilinha (`/* ... */`).
+**Os dilemas de modelagem presentes no documento de requisitos do seu grupo devem ser decididos por você** com base no levantamento refinado do seu grupo. Para cada um, registre sua decisão e justificativa em **comentários no arquivo SQL**, no início do arquivo, em um bloco de comentário multilinha (`/* ... */`).
 
 ---
 

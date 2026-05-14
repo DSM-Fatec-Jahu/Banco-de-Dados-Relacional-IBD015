@@ -4,7 +4,9 @@
 
 ## 1. Visão Geral do Sistema
 
-O **Singularys** é um portal web para provisionamento automático de **máquinas virtuais (VMs)** em ambiente Proxmox, integrado a sistema de pagamento online. O cliente seleciona um plano de VPS, realiza o pagamento, e o sistema dispara automaticamente o provisionamento da VM a partir de templates configurados com cloud-init, entregando as credenciais de acesso pelo painel do cliente.
+O **Singularys** é um portal web que vende **servidores virtuais** (VPS) por assinatura. Na prática, funciona assim: o cliente escolhe um plano, paga, e o sistema cria automaticamente uma máquina virtual (VM) pronta para uso, entregando os dados de acesso pelo painel do cliente. A criação da VM acontece em uma plataforma chamada **Proxmox** (um software que gerencia máquinas virtuais em um servidor), a partir de modelos pré-configurados.
+
+Não se preocupe se os termos de infraestrutura (Proxmox, VM, template, cloud-init) ainda forem novos para você. O glossário no final do documento explica cada um, e para esta atividade o que importa é entender **quais informações o sistema precisa guardar**, não como o Proxmox funciona por dentro.
 
 O modelo comercial é **assinatura recorrente mensal**: o cliente contrata um plano e paga mensalmente pelo serviço. A falta de pagamento implica suspensão e, posteriormente, encerramento do serviço.
 
@@ -14,7 +16,7 @@ O sistema possui **três domínios distintos** que devem ser claramente separado
 
 1. **Domínio Comercial**: catálogo de planos, pedidos, assinaturas recorrentes, faturas mensais e pagamentos. Trata da relação contratual e financeira entre o cliente e o Singularys.
 
-2. **Domínio Operacional (Provisionamento)**: máquinas virtuais provisionadas no Proxmox, credenciais de acesso, eventos técnicos de provisionamento. Trata da entrega técnica do serviço.
+2. **Domínio Operacional (Provisionamento)**: as máquinas virtuais criadas no Proxmox, seus dados de acesso e o registro técnico de cada etapa da criação. Trata da entrega técnica do serviço. ("Provisionamento" é só o nome técnico para o processo de criar e configurar a VM.)
 
 3. **Domínio Administrativo (Identidade e Acesso)**: usuários, autenticação e controle de permissões. Sustenta o funcionamento dos demais domínios.
 
@@ -93,7 +95,7 @@ O pedido é o ponto de entrada do fluxo comercial. Sua aprovação dá origem à
 
 #### 3.3.2. Assinatura Recorrente
 
-**RF03.1. Assinaturas Mensais (NOVO em relação ao levantamento original)**
+**RF04. Assinaturas Mensais (NOVO em relação ao levantamento original)**
 O modelo comercial do Singularys é **recorrente mensal**. Após a confirmação do pagamento do pedido inicial, deve ser criada uma **assinatura** vinculando o cliente ao plano contratado de forma contínua. Cada assinatura possui:
 
 - Cliente.
@@ -108,7 +110,7 @@ Um cliente pode ter múltiplas assinaturas simultâneas (uma por VM contratada).
 
 #### 3.3.3. Faturas Mensais
 
-**RF03.2. Faturas Mensais (NOVO em relação ao levantamento original)**
+**RF05. Faturas Mensais (NOVO em relação ao levantamento original)**
 A cada ciclo mensal de uma assinatura ativa, o sistema deve gerar automaticamente uma **fatura** para cobrança. Cada fatura possui:
 
 - Assinatura de origem.
@@ -120,47 +122,47 @@ A cada ciclo mensal de uma assinatura ativa, o sistema deve gerar automaticament
 
 Faturas vencidas há mais de um período de tolerância configurado (ex.: 5 dias) acionam suspensão automática da VM associada (status da VM = suspensa, status da assinatura = suspensa). Faturas pagas reativam o serviço.
 
-> **Observação**: a relação entre **pedido inicial** (RF03) e **fatura recorrente** (RF03.2) é conceitualmente importante. O pedido inicial pode ser visto como a primeira fatura, ou como entidade separada (o pedido representa a intenção de contratação; a fatura representa a obrigação periódica de pagamento). A modelagem pode unificar ou separar essas entidades, com argumentos defensáveis dos dois lados. Você deve refletir sobre essa escolha.
+> **Observação**: a relação entre **pedido inicial** (RF03) e **fatura recorrente** (RF05) é conceitualmente importante. O pedido inicial pode ser visto como a primeira fatura, ou como entidade separada (o pedido representa a intenção de contratação; a fatura representa a obrigação periódica de pagamento). A modelagem pode unificar ou separar essas entidades, com argumentos defensáveis dos dois lados. Você deve refletir sobre essa escolha.
 
 #### 3.3.4. Pagamentos
 
-**RF04. Integração com Gateway de Pagamento**
+**RF06. Integração com Gateway de Pagamento**
 O sistema deve permitir que o cliente realize pagamento online (cartão de crédito, Pix, boleto) das faturas (ou do pedido inicial). Cada pagamento registra:
 
 - Fatura ou pedido associado (ver dilema #2 abaixo).
 - Gateway utilizado (ex.: Stripe, Mercado Pago).
 - Identificador da transação no gateway (único).
-- Chave de idempotência (única, usada para evitar processamento duplicado de webhooks).
+- Chave de idempotência (um código único que evita que o mesmo pagamento seja registrado duas vezes por engano).
 - Status (pendente, confirmado, recusado, estornado).
 - Valor pago.
 - Data de pagamento.
 - Forma de pagamento (cartão, Pix, boleto).
 
-A confirmação do pagamento ocorre via webhook do gateway, com validação de assinatura e controle de idempotência (item 10 do levantamento original).
+A confirmação do pagamento chega por um *webhook* do gateway (uma mensagem automática que o gateway envia ao sistema avisando que o pagamento mudou de status), com validação e controle para não processar a mesma mensagem duas vezes.
 
-> **Dilema de modelagem #2 (Pagamento vinculado a Fatura ou Pedido)**: com a introdução de faturas mensais, a relação 1:1 original entre pedido e pagamento se torna mais complexa.
+> **Dilema de modelagem #2 (Pagamento vinculado a Fatura ou Pedido)**: no modelo original, cada pedido tinha exatamente um pagamento. Mas agora que existem faturas mensais, cada cliente passa a ter vários pagamentos ao longo do tempo (o do pedido inicial e o de cada fatura). A pergunta é: a quem o pagamento deve se ligar?
 >
 > Possíveis abordagens:
-> (a) **Pagamento vincula a Pedido** (modelo original): o pedido inicial gera um pagamento, e cada fatura mensal também gera um pagamento. Vantagem: simplicidade conceitual. Desvantagem: pagamento de fatura e pagamento de pedido viram entidades semanticamente diferentes vinculadas à mesma tabela.
-> (b) **Pagamento vincula a Fatura**, e o pedido inicial é tratado como primeira fatura. Vantagem: unifica o fluxo de cobrança. Desvantagem: pode forçar a unificação de pedido e fatura, perdendo separação conceitual.
+> (a) **Pagamento ligado ao Pedido** (modelo original): o pedido inicial gera um pagamento, e cada fatura mensal também gera um pagamento. Vantagem: ideia simples de entender. Desvantagem: o pagamento de uma fatura e o pagamento de um pedido são coisas conceitualmente diferentes, mas ficariam na mesma tabela.
+> (b) **Pagamento ligado à Fatura**, tratando o pedido inicial como se fosse a primeira fatura. Vantagem: todo pagamento segue o mesmo caminho. Desvantagem: pode acabar misturando pedido e fatura, que são conceitos distintos.
 >
 > Você deve decidir e justificar.
 
 ### 3.4 Provisionamento e Configuração de Máquinas Virtuais (Domínio Operacional)
 
-**RF05. Provisionamento Automático da VM**
-Após confirmação de pagamento do pedido inicial, o sistema deve disparar o processo de criação da VM no Proxmox, a partir de um template configurado com cloud-init.
+**RF07. Provisionamento Automático da VM**
+Após a confirmação do pagamento do pedido inicial, o sistema deve criar automaticamente a VM no Proxmox. Essa criação parte de um *template* (um modelo de máquina pronto, com o sistema operacional já instalado) e usa o *cloud-init* (uma ferramenta que aplica as configurações iniciais da VM, como usuário, senha e rede, na primeira vez que ela liga).
 
-**RF06. Configuração da VM**
+**RF08. Configuração da VM**
 O sistema deve aplicar automaticamente os recursos do plano contratado (CPU, memória, armazenamento, rede, hostname) à VM provisionada. Cada VM persiste, no mínimo:
 
 - Cliente proprietário.
 - Pedido/assinatura de origem.
-- Nó Proxmox (host físico onde a VM está alocada).
-- VMID (identificador único no Proxmox).
+- Nó Proxmox (o servidor físico onde a VM está rodando).
+- VMID (o número que identifica a VM dentro do Proxmox).
 - Hostname.
 - Endereço IPv4 atribuído.
-- Recursos aplicados (vCPUs, RAM, disco), copiados do plano no momento do provisionamento (preservando histórico mesmo se o plano for alterado).
+- Recursos aplicados (vCPUs, RAM, disco), copiados do plano no momento da criação (assim o histórico é preservado mesmo se o plano for alterado depois).
 - Template utilizado (ver dilema #3).
 - Status (provisionando, ativa, suspensa, encerrada, falha).
 - Data de provisionamento.
@@ -175,7 +177,7 @@ O sistema deve aplicar automaticamente os recursos do plano contratado (CPU, mem
 >
 > Você deve decidir e justificar.
 
-**RF07. Credenciais de Acesso da VM**
+**RF09. Credenciais de Acesso da VM**
 O sistema deve registrar e disponibilizar ao cliente as credenciais de acesso à sua VM no painel do portal. Cada conjunto de credenciais possui:
 
 - VM associada.
@@ -183,9 +185,9 @@ O sistema deve registrar e disponibilizar ao cliente as credenciais de acesso à
 - Senha (ver observação técnica abaixo).
 - Chave SSH pública cadastrada (opcional).
 
-> **Observação técnica importante (não é dilema)**: armazenar senhas de VM em banco de dados, mesmo "criptografadas", é considerado **anti-padrão de segurança** em sistemas reais de provisionamento de infraestrutura. Boas práticas recomendam entregar a senha **uma única vez** ao cliente (via e-mail seguro ou painel one-time view) sem persistência, e priorizar autenticação por chave SSH. Para esta atividade, reflita se deve adicionar o campo senha proposto no levantamento original do grupo, mas registre no bloco de justificativas sua reflexão sobre o tema. **Esta observação deve constar nas suas decisões**.
+> **Observação técnica importante (não é um dilema)**: guardar a senha de uma VM no banco de dados, mesmo "criptografada", é considerado uma **má prática de segurança** em sistemas reais. O recomendado é mostrar a senha ao cliente **uma única vez** (por e-mail seguro ou em uma tela que só aparece uma vez) e não guardá-la, dando preferência ao acesso por chave SSH. Para esta atividade, pense se você vai mesmo incluir o campo de senha que estava no levantamento original do grupo, e escreva no bloco de justificativas a sua reflexão sobre isso. **Essa reflexão deve constar nas suas decisões.**
 
-**RF08. Eventos de Provisionamento**
+**RF10. Eventos de Provisionamento**
 O sistema deve registrar todas as etapas do processo de provisionamento de cada VM. Cada evento possui:
 
 - VM associada (ou referência ao pedido/assinatura quando a VM ainda não existe).
@@ -198,12 +200,12 @@ Esta entidade serve à **auditoria técnica e diagnóstico de falhas**, não à 
 
 ### 3.5 Processamento Assíncrono
 
-> **Dilema de modelagem #4 (Fila de Tarefas)**: o sistema utiliza processamento assíncrono para operações críticas (provisionamento, integração com gateway). A arquitetura proposta cita explicitamente **Redis ou RabbitMQ** como infraestrutura de mensageria. Faz sentido modelar a `fila_tarefas` como entidade no banco relacional?
+> **Dilema de modelagem #4 (Fila de Tarefas)**: algumas operações do sistema (criar a VM, falar com o gateway de pagamento) são demoradas, então não acontecem na hora: elas entram em uma **fila** e são processadas aos poucos. A arquitetura do projeto prevê usar ferramentas específicas para isso (Redis ou RabbitMQ, que são programas feitos para gerenciar filas). A pergunta é: além dessas ferramentas, vale a pena ter também uma tabela de fila no banco de dados?
 >
 > Possíveis abordagens:
-> (a) **Modelar uma tabela no banco**, conforme proposto no levantamento original. Vantagem: persistência garantida (resiliência a falhas do broker), auditoria de tarefas pendentes, consultas SQL sobre estado da fila. Desvantagem: redundância com Redis/RabbitMQ, banco relacional não é otimizado para fila (escalabilidade limitada, contention).
-> (b) **Não modelar a fila** (deixar exclusivamente em Redis/RabbitMQ). Vantagem: cada ferramenta no seu propósito. Desvantagem: perde rastreabilidade SQL.
-> (c) **Modelar apenas histórico de tarefas`** (tarefas concluídas ou falhadas) para auditoria, sem o estado em tempo real. Vantagem: rastreabilidade sem competir com o broker. Desvantagem: requer integração para persistir resultado.
+> (a) **Criar uma tabela de fila no banco**, como o levantamento original propõe. Vantagem: as tarefas ficam guardadas mesmo se a ferramenta de fila falhar, e dá para consultar o estado da fila com SQL. Desvantagem: vira informação repetida (a fila já existe no Redis/RabbitMQ), e banco de dados não foi feito para esse uso.
+> (b) **Não criar a tabela** (deixar a fila só no Redis/RabbitMQ). Vantagem: cada ferramenta cuida do que faz melhor. Desvantagem: você perde a possibilidade de consultar a fila pelo SQL.
+> (c) **Criar uma tabela só com o histórico** (tarefas já concluídas ou que falharam), sem controlar a fila em tempo real. Vantagem: você tem o registro para auditoria sem competir com a ferramenta de fila. Desvantagem: exige um passo a mais para salvar o resultado de cada tarefa.
 >
 > Você deve decidir e justificar.
 
@@ -223,7 +225,7 @@ Esta entidade serve à **auditoria técnica e diagnóstico de falhas**, não à 
 
 
 > - **Painel do cliente** (visualização de VMs, faturas, status): consulta sobre entidades existentes.
-> - **Notificações por e-mail** (provisionamento concluído, fatura próxima do vencimento, suspensão): envio externo, sem persistência no banco (a menos que Você decida modelar como entidade adicional, o que é decisão livre).
+> - **Notificações por e-mail** (provisionamento concluído, fatura próxima do vencimento, suspensão): envio externo, sem persistência no banco (a menos que você decida modelar como entidade adicional, o que é decisão livre).
 > - **Dashboards administrativos**: consultas agregadas sobre entidades existentes.
 ---
 
@@ -254,11 +256,12 @@ Cada aluno deverá tomar e justificar (em comentário no arquivo SQL) decisões 
 | 3 | Templates de SO: atributo simples ou tabela? | Decisão livre, com justificativa. |
 | 4 | Fila de tarefas: modelar em banco, não modelar, ou apenas histórico? | Decisão livre, com justificativa. |
 | 5 | Backups e snapshots: entidade modelada ou fora do escopo? | Decisão livre, com justificativa. |
-| 6 | Aplicar soft-delete? Em quais tabelas? | Decisão livre, com justificativa. |
+
+> **Decisão opcional adicional**: a aplicação de **soft-delete** (campo `deletado_em` ou similar) é decisão livre, conforme a Seção 4.1 do enunciado da atividade. Não conta como dilema numerado, mas deve ser registrada e justificada no bloco de comentários do SQL.
 
 ### 5.1 Observação Obrigatória de Reflexão
 
-Além dos dilemas, Você deve registrar uma **reflexão obrigatória** sobre o RF07 (armazenamento de credenciais), considerando que armazenar senhas de VM em banco é anti-padrão de segurança.
+Além dos dilemas, você deve registrar uma **reflexão obrigatória** sobre o RF09 (armazenamento de credenciais), considerando que guardar senhas de VM no banco é uma má prática de segurança.
 
 ---
 

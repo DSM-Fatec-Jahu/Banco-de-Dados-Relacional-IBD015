@@ -130,7 +130,7 @@ O sistema deve permitir o cadastro completo de cidadãos com deficiência. O cad
 - E-mail (opcional).
 - Nome e telefone de contato de emergência.
 
-#### 3.3.4. Dados Socioeconômicos ()
+#### 3.3.4. Dados Socioeconômicos (obrigatórios)
 
 - Renda familiar mensal.
 - Número de dependentes.
@@ -170,7 +170,7 @@ Cada anexo armazena referência ao caminho do arquivo, data de upload, e usuári
 
 ### 3.4 Responsável Legal
 
-**RF08.1. Responsável Legal**
+**RF09. Responsável Legal**
 PCDs juridicamente incapazes (menores de idade ou com curatela) **devem ter** responsável legal cadastrado. Cada responsável legal possui:
 
 - Nome completo.
@@ -184,12 +184,12 @@ PCDs juridicamente incapazes (menores de idade ou com curatela) **devem ter** re
 
 Uma PCD pode ter um ou mais responsáveis legais associados (ex.: pai e mãe). Um responsável legal pode estar associado a mais de uma PCD (ex.: mãe de irmãos com deficiência).
 
-**RF09. Gestão de Cadastros**
+**RF10. Gestão de Cadastros**
 O sistema deve permitir localizar, editar e atualizar registros de PCD existentes, mantendo a integridade dos dados ao longo do tempo.
 
 ### 3.5 Importação de Dados
 
-**RF10. Importação de Dados Externos** (Verificar se essa funcionalidade irá continuar)
+**RF11. Importação de Dados Externos** (Verificar se essa funcionalidade irá continuar)
 O sistema deve permitir a importação de dados de PCDs a partir de planilhas Excel/CSV ou fichas físicas digitalizadas. Cada importação registra:
 
 - Arquivo de origem (nome).
@@ -203,7 +203,7 @@ PCDs importadas mantêm o atributo `origem_cadastro` preenchido com a entidade p
 
 ### 3.6 Segurança e Controle de Acesso
 
-**RF11. Usuários do Sistema e Perfis de Acesso**
+**RF12. Usuários do Sistema e Perfis de Acesso**
 O sistema deve gerenciar usuários operadores (que fazem login) e seus perfis de acesso. Cada usuário do sistema possui:
 
 - Nome completo.
@@ -225,17 +225,17 @@ A modelagem dos perfis pode ser feita com tabela ou com ENUM, conforme sua decis
 
 ### 3.7 Consultas e Relatórios 
 
-> **Aviso pedagógico**: os requisitos a seguir descrevem **consultas, dashboards e exportações** que o sistema deve oferecer. Eles **não** correspondem a novas entidades no banco de dados. Os dados consultados já existem nas entidades anteriores. Os alunos **não devem criar** tabelas como `estatisticas`, `dashboards` ou `relatorios`.
+> **Aviso pedagógico**: os requisitos a seguir descrevem **consultas, dashboards e exportações** que o sistema deve oferecer. Eles **não** correspondem a novas entidades no banco de dados. Os dados consultados já existem nas entidades anteriores. Você **não deve criar** tabelas como `estatisticas`, `dashboards` ou `relatorios`.
 
-**RF10. Painel Estatístico e de Índices**
+**RF13. Painel Estatístico e de Índices**
 O sistema deve exibir dashboards administrativos com gráficos, estatísticas e indicadores sobre a população PCD cadastrada (ex.: distribuição por tipo de deficiência, faixa etária, bairro, renda familiar).
 
-**RNF07. Exportação de Relatórios**
+**RF14. Exportação de Relatórios**
 O sistema deve permitir exportação de relatórios em Excel, CSV e PDF, gerados a partir dos dados das entidades existentes.
 
 ---
 
-## 4. Dilemas Adicionais (Decisão Livre dVocê)
+## 4. Dilemas Adicionais (Sua Decisão)
 
 Além dos dilemas numerados acima, os seguintes pontos são decisões legítimas de modelagem que cada aluno deve tomar:
 
@@ -243,7 +243,7 @@ Além dos dilemas numerados acima, os seguintes pontos são decisões legítimas
 >
 > Argumentos a favor: um cadastro vivo de PCD em um conselho municipal não é "cadastrou e acabou". Ações reais de assistência social envolvem registros de atendimentos, encaminhamentos a serviços públicos, observações sociais e evolução do caso. Aumenta o valor do sistema para o objetivo declarado de "planejamento de políticas públicas".
 >
-> Argumentos contra: o levantamento original não menciona atendimentos. Pode ser considerado fora do escopo do MVP, ficando para uma futura iteração do sistema. Reduz a complexidade do modelo. **Atenção**: se Você decidir incluir atendimentos, provavelmente precisará também modelar uma entidade de parceiros (como AMAE, APAE, CISC, etc.) para registrar quem realizou o atendimento, indo além do atributo simples de origem do cadastro.
+> Argumentos contra: o levantamento original não menciona atendimentos. Pode ser considerado fora do escopo do MVP, ficando para uma futura iteração do sistema. Reduz a complexidade do modelo. **Atenção**: se você decidir incluir atendimentos, provavelmente precisará também modelar uma entidade de parceiros (como AMAE, APAE, CISC, etc.) para registrar quem realizou o atendimento, indo além do atributo simples de origem do cadastro.
 >
 > Você deve decidir e justificar.
 
@@ -257,7 +257,9 @@ Além dos dilemas numerados acima, os seguintes pontos são decisões legítimas
 >
 > Você deve decidir e justificar. Recomenda-se considerar seriamente o argumento da LGPD.
 
-> **Dilema de modelagem #6 (Soft-Delete)**: aplicar exclusão lógica (`deletado_em` ou similar) em quais tabelas? Considerar que cadastros de PCD em órgão público dificilmente devem ser excluídos fisicamente (preservação histórica, transparência, possíveis demandas judiciais).
+---
+
+> **Decisão opcional (Soft-delete)**: além dos dilemas acima, você também deve decidir sobre a aplicação de **soft-delete** (exclusão lógica via campo `deletado_em` ou similar), conforme a Seção 4.1 do enunciado da atividade. Considere que cadastros de PCD em órgão público dificilmente devem ser excluídos fisicamente (preservação histórica, transparência, possíveis demandas judiciais). Registre sua decisão e justificativa no bloco de comentários do SQL.
 
 ---
 
@@ -286,7 +288,8 @@ Cada aluno deverá tomar e justificar (em comentário no arquivo SQL) decisões 
 | 3 | Tipos de deficiência: tabela N:N ou ENUM? | Decisão livre, abordagem N:N é tecnicamente recomendada. |
 | 4 | Incluir entidade de atendimentos/acompanhamento? | Decisão livre, com justificativa. |
 | 5 | Incluir entidade de log detalhado de alterações (LGPD)? | Decisão livre, LGPD é forte argumento a favor. |
-| 6 | Aplicar soft-delete? Em quais tabelas? | Decisão livre, com justificativa. |
+
+> **Decisão opcional adicional**: a aplicação de **soft-delete** (campo `deletado_em` ou similar) é decisão livre, conforme a Seção 4.1 do enunciado da atividade. Não conta como dilema numerado, mas deve ser registrada e justificada no bloco de comentários do SQL.
 
 ---
 
