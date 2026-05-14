@@ -18,6 +18,14 @@ Cada grupo de Projeto Integrador (PI) produziu um levantamento de requisitos par
 
 A partir desse documento, **cada aluno do grupo, individualmente** deverá projetar e implementar o banco de dados relacional do projeto, tomando decisões fundamentadas sobre os pontos em aberto.
 
+Selecione o seu projeto e acesse o respectivo arquivo de requisitos:
+
+| Projeto | Arquivo de requisitos |
+|---------|------------------------|
+| CMPCD | [Requisitos_CMPCD.md](Requisitos_CMPCD.md) |
+| Controla$eu | [Requisitos_ControlaSeu.md](Requisitos_ControlaSeu.md) |
+| Singularys | [Requisitos_Singularys.md](Requisitos_Singularys.md) |
+
 ---
 
 ## 2. Objetivos de Aprendizagem
